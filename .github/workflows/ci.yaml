@@ -13,6 +13,27 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      PGUSER: glvd
+      PGDATABASE: glvd
+      PGPASSWORD: glvd
+      PGHOST: postgres
+      PGPORT: 5432
+
+    services:
+      postgres:
+        image: ghcr.io/gardenlinux/glvd-postgres:edgesampledata
+        env:
+          POSTGRES_USER: glvd
+          POSTGRES_DB: glvd
+          POSTGRES_PASSWORD: glvd
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
     - uses: actions/checkout@v4
