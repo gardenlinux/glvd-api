@@ -1,27 +1,41 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.CveRepository;
 import io.restassured.RestAssured;
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
+import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
+@ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class GlvdControllerTest {
 
     static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgesampledata")
@@ -37,6 +51,17 @@ class GlvdControllerTest {
     CveRepository cveRepository;
     @LocalServerPort
     private Integer port;
+
+    private RequestSpecification spec;
+
+
+    @BeforeEach
+    void setUp(RestDocumentationContextProvider restDocumentation) {
+        this.spec = new RequestSpecBuilder()
+                .addFilter(documentationConfiguration(restDocumentation)).build();
+
+        RestAssured.baseURI = "http://localhost:" + port;
+    }
 
     @BeforeAll
     static void beforeAll() {
@@ -55,19 +80,20 @@ class GlvdControllerTest {
         registry.add("spring.datasource.password", postgres::getPassword);
     }
 
-    @BeforeEach
-    void setUp() {
-        RestAssured.baseURI = "http://localhost:" + port;
-    }
-
     @Test
-    void shouldGetCveById() {
-        given()
-                .contentType(ContentType.JSON)
+    public void shouldGetCveById() {
+        given(this.spec)
+                .accept("application/json")
+                .filter(document("getCve",
+                        preprocessRequest(modifyUris()
+                                .scheme("https")
+                                .host("glvd.gardenlinux.io")
+                                .removePort())))
                 .when()
+                .port(this.port)
                 .get("/v1/cves/CVE-2024-1549")
                 .then()
-                .statusCode(200)
+                .assertThat().statusCode(is(200))
                 .body("id", containsString("CVE-2024-1549"));
     }
 
@@ -78,6 +104,23 @@ class GlvdControllerTest {
                 .when()
                 .get("/v1/cves/CVE-1989-1234")
                 .then()
-                .statusCode(500);
+                .statusCode(HttpStatus.SC_NOT_FOUND);
     }
+
+    @Test
+    public void shouldReturnCvesForBookworm() {
+        given(this.spec)
+                .accept("application/json")
+                .filter(document("getCveForDistro",
+                        preprocessRequest(modifyUris()
+                                .scheme("https")
+                                .host("glvd.gardenlinux.io")
+                                .removePort())))
+                .when()
+                .port(this.port)
+                .get("/v1/cves/debian/debian_linux/bookworm")
+                .then()
+                .assertThat().statusCode(is(200));
+    }
+
 }
