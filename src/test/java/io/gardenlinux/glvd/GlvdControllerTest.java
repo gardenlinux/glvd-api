@@ -54,7 +54,6 @@ class GlvdControllerTest {
 
     private RequestSpecification spec;
 
-
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
         this.spec = new RequestSpecBuilder()
@@ -93,7 +92,7 @@ class GlvdControllerTest {
                 .port(this.port)
                 .get("/v1/cves/CVE-2024-1549")
                 .then()
-                .assertThat().statusCode(is(200))
+                .statusCode(HttpStatus.SC_OK)
                 .body("id", containsString("CVE-2024-1549"));
     }
 
@@ -120,7 +119,7 @@ class GlvdControllerTest {
                 .port(this.port)
                 .get("/v1/cves/debian/debian_linux/bookworm")
                 .then()
-                .assertThat().statusCode(is(200));
+                .statusCode(HttpStatus.SC_OK);
     }
 
 }
