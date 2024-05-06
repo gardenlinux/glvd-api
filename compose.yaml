@@ -1,0 +1,16 @@
+services:
+  glvd-api:
+    image: ghcr.io/gardenlinux/glvd-api:edge_bare
+    ports:
+      - "8080:8080"
+    depends_on:
+      - glvd-postgres
+  glvd-postgres:
+    image: ghcr.io/gardenlinux/glvd-postgres:edgesampledata
+    hostname: postgres
+    environment:
+      POSTGRES_USER: glvd
+      POSTGRES_DB: glvd
+      POSTGRES_PASSWORD: glvd
+    ports:
+      - "5432:5432"
