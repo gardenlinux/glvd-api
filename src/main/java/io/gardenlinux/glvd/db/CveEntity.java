@@ -1,4 +1,4 @@
-package io.gardenlinux.glvd;
+package io.gardenlinux.glvd.db;
 
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import java.util.Objects;
 
 @Entity(name = "all_cve")
-public class Cve {
+public class CveEntity {
     @Id
     @Column(name = "cve_id", nullable = false)
     private String id;
@@ -21,10 +21,10 @@ public class Cve {
     @Nonnull
     private String data;
 
-    public Cve() {
+    public CveEntity() {
     }
 
-    public Cve(String id, @Nonnull String lastModified, @Nonnull String data) {
+    public CveEntity(String id, @Nonnull String lastModified, @Nonnull String data) {
         this.id = id;
         this.lastModified = lastModified;
         this.data = data;
@@ -49,8 +49,8 @@ public class Cve {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Cve cve = (Cve) o;
-        return Objects.equals(id, cve.id) && lastModified.equals(cve.lastModified) && data.equals(cve.data);
+        CveEntity cveEntity = (CveEntity) o;
+        return Objects.equals(id, cveEntity.id) && lastModified.equals(cveEntity.lastModified) && data.equals(cveEntity.data);
     }
 
     @Override

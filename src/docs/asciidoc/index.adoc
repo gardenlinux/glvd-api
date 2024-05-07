@@ -1,0 +1,27 @@
+= Garden Linux Vulnerability Database Rest API
+Garden Linux Authors;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+== Lorem Ipsum
+
+=== Get a CVE by id
+
+Request
+
+include::{snippets}/getCve/curl-request.adoc[]
+
+Response
+
+include::{snippets}/getCve/http-response.adoc[]
+
+=== Get a list of CVEs by distro
+
+Request
+
+include::{snippets}/getCveForDistro/curl-request.adoc[]
+
+Response
+
+include::{snippets}/getCveForDistro/http-response.adoc[]
