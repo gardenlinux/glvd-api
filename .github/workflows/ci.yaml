@@ -68,6 +68,7 @@ jobs:
         name: build-artifacts
         path: build
     - run: ./build.sh
+    - run: podman login -u token -p ${{ github.token }} ghcr.io
     - run: podman push ghcr.io/gardenlinux/glvd-api:edge
     - run: podman push ghcr.io/gardenlinux/glvd-api:edge_bare
 
