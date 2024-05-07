@@ -2,12 +2,13 @@
 
 set -eufo pipefail
 
-./gradlew bootJar
+if [[ ! -f build/libs/glvd-0.0.1-SNAPSHOT.jar ]]; then
+    ./gradlew bootJar
+fi
 
 podman build --tag ghcr.io/gardenlinux/glvd-api:edge .
 
 podman save --format oci-archive ghcr.io/gardenlinux/glvd-api:edge > glvd.oci
-
 
 podman pull ubuntu:22.04
 podman save --format oci-archive ubuntu:22.04 > ubuntu.oci
