@@ -1,0 +1,41 @@
+= Garden Linux Vulnerability Database Rest API
+Garden Linux Authors;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+== API Endpoints
+
+This document describes the HTTP API endpoints of Garden Linux Vulnerability Database.
+
+CAUTION: This document and the API are work in progress and subject to change at any time.
+
+=== Check running app
+
+For verifying that the app is running and has a connection to the database, you may query the `readiness` endpoint:
+
+include::{snippets}/readiness/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/readiness/http-response.adoc[]
+
+=== Get a CVE by id
+
+To query a single CVE by its id, you maye use the `cves` endpoint:
+
+include::{snippets}/getCve/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCve/http-response.adoc[]
+
+=== Get a list of CVEs by distro
+
+To query all CVEs for a given distribution, you may use this endpoint:
+
+include::{snippets}/getCveForDistro/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveForDistro/http-response.adoc[]

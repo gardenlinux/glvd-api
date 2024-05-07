@@ -1,23 +1,16 @@
-package io.gardenlinux.glvd;
+package io.gardenlinux.glvd.dto;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 
 import java.util.Objects;
 
-@Entity(name = "all_cve")
 public class Cve {
-    @Id
-    @Column(name = "cve_id", nullable = false)
+
     private String id;
 
-    @Column(name = "last_mod", nullable = false)
     @Nonnull
     private String lastModified;
 
-    @Column(name = "data", nullable = false)
     @Nonnull
     private String data;
 
@@ -46,11 +39,13 @@ public class Cve {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
-        Cve cve = (Cve) o;
-        return Objects.equals(id, cve.id) && lastModified.equals(cve.lastModified) && data.equals(cve.data);
+        Cve Cve = (Cve) o;
+        return Objects.equals(id, Cve.id) && lastModified.equals(Cve.lastModified) && data.equals(Cve.data);
     }
 
     @Override
@@ -60,4 +55,5 @@ public class Cve {
         result = 31 * result + data.hashCode();
         return result;
     }
+
 }
