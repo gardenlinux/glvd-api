@@ -9,6 +9,7 @@ import java.util.Objects;
 
 @Entity(name = "all_cve")
 public class CveEntity {
+
     @Id
     @Column(name = "cve_id", nullable = false)
     private String id;
@@ -46,11 +47,14 @@ public class CveEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         CveEntity cveEntity = (CveEntity) o;
-        return Objects.equals(id, cveEntity.id) && lastModified.equals(cveEntity.lastModified) && data.equals(cveEntity.data);
+        return Objects.equals(id, cveEntity.id) && lastModified.equals(cveEntity.lastModified)
+                && data.equals(cveEntity.data);
     }
 
     @Override
@@ -60,4 +64,5 @@ public class CveEntity {
         result = 31 * result + data.hashCode();
         return result;
     }
+
 }

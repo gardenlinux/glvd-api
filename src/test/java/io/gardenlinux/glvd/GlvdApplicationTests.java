@@ -11,14 +11,14 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 class GlvdApplicationTests {
+
     static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgesampledata")
             .asCompatibleSubstituteFor("postgres");
 
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
-            glvdPostgresImage
-    ).withDatabaseName("glvd").withUsername("glvd").withPassword("glvd");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(glvdPostgresImage).withDatabaseName("glvd")
+            .withUsername("glvd").withPassword("glvd");
 
     @Test
     void contextLoads() {

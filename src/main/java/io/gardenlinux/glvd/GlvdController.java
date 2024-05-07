@@ -29,7 +29,8 @@ public class GlvdController {
     }
 
     @GetMapping("/{vendor}/{product}/{codename}")
-    ResponseEntity<List<String>> getCveDistro(@PathVariable final String vendor, @PathVariable final String product, @PathVariable final String codename) {
+    ResponseEntity<List<String>> getCveDistro(@PathVariable final String vendor, @PathVariable final String product,
+                                              @PathVariable final String codename) {
         return ResponseEntity.ok().body(glvdService.getCveForDistribution(vendor, product, codename));
     }
 
