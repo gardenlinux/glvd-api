@@ -6,6 +6,12 @@ Garden Linux Authors;
 
 == Lorem Ipsum
 
+=== Check running app
+
+include::{snippets}/readiness/curl-request.adoc[]
+
+include::{snippets}/readiness/http-response.adoc[]
+
 === Get a CVE by id
 
 Request

@@ -22,4 +22,5 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
                      all_cve.cve_id
             """, nativeQuery = true)
     List<String> cvesForDistribution(String vendor, String product, String codename);
+
 }

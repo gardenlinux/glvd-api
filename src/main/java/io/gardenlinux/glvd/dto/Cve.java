@@ -5,9 +5,12 @@ import jakarta.annotation.Nonnull;
 import java.util.Objects;
 
 public class Cve {
+
     private String id;
+
     @Nonnull
     private String lastModified;
+
     @Nonnull
     private String data;
 
@@ -36,8 +39,10 @@ public class Cve {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         Cve Cve = (Cve) o;
         return Objects.equals(id, Cve.id) && lastModified.equals(Cve.lastModified) && data.equals(Cve.data);
@@ -50,4 +55,5 @@ public class Cve {
         result = 31 * result + data.hashCode();
         return result;
     }
+
 }
