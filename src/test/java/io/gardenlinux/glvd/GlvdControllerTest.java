@@ -27,8 +27,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.modifyUris;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessRequest;
+import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
 
@@ -81,7 +80,8 @@ class GlvdControllerTest {
     public void shouldGetCveById() {
         given(this.spec).accept("application/json")
                 .filter(document("getCve",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort())))
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/CVE-2024-1549")
 				.then().statusCode(HttpStatus.SC_OK).body("id", containsString("CVE-2024-1549"));
     }
@@ -97,7 +97,8 @@ class GlvdControllerTest {
     public void shouldReturnCvesForBookworm() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForDistro",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort())))
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/debian/debian_linux/bookworm")
 				.then().statusCode(HttpStatus.SC_OK);
     }
@@ -106,7 +107,8 @@ class GlvdControllerTest {
     public void shouldBeReady() {
         given(this.spec)
                 .filter(document("readiness",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort())))
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/readiness")
 				.then().statusCode(HttpStatus.SC_OK).body("dbCheck", containsString("true"));
     }
