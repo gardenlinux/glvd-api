@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd.db;
 
+import io.gardenlinux.glvd.dto.Cve;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,7 +10,7 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
 
     @Query(value = """
              SELECT
-                     all_cve.data  AS cveEntity
+                     all_cve.*
                  FROM
                      all_cve
                      INNER JOIN deb_cve USING (cve_id)
@@ -21,6 +22,6 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
                  ORDER BY
                      all_cve.cve_id
             """, nativeQuery = true)
-    List<String> cvesForDistribution(String vendor, String product, String codename);
+    List<CveEntity> cvesForDistribution(String vendor, String product, String codename);
 
 }
