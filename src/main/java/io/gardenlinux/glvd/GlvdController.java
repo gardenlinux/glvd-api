@@ -1,6 +1,7 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.dto.Cve;
+import io.gardenlinux.glvd.exceptions.CantParseJSONException;
 import io.gardenlinux.glvd.exceptions.NotFoundException;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
@@ -30,7 +31,7 @@ public class GlvdController {
 
     @GetMapping("/{vendor}/{product}/{codename}")
     ResponseEntity<List<Cve>> getCveDistro(@PathVariable final String vendor, @PathVariable final String product,
-                                              @PathVariable final String codename) {
+                                              @PathVariable final String codename) throws CantParseJSONException {
         return ResponseEntity.ok().body(glvdService.getCveForDistribution(vendor, product, codename));
     }
 
