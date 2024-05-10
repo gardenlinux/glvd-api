@@ -36,13 +36,13 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class GlvdControllerTest {
 
-    static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgesampledata")
+    static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgenotls")
             .asCompatibleSubstituteFor("postgres");
 
     @Container
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(glvdPostgresImage).withDatabaseName("glvd")
-            .withUsername("glvd").withPassword("glvd");
+            .withUsername("glvd").withPassword("glvd").withInitScript("schema-with-sample-data.sql");
 
     @Autowired
     CveRepository cveRepository;

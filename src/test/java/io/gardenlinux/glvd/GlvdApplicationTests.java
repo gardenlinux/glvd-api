@@ -12,7 +12,7 @@ import org.testcontainers.utility.DockerImageName;
 @Testcontainers
 class GlvdApplicationTests {
 
-    static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgesampledata")
+    static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgenotls")
             .asCompatibleSubstituteFor("postgres");
 
     @Container
