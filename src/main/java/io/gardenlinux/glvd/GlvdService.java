@@ -2,6 +2,7 @@ package io.gardenlinux.glvd;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import io.gardenlinux.glvd.db.CveEntity;
 import io.gardenlinux.glvd.db.CveRepository;
 import io.gardenlinux.glvd.db.HealthCheckRepository;
@@ -56,10 +57,10 @@ public class GlvdService {
     private Cve cveEntityDataToDomainEntity(CveEntity cveEntity) throws CantParseJSONException {
         try {
             return objectMapper.readValue(cveEntity.getData(), Cve.class);
+        } catch (UnrecognizedPropertyException e) {
+            throw new CantParseJSONException("Failed to parse JSON object into domain class. Reason: Unrecognized Property\n" + e.getMessage() + "\n====\n" + cveEntity.getData() + "\n====");
         } catch (JsonProcessingException e) {
-            //throw new CantParseJSONException("Failed to parse JSON object into domain classes:\nLocation:\n" + e.getLocation() + "\n====\n" + cveEntity.getData() + "\n====");
-            System.out.println("Failed to parse JSON object into domain classes:\nLocation:\n" + e.getLocation() + "\n====\n" + cveEntity.getData() + "\n====");
-            return  null;
+            throw new CantParseJSONException("Failed to parse JSON object into domain classes:\nLocation:\n" + e.getLocation() + "\n====\n" + cveEntity.getData() + "\n====");
         }
     }
 }

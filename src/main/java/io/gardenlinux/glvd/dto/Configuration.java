@@ -1,10 +1,7 @@
 package io.gardenlinux.glvd.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public record Configuration(List<Node> nodes) {
+public record Configuration(List<Node> nodes, String operator) {
 
 }
