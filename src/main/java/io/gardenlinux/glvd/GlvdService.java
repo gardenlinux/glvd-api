@@ -57,7 +57,9 @@ public class GlvdService {
         try {
             return objectMapper.readValue(cveEntity.getData(), Cve.class);
         } catch (JsonProcessingException e) {
-            throw new CantParseJSONException("Failed to parse JSON object into domain classes:\n====\n" + cveEntity.getData() + "\n====");
+            //throw new CantParseJSONException("Failed to parse JSON object into domain classes:\nLocation:\n" + e.getLocation() + "\n====\n" + cveEntity.getData() + "\n====");
+            System.out.println("Failed to parse JSON object into domain classes:\nLocation:\n" + e.getLocation() + "\n====\n" + cveEntity.getData() + "\n====");
+            return  null;
         }
     }
 }
