@@ -39,3 +39,11 @@ include::{snippets}/getCveForDistro/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getCveForDistro/http-response.adoc[]
+
+=== Get a list of CVEs for packages by distro
+
+include::{snippets}/getCveForPackages/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveForPackages/http-response.adoc[]

@@ -104,6 +104,16 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldReturnCvesForListOfPackages() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForPackages",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/debian/debian_linux/bookworm/packages/dav1d,firefox-esr")
+                .then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
     public void shouldBeReady() {
         given(this.spec)
                 .filter(document("readiness",

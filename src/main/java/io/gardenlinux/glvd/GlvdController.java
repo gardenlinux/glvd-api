@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.SourcePackageCve;
 import io.gardenlinux.glvd.dto.Cve;
 import io.gardenlinux.glvd.exceptions.CantParseJSONException;
 import io.gardenlinux.glvd.exceptions.NotFoundException;
@@ -33,6 +34,13 @@ public class GlvdController {
     ResponseEntity<List<Cve>> getCveDistro(@PathVariable final String vendor, @PathVariable final String product,
                                               @PathVariable final String codename) throws CantParseJSONException {
         return ResponseEntity.ok().body(glvdService.getCveForDistribution(vendor, product, codename));
+    }
+
+    @GetMapping("/{vendor}/{product}/{codename}/packages/{packageList}")
+    ResponseEntity<List<SourcePackageCve>> getCvePackages(@PathVariable final String vendor, @PathVariable final String product,
+                                                          @PathVariable final String codename, @PathVariable final String packageList) {
+        var cveForPackages = glvdService.getCveForPackages(vendor, product, codename, packageList);
+        return ResponseEntity.ok().body(cveForPackages);
     }
 
 }

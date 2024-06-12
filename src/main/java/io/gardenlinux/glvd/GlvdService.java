@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.gardenlinux.glvd.db.CveEntity;
 import io.gardenlinux.glvd.db.CveRepository;
 import io.gardenlinux.glvd.db.HealthCheckRepository;
+import io.gardenlinux.glvd.db.SourcePackageCve;
 import io.gardenlinux.glvd.dto.Cve;
 import io.gardenlinux.glvd.dto.Readiness;
 import io.gardenlinux.glvd.exceptions.CantParseJSONException;
@@ -51,6 +52,19 @@ public class GlvdService {
         var entities = cveRepository.cvesForDistribution(vendor, product, codename);
 
         return entities.stream().map(this::cveEntityDataToDomainEntity).toList();
+    }
+
+    public List<SourcePackageCve> getCveForPackages(String vendor, String product, String codename, String packages) {
+        return cveRepository.cvesForPackageList(vendor, product, codename,"{"+packages+"}").stream().map(entity -> {
+            var parts = entity.split(",");
+            if (parts.length != 3) {
+                throw new RuntimeException("Unexpected format");
+            }
+            var sourcePackage = parts[0];
+            var cveId = parts[1];
+            var publishedDate = parts[2];
+            return new SourcePackageCve(cveId, publishedDate, sourcePackage);
+        }).toList();
     }
 
     private Cve cveEntityDataToDomainEntity(CveEntity cveEntity) throws CantParseJSONException {
