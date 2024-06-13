@@ -15,6 +15,7 @@ import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 public class GlvdService {
@@ -48,14 +49,28 @@ public class GlvdService {
         return cveEntityDataToDomainEntity(cveEntity);
     }
 
-    public List<Cve> getCveForDistribution(String vendor, String product, String codename) throws CantParseJSONException {
-        var entities = cveRepository.cvesForDistribution(vendor, product, codename);
+    public List<Cve> getCveForDistribution(String product, String codename) throws CantParseJSONException {
+        var entities = cveRepository.cvesForDistribution(product, codename);
 
         return entities.stream().map(this::cveEntityDataToDomainEntity).toList();
     }
 
-    public List<SourcePackageCve> getCveForPackages(String vendor, String product, String codename, String packages) {
-        return cveRepository.cvesForPackageList(vendor, product, codename,"{"+packages+"}").stream().map(entity -> {
+    public List<Cve> getCveForDistributionVersion(String product, String version) throws CantParseJSONException {
+        var entities = cveRepository.cvesForDistributionVersion(product, version);
+
+        return entities.stream().map(this::cveEntityDataToDomainEntity).toList();
+    }
+
+    public List<SourcePackageCve> getCveForPackages(String product, String codename, String packages) {
+        return cveRepository.cvesForPackageList(product, codename,"{"+packages+"}").stream().map(getSourcePackageCveFunction()).toList();
+    }
+
+    public List<SourcePackageCve> getCveForPackagesVersion(String product, String version, String packages) {
+        return cveRepository.cvesForPackageListVersion(product, version,"{"+packages+"}").stream().map(getSourcePackageCveFunction()).toList();
+    }
+
+    private static Function<String, SourcePackageCve> getSourcePackageCveFunction() {
+        return entity -> {
             var parts = entity.split(",");
             if (parts.length != 3) {
                 throw new RuntimeException("Unexpected format");
@@ -64,7 +79,7 @@ public class GlvdService {
             var cveId = parts[1];
             var publishedDate = parts[2];
             return new SourcePackageCve(cveId, publishedDate, sourcePackage);
-        }).toList();
+        };
     }
 
     private Cve cveEntityDataToDomainEntity(CveEntity cveEntity) throws CantParseJSONException {

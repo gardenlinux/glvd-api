@@ -30,16 +30,31 @@ public class GlvdController {
         return ResponseEntity.ok().body(glvdService.getCve(cveId));
     }
 
-    @GetMapping("/{vendor}/{product}/{codename}")
-    ResponseEntity<List<Cve>> getCveDistro(@PathVariable final String vendor, @PathVariable final String product,
+    @GetMapping("/{product}/{codename}")
+    ResponseEntity<List<Cve>> getCveDistro(@PathVariable final String product,
                                               @PathVariable final String codename) throws CantParseJSONException {
-        return ResponseEntity.ok().body(glvdService.getCveForDistribution(vendor, product, codename));
+        return ResponseEntity.ok().body(glvdService.getCveForDistribution(product, codename));
     }
 
-    @GetMapping("/{vendor}/{product}/{codename}/packages/{packageList}")
-    ResponseEntity<List<SourcePackageCve>> getCvePackages(@PathVariable final String vendor, @PathVariable final String product,
+
+    @GetMapping("/{product}/version/{version}")
+    ResponseEntity<List<Cve>> getCveDistroVersion(@PathVariable final String product,
+                                           @PathVariable final String version) throws CantParseJSONException {
+        return ResponseEntity.ok().body(glvdService.getCveForDistributionVersion(product, version));
+    }
+
+
+    @GetMapping("/{product}/{codename}/packages/{packageList}")
+    ResponseEntity<List<SourcePackageCve>> getCvePackages(@PathVariable final String product,
                                                           @PathVariable final String codename, @PathVariable final String packageList) {
-        var cveForPackages = glvdService.getCveForPackages(vendor, product, codename, packageList);
+        var cveForPackages = glvdService.getCveForPackages(product, codename, packageList);
+        return ResponseEntity.ok().body(cveForPackages);
+    }
+
+    @GetMapping("/{product}/version/{version}/packages/{packageList}")
+    ResponseEntity<List<SourcePackageCve>> getCvePackagesVersion(@PathVariable final String product,
+                                                          @PathVariable final String version, @PathVariable final String packageList) {
+        var cveForPackages = glvdService.getCveForPackagesVersion(product, version, packageList);
         return ResponseEntity.ok().body(cveForPackages);
     }
 
