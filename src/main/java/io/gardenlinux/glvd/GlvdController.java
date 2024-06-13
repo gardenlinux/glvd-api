@@ -1,7 +1,7 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.CveEntity;
 import io.gardenlinux.glvd.db.SourcePackageCve;
-import io.gardenlinux.glvd.exceptions.CantParseJSONException;
 import io.gardenlinux.glvd.exceptions.NotFoundException;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
@@ -25,20 +25,20 @@ public class GlvdController {
     }
 
     @GetMapping("/{cveId}")
-    ResponseEntity<SourcePackageCve> getCveId(@PathVariable("cveId") final String cveId) throws NotFoundException {
+    ResponseEntity<CveEntity> getCveId(@PathVariable("cveId") final String cveId) throws NotFoundException {
         return ResponseEntity.ok().body(glvdService.getCve(cveId));
     }
 
     @GetMapping("/{product}/{codename}")
     ResponseEntity<List<SourcePackageCve>> getCveDistro(@PathVariable final String product,
-                                              @PathVariable final String codename) throws CantParseJSONException {
+                                              @PathVariable final String codename) {
         return ResponseEntity.ok().body(glvdService.getCveForDistribution(product, codename));
     }
 
 
     @GetMapping("/{product}/version/{version}")
     ResponseEntity<List<SourcePackageCve>> getCveDistroVersion(@PathVariable final String product,
-                                           @PathVariable final String version) throws CantParseJSONException {
+                                           @PathVariable final String version) {
         return ResponseEntity.ok().body(glvdService.getCveForDistributionVersion(product, version));
     }
 

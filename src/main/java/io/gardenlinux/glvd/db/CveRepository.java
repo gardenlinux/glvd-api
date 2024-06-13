@@ -6,7 +6,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface CveRepository extends JpaRepository<SourcePackageCve, String> {
+public interface CveRepository extends JpaRepository<CveEntity, String> {
 
     @Query(value = """
              SELECT
@@ -24,7 +24,7 @@ public interface CveRepository extends JpaRepository<SourcePackageCve, String> {
              ORDER BY
                  all_cve.cve_id
             """, nativeQuery = true)
-    List<SourcePackageCve> cvesForDistribution(@Param("product") String product, @Param("codename") String codename);
+    List<String> cvesForDistribution(@Param("product") String product, @Param("codename") String codename);
 
     @Query(value = """
              SELECT
@@ -42,7 +42,7 @@ public interface CveRepository extends JpaRepository<SourcePackageCve, String> {
              ORDER BY
                      all_cve.cve_id
             """, nativeQuery = true)
-    List<SourcePackageCve> cvesForDistributionVersion(@Param("product") String product, @Param("version") String version);
+    List<String> cvesForDistributionVersion(@Param("product") String product, @Param("version") String version);
 
     @Query(value = """
             SELECT
@@ -61,7 +61,7 @@ public interface CveRepository extends JpaRepository<SourcePackageCve, String> {
             ORDER BY
                 all_cve.cve_id
             """, nativeQuery = true)
-    List<SourcePackageCve> cvesForPackageList(@Param("product") String product, @Param("codename") String codename, @Param("packages") String packages);
+    List<String> cvesForPackageList(@Param("product") String product, @Param("codename") String codename, @Param("packages") String packages);
 
     @Query(value = """
             SELECT
@@ -80,6 +80,6 @@ public interface CveRepository extends JpaRepository<SourcePackageCve, String> {
             ORDER BY
                 all_cve.cve_id
             """, nativeQuery = true)
-    List<SourcePackageCve> cvesForPackageListVersion(@Param("product") String product, @Param("version") String version, @Param("packages") String packages);
+    List<String> cvesForPackageListVersion(@Param("product") String product, @Param("version") String version, @Param("packages") String packages);
 
 }
