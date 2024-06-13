@@ -99,8 +99,38 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian/debian_linux/bookworm")
+                .when().port(this.port).get("/v1/cves/debian_linux/bookworm")
 				.then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void shouldReturnCvesForBookwormByVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForDistroByVersion",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/debian_linux/version/12")
+                .then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void shouldReturnCvesForListOfPackages() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForPackages",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/debian_linux/bookworm/packages/dav1d,firefox-esr")
+                .then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
+    public void shouldReturnCvesForListOfPackagesByDistroVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForPackagesByDistroVersion",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/debian_linux/version/12/packages/dav1d,firefox-esr")
+                .then().statusCode(HttpStatus.SC_OK);
     }
 
     @Test

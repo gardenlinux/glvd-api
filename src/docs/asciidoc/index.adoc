@@ -32,10 +32,34 @@ include::{snippets}/getCve/http-response.adoc[]
 
 === Get a list of CVEs by distro
 
-To query all CVEs for a given distribution, you may use this endpoint:
+To query all CVEs for a given distribution by codename, you may use this endpoint:
 
 include::{snippets}/getCveForDistro/curl-request.adoc[]
 
 The expected response looks like this:
 
 include::{snippets}/getCveForDistro/http-response.adoc[]
+
+To use a specific distribution version number, use this endpoint:
+
+include::{snippets}/getCveForDistroByVersion/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveForDistroByVersion/http-response.adoc[]
+
+=== Get a list of CVEs for packages by distro
+
+include::{snippets}/getCveForPackages/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveForPackages/http-response.adoc[]
+
+To use a specific distribution version number, use this endpoint:
+
+include::{snippets}/getCveForPackagesByDistroVersion/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveForPackagesByDistroVersion/http-response.adoc[]

@@ -1,0 +1,11 @@
+meta {
+  name: Get CVEs by Distro Version Packages
+  type: http
+  seq: 5
+}
+
+get {
+  url: http://localhost:8080/v1/cves/debian_linux/version/12/packages/vim,firefox-esr
+  body: none
+  auth: none
+}

@@ -1,0 +1,1 @@
+Get https://www.usebruno.com to use those api example requests to play with the api.
