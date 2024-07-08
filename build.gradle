@@ -36,7 +36,7 @@ dependencies {
 	testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
 	testImplementation 'org.testcontainers:junit-jupiter'
 	testImplementation 'org.testcontainers:postgresql'
-	testImplementation 'io.rest-assured:rest-assured:5.4.0'
+	testImplementation 'io.rest-assured:rest-assured:5.5.0'
 }
 
 tasks.named('test') {
