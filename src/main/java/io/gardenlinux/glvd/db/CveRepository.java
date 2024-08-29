@@ -82,4 +82,20 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
             """, nativeQuery = true)
     List<String> cvesForPackageListVersion(@Param("product") String product, @Param("version") String version, @Param("packages") String packages);
 
+
+    @Query(value = """
+            SELECT
+                debsrc.deb_source
+            FROM
+                dist_cpe
+            INNER JOIN debsrc ON
+                (debsrc.dist_id = dist_cpe.id)
+            WHERE
+                dist_cpe.cpe_vendor = 'sap'
+                AND dist_cpe.cpe_product = 'gardenlinux'
+                AND dist_cpe.deb_codename = '1443'
+            ORDER BY
+                debsrc.deb_source""", nativeQuery = true)
+    List<String> packagesForDistribution();
+
 }
