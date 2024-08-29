@@ -79,7 +79,6 @@ jobs:
       with:
         name: build-artifacts
         path: build
-    - run: ./gradlew bootJar
     - run: docker buildx build --file=Containerfile --platform=linux/amd64,linux/arm64 --push
     # - run: podman build  --platform linux/amd64,linux/arm64 --manifest ghcr.io/gardenlinux/glvd-api:edge .
     # - run: podman login -u token -p ${{ github.token }} ghcr.io
