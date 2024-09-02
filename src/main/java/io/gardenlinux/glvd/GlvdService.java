@@ -65,7 +65,7 @@ public class GlvdService {
         return cveRepository.cvesForPackageListVersion(product, version,"{"+packages+"}").stream().map(this::parseDbResponse).toList();
     }
 
-    public List<String> getPackagesForDistro() {
-        return cveRepository.packagesForDistribution();
+    public List<String> getPackagesForDistro(String glVersion) {
+        return cveRepository.packagesForDistribution(glVersion);
     }
 }

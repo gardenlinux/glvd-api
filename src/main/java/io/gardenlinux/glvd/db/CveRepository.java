@@ -93,9 +93,25 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
             WHERE
                 dist_cpe.cpe_vendor = 'sap'
                 AND dist_cpe.cpe_product = 'gardenlinux'
-                AND dist_cpe.deb_codename = '1443'
+                AND dist_cpe.deb_codename = :glVersion
             ORDER BY
                 debsrc.deb_source""", nativeQuery = true)
-    List<String> packagesForDistribution();
+    List<String> packagesForDistribution(@Param("glVersion") String glVersion);
 
+    @Query(value = """
+            SELECT
+                all_cve.cve_id, deb_cve.deb_source, deb_cve.deb_version, deb_cve.deb_version_fixed, deb_cve.debsec_vulnerable
+            FROM
+                all_cve
+                INNER JOIN deb_cve USING (cve_id)
+                INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
+            WHERE
+                dist_cpe.cpe_product = 'gardenlinux'
+                AND dist_cpe.deb_codename = '1592'
+                AND deb_cve.deb_source = 'busybox'
+                AND deb_cve.debsec_vulnerable = true
+            ORDER BY
+                all_cve.cve_id
+            """, nativeQuery = true)
+    List<String> packageWithVulnerabilities();
 }

@@ -34,7 +34,7 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-class GlvdControllerTest {
+class PackageControllerTest {
 
     static DockerImageName glvdPostgresImage = DockerImageName
             .parse(TestConfig.DbContainerImage)
@@ -78,70 +78,14 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void shouldGetCveById() {
+    public void shouldGetPackagesForDistro() {
         given(this.spec).accept("application/json")
-                .filter(document("getCve",
+                .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/CVE-2024-1549")
-				.then().statusCode(HttpStatus.SC_OK).body("id", containsString("CVE-2024-1549"));
+                .when().port(this.port).get("/v1/packages/1592.0")
+				.then();
     }
 
-    @Test
-    void tryGetNonExistingCveById() {
-        given().contentType(ContentType.JSON)
-				.when().get("/v1/cves/CVE-1989-1234")
-				.then().statusCode(HttpStatus.SC_NOT_FOUND);
-    }
-
-    @Test
-    public void shouldReturnCvesForBookworm() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCveForDistro",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/bookworm")
-				.then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldReturnCvesForBookwormByVersion() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCveForDistroByVersion",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/version/12")
-                .then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldReturnCvesForListOfPackages() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCveForPackages",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/bookworm/packages/dav1d,firefox-esr")
-                .then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldReturnCvesForListOfPackagesByDistroVersion() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCveForPackagesByDistroVersion",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/version/12/packages/dav1d,firefox-esr")
-                .then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldBeReady() {
-        given(this.spec)
-                .filter(document("readiness",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/readiness")
-				.then().statusCode(HttpStatus.SC_OK).body("dbCheck", containsString("true"));
-    }
 
 }

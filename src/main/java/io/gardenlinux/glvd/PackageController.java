@@ -23,6 +23,6 @@ public class PackageController {
 
     @GetMapping("/{glVersion}")
     ResponseEntity<List<String>> foo(@PathVariable final String glVersion) {
-        return ResponseEntity.ok(glvdService.getPackagesForDistro());
+        return ResponseEntity.ok(glvdService.getPackagesForDistro(glVersion));
     }
 }
