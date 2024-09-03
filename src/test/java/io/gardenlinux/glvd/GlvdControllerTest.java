@@ -36,13 +36,15 @@ import static org.springframework.restdocs.restassured.RestAssuredRestDocumentat
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 class GlvdControllerTest {
 
-    static DockerImageName glvdPostgresImage = DockerImageName.parse("ghcr.io/gardenlinux/glvd-postgres:edgenotls")
+    static DockerImageName glvdPostgresImage = DockerImageName
+            .parse(TestConfig.DbContainerImage)
             .asCompatibleSubstituteFor("postgres");
 
     @Container
     @ServiceConnection
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(glvdPostgresImage).withDatabaseName("glvd")
-            .withUsername("glvd").withPassword("glvd").withInitScript("schema-with-sample-data.sql");
+    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(glvdPostgresImage)
+            .withDatabaseName("glvd")
+            .withUsername("glvd").withPassword("glvd");
 
     @Autowired
     CveRepository cveRepository;
@@ -99,7 +101,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/bookworm")
+                .when().port(this.port).get("/v1/cves/gardenlinux/1592")
 				.then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -109,7 +111,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistroByVersion",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/version/12")
+                .when().port(this.port).get("/v1/cves/gardenlinux/version/1592.0")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -119,7 +121,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/bookworm/packages/dav1d,firefox-esr")
+                .when().port(this.port).get("/v1/cves/gardenlinux/1592/packages/crun,vim")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -129,7 +131,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForPackagesByDistroVersion",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/debian_linux/version/12/packages/dav1d,firefox-esr")
+                .when().port(this.port).get("/v1/cves/gardenlinux/version/1592.0/packages/crun,vim")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -141,6 +143,36 @@ class GlvdControllerTest {
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/readiness")
 				.then().statusCode(HttpStatus.SC_OK).body("dbCheck", containsString("true"));
+    }
+
+    @Test
+    public void shouldGetPackagesForDistro() {
+        given(this.spec).accept("application/json")
+                .filter(document("getPackages",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0")
+                .then().statusCode(200);
+    }
+
+    @Test
+    public void shouldPackageWithVulnerabilities() {
+        given(this.spec).accept("application/json")
+                .filter(document("getPackageWithVulnerabilities",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/packages/vim")
+                .then().statusCode(200);
+    }
+
+    @Test
+    public void shouldPackageWithVulnerabilitiesByVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("getPackageWithVulnerabilitiesByVersion",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1")
+                .then().statusCode(200);
     }
 
 }

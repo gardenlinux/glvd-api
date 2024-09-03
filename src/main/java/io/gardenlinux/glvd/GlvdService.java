@@ -64,4 +64,16 @@ public class GlvdService {
     public List<SourcePackageCve> getCveForPackagesVersion(String product, String version, String packages) {
         return cveRepository.cvesForPackageListVersion(product, version,"{"+packages+"}").stream().map(this::parseDbResponse).toList();
     }
+
+    public List<String> getPackagesForDistro(String distro, String distroVersion) {
+        return cveRepository.packagesForDistribution(distro, distroVersion);
+    }
+
+    public List<String> getPackageWithVulnerabilities(String sourcePackage) {
+        return cveRepository.packageWithVulnerabilities(sourcePackage);
+    }
+
+    public List<String> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
+        return cveRepository.packageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion);
+    }
 }
