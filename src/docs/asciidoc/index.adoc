@@ -44,9 +44,7 @@ To use a specific distribution version number, use this endpoint:
 
 include::{snippets}/getCveForDistroByVersion/curl-request.adoc[]
 
-The expected response looks like this:
-
-include::{snippets}/getCveForDistroByVersion/http-response.adoc[]
+The expected response is the same as for the previous request.
 
 === Get a list of CVEs for packages by distro
 
@@ -63,3 +61,11 @@ include::{snippets}/getCveForPackagesByDistroVersion/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getCveForPackagesByDistroVersion/http-response.adoc[]
+
+== Get List of Packages
+
+include::{snippets}/getPackages/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getPackages/http-response.adoc[]
