@@ -1,0 +1,34 @@
+services:
+  glvd:
+    build:
+      dockerfile: ./Containerfile
+    hostname: glvd
+    depends_on:
+      glvd-postgres:
+        condition: service_healthy
+        restart: true
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://glvd-postgres:5432/glvd"
+      SPRING_DATASOURCE_USERNAME: "glvd"
+      SPRING_DATASOURCE_PASSWORD: "glvd"
+      SPRING_JPA_DATABASEPLATFORM: "org.hibernate.dialect.PostgreSQLDialect"
+      SPRING_JPA_PROPERTIES_HIBERNATE_BOOT_ALLOW_JDBC_METADATA_ACCESS: "false"
+      SPRING_JPA_HIBERNATE_DDLAUTO: "none"
+      SPRING_SQL_INIT_MODE: "never"
+    ports:
+      - "8080:8080"
+  glvd-postgres:
+    image: ghcr.io/gardenlinux/glvd-postgres:edgefulldata
+    hostname: glvd-postgres
+    environment:
+      POSTGRES_USER: glvd
+      POSTGRES_DB: glvd
+      POSTGRES_PASSWORD: glvd
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      timeout: 10s
