@@ -21,8 +21,18 @@ public class PackageController {
         this.glvdService = glvdService;
     }
 
-    @GetMapping("/{glVersion}")
-    ResponseEntity<List<String>> foo(@PathVariable final String glVersion) {
-        return ResponseEntity.ok(glvdService.getPackagesForDistro(glVersion));
+    @GetMapping("/distro/{distro}/{distroVersion}")
+    ResponseEntity<List<String>> packagesForDistro(@PathVariable final String distro, @PathVariable final String distroVersion) {
+        return ResponseEntity.ok(glvdService.getPackagesForDistro(distro, distroVersion));
+    }
+
+    @GetMapping("/{sourcePackage}")
+    ResponseEntity<List<String>> packageWithVulnerabilities(@PathVariable final String sourcePackage) {
+        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilities(sourcePackage));
+    }
+
+    @GetMapping("/{sourcePackage}/{sourcePackageVersion}")
+    ResponseEntity<List<String>> packageWithVulnerabilitiesByVersion(@PathVariable final String sourcePackage, @PathVariable final String sourcePackageVersion) {
+        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion));
     }
 }

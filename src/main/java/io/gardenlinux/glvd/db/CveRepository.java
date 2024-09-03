@@ -82,7 +82,6 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
             """, nativeQuery = true)
     List<String> cvesForPackageListVersion(@Param("product") String product, @Param("version") String version, @Param("packages") String packages);
 
-
     @Query(value = """
             SELECT
                 debsrc.deb_source
@@ -91,27 +90,40 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
             INNER JOIN debsrc ON
                 (debsrc.dist_id = dist_cpe.id)
             WHERE
-                dist_cpe.cpe_vendor = 'sap'
-                AND dist_cpe.cpe_product = 'gardenlinux'
-                AND dist_cpe.deb_codename = :glVersion
+                dist_cpe.cpe_product = ':distro'
+                AND dist_cpe.deb_codename = :distroVersion
             ORDER BY
                 debsrc.deb_source""", nativeQuery = true)
-    List<String> packagesForDistribution(@Param("glVersion") String glVersion);
+    List<String> packagesForDistribution(@Param("distro") String distro, @Param("distroVersion") String distroVersion);
 
     @Query(value = """
             SELECT
-                all_cve.cve_id, deb_cve.deb_source, deb_cve.deb_version, deb_cve.deb_version_fixed, deb_cve.debsec_vulnerable
+                all_cve.cve_id
             FROM
                 all_cve
                 INNER JOIN deb_cve USING (cve_id)
                 INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
             WHERE
-                dist_cpe.cpe_product = 'gardenlinux'
-                AND dist_cpe.deb_codename = '1592'
-                AND deb_cve.deb_source = 'busybox'
-                AND deb_cve.debsec_vulnerable = true
+                deb_cve.deb_source = ':sourcePackage'
+                AND deb_cve.debsec_vulnerable = TRUE
             ORDER BY
                 all_cve.cve_id
             """, nativeQuery = true)
-    List<String> packageWithVulnerabilities();
+    List<String> packageWithVulnerabilities(@Param("sourcePackage") String sourcePackage);
+
+    @Query(value = """
+            SELECT
+                all_cve.cve_id
+            FROM
+                all_cve
+                INNER JOIN deb_cve USING (cve_id)
+                INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
+            WHERE
+                deb_cve.deb_source = ':sourcePackage'
+                AND deb_cve.deb_version = ':sourcePackageVersion'
+                AND deb_cve.debsec_vulnerable = TRUE
+            ORDER BY
+                all_cve.cve_id
+            """, nativeQuery = true)
+    List<String> packageWithVulnerabilitiesByVersion(@Param("sourcePackage") String sourcePackage, @Param("sourcePackageVersion") String sourcePackageVersion);
 }

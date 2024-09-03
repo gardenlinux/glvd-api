@@ -69,3 +69,20 @@ include::{snippets}/getPackages/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getPackages/http-response.adoc[]
+
+== Get Package With Vulnerabilities
+
+include::{snippets}/getPackageWithVulnerabilities/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
+
+== Get Package With Vulnerabilities By Version
+
+include::{snippets}/getPackageWithVulnerabilitiesByVersion/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getPackageWithVulnerabilitiesByVersion/http-response.adoc[]
+

@@ -151,7 +151,27 @@ class GlvdControllerTest {
                 .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/1592.0")
+                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0")
+                .then().statusCode(200);
+    }
+
+    @Test
+    public void shouldPackageWithVulnerabilities() {
+        given(this.spec).accept("application/json")
+                .filter(document("getPackageWithVulnerabilities",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/packages/vim")
+                .then().statusCode(200);
+    }
+
+    @Test
+    public void shouldPackageWithVulnerabilitiesByVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("getPackageWithVulnerabilitiesByVersion",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1")
                 .then().statusCode(200);
     }
 
