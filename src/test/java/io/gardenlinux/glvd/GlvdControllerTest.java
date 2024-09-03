@@ -151,7 +151,7 @@ class GlvdControllerTest {
                 .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0")
+                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592")
                 .then().statusCode(200);
     }
 

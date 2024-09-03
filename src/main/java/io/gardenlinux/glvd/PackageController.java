@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.PackageEntity;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,12 +28,12 @@ public class PackageController {
     }
 
     @GetMapping("/{sourcePackage}")
-    ResponseEntity<List<String>> packageWithVulnerabilities(@PathVariable final String sourcePackage) {
+    ResponseEntity<List<PackageEntity>> packageWithVulnerabilities(@PathVariable final String sourcePackage) {
         return ResponseEntity.ok(glvdService.getPackageWithVulnerabilities(sourcePackage));
     }
 
     @GetMapping("/{sourcePackage}/{sourcePackageVersion}")
-    ResponseEntity<List<String>> packageWithVulnerabilitiesByVersion(@PathVariable final String sourcePackage, @PathVariable final String sourcePackageVersion) {
+    ResponseEntity<List<PackageEntity>> packageWithVulnerabilitiesByVersion(@PathVariable final String sourcePackage, @PathVariable final String sourcePackageVersion) {
         return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion));
     }
 }

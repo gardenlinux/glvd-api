@@ -1,9 +1,6 @@
 package io.gardenlinux.glvd;
 
-import io.gardenlinux.glvd.db.CveEntity;
-import io.gardenlinux.glvd.db.CveRepository;
-import io.gardenlinux.glvd.db.HealthCheckRepository;
-import io.gardenlinux.glvd.db.SourcePackageCve;
+import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.dto.Readiness;
 import io.gardenlinux.glvd.exceptions.DbNotConnectedException;
 import io.gardenlinux.glvd.exceptions.NotFoundException;
@@ -19,10 +16,14 @@ public class GlvdService {
     private final CveRepository cveRepository;
 
     @Nonnull
+    private final PackagesRepository packagesRepository;
+
+    @Nonnull
     private final HealthCheckRepository healthCheckRepository;
 
-    public GlvdService(@Nonnull CveRepository cveRepository, @Nonnull HealthCheckRepository healthCheckRepository) {
+    public GlvdService(@Nonnull CveRepository cveRepository, @Nonnull PackagesRepository packagesRepository, @Nonnull HealthCheckRepository healthCheckRepository) {
         this.cveRepository = cveRepository;
+        this.packagesRepository = packagesRepository;
         this.healthCheckRepository = healthCheckRepository;
     }
 
@@ -69,11 +70,20 @@ public class GlvdService {
         return cveRepository.packagesForDistribution(distro, distroVersion);
     }
 
-    public List<String> getPackageWithVulnerabilities(String sourcePackage) {
-        return cveRepository.packageWithVulnerabilities(sourcePackage);
+    private PackageEntity parseDbResponsePackageWithVulnerabilities(String input) {
+        var parts = input.split(",");
+        var cveId = parts[0];
+        var debSource = parts[1];
+        var debVersion = parts[2];
+        var debsecVulnerable = parts[3];
+        return new PackageEntity(cveId, debSource, debVersion, debsecVulnerable);
     }
 
-    public List<String> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
-        return cveRepository.packageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion);
+    public List<PackageEntity> getPackageWithVulnerabilities(String sourcePackage) {
+        return packagesRepository.packageWithVulnerabilities(sourcePackage);
+    }
+
+    public List<PackageEntity> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
+        return packagesRepository.packageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion);
     }
 }
