@@ -24,3 +24,17 @@ After about a minute you should be able to perform an HTTP GET request on http:/
 
 Find example requests to play with the API in the `api-examples` folder.
 They are created with [Bruno](https://www.usebruno.com), an open source and easy to use HTTP client.
+
+## API Docs
+
+The API is documented [here](https://gardenlinux.github.io/glvd-api/).
+
+Those requests and responses are generated from tests automatically using [Spring REST Docs](https://spring.io/projects/spring-restdocs).
+Note that you will need to adapt the hostname given in those docs.
+
+## Running the Tests locally
+
+GLVD API uses testcontainers to bring up the database automatically.
+For running it with `podman`, some setup is needed as described [here](https://java.testcontainers.org/supported_docker_environment/#podman).
+
+Running `test-on-mac-with-podman.sh` should work on macos with podman and a jdk set up.
