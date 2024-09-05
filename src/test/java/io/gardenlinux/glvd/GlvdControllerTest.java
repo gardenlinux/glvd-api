@@ -101,18 +101,8 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/1592")
+                .when().port(this.port).get("/v1/cves/gardenlinux/1592.0")
 				.then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldReturnCvesForBookwormByVersion() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCveForDistroByVersion",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/version/1592.0")
-                .then().statusCode(HttpStatus.SC_OK);
     }
 
     @Test
@@ -122,16 +112,6 @@ class GlvdControllerTest {
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/gardenlinux/1592/packages/crun,vim")
-                .then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldReturnCvesForListOfPackagesByDistroVersion() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCveForPackagesByDistroVersion",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/version/1592.0/packages/crun,vim")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 

@@ -34,7 +34,7 @@ public class UiController {
             @RequestParam(name = "version", required = true) String version,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getCveForDistributionVersion(distro, version);
+        var sourcePackageCves = glvdService.getCveForDistribution(distro, version);
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("distro", distro);
         model.addAttribute("version", version);
