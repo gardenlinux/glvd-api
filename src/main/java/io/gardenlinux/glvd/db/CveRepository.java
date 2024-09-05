@@ -10,24 +10,6 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
 
     @Query(value = """
              SELECT
-                deb_cve.deb_source AS source_package,
-                all_cve.cve_id AS cve_id,
-                all_cve."data" ->> 'published' AS cve_published_date
-             FROM
-                 all_cve
-                 INNER JOIN deb_cve USING (cve_id)
-                 INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
-             WHERE
-                 dist_cpe.cpe_product = :product AND
-                 dist_cpe.deb_codename = :codename AND
-                 deb_cve.debsec_vulnerable = TRUE
-             ORDER BY
-                 all_cve.cve_id
-            """, nativeQuery = true)
-    List<String> cvesForDistribution(@Param("product") String product, @Param("codename") String codename);
-
-    @Query(value = """
-             SELECT
                  deb_cve.deb_source AS source_package,
                  all_cve.cve_id AS cve_id,
                  all_cve."data" ->> 'published' AS cve_published_date
@@ -36,13 +18,13 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
                  INNER JOIN deb_cve USING (cve_id)
                  INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
              WHERE
-                 dist_cpe.cpe_product = :product AND
-                 dist_cpe.cpe_version = :version AND
-                 deb_cve.debsec_vulnerable = TRUE
+                dist_cpe.cpe_product = :distro AND
+                dist_cpe.cpe_version = :distroVersion AND
+                deb_cve.debsec_vulnerable = TRUE
              ORDER BY
                      all_cve.cve_id
             """, nativeQuery = true)
-    List<String> cvesForDistributionVersion(@Param("product") String product, @Param("version") String version);
+    List<String> cvesForDistribution(@Param("distro") String distro, @Param("distroVersion") String distroVersion);
 
     @Query(value = """
             SELECT
@@ -54,33 +36,14 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
                 INNER JOIN deb_cve USING (cve_id)
                 INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
             WHERE
-                 dist_cpe.cpe_product = :product AND
-                 dist_cpe.deb_codename = :codename AND
-                 deb_cve.deb_source = ANY(:packages ::TEXT[]) AND
-                 deb_cve.debsec_vulnerable = TRUE
-            ORDER BY
-                all_cve.cve_id
-            """, nativeQuery = true)
-    List<String> cvesForPackageList(@Param("product") String product, @Param("codename") String codename, @Param("packages") String packages);
-
-    @Query(value = """
-            SELECT
-                deb_cve.deb_source AS source_package,
-                all_cve.cve_id AS cve_id,
-                all_cve."data" ->> 'published' AS cve_published_date
-            FROM
-                all_cve
-                INNER JOIN deb_cve USING (cve_id)
-                INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
-            WHERE
-                dist_cpe.cpe_product = :product AND
-                dist_cpe.cpe_version = :version AND
+                dist_cpe.cpe_product = :distro AND
+                dist_cpe.cpe_version = :distroVersion AND
                 deb_cve.deb_source = ANY(:packages ::TEXT[]) AND
-                 deb_cve.debsec_vulnerable = TRUE
+                deb_cve.debsec_vulnerable = TRUE
             ORDER BY
                 all_cve.cve_id
             """, nativeQuery = true)
-    List<String> cvesForPackageListVersion(@Param("product") String product, @Param("version") String version, @Param("packages") String packages);
+    List<String> cvesForPackageList(@Param("distro") String distro, @Param("distroVersion") String distroVersion, @Param("packages") String packages);
 
     @Query(value = """
             SELECT
@@ -91,7 +54,7 @@ public interface CveRepository extends JpaRepository<CveEntity, String> {
                 (debsrc.dist_id = dist_cpe.id)
             WHERE
                 dist_cpe.cpe_product = :distro
-                AND dist_cpe.deb_codename = :distroVersion
+                AND dist_cpe.cpe_version = :distroVersion
             ORDER BY
                 debsrc.deb_source""", nativeQuery = true)
     List<String> packagesForDistribution(@Param("distro") String distro, @Param("distroVersion") String distroVersion);

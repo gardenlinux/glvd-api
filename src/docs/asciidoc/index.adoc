@@ -39,7 +39,7 @@ The `data` field contains a full copy of the CVE as provided by https://nvd.nist
 
 === Get a list of CVEs by distro
 
-To query all CVEs for a given distribution by codename, you may use this endpoint:
+To query all CVEs for a given distribution by version, you may use this endpoint:
 
 include::{snippets}/getCveForDistro/curl-request.adoc[]
 
@@ -48,12 +48,6 @@ TIP: Acceptable distributions here are `gardenlinux` and `debian`.
 The expected response looks like this:
 
 include::{snippets}/getCveForDistro/http-response.adoc[]
-
-To use a specific distribution version number, use this endpoint:
-
-include::{snippets}/getCveForDistroByVersion/curl-request.adoc[]
-
-The expected response is the same as for the previous request.
 
 === Get a list of CVEs for packages by distro
 
@@ -94,14 +88,3 @@ include::{snippets}/getPackageWithVulnerabilities/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
-
-=== Get Package With Vulnerabilities By Version
-
-Gives you a list of vulnerabilities for a specific package in a specifc version (i.e. a subset of the result from the previous query).
-
-include::{snippets}/getPackageWithVulnerabilitiesByVersion/curl-request.adoc[]
-
-The expected response looks like this:
-
-include::{snippets}/getPackageWithVulnerabilitiesByVersion/http-response.adoc[]
-

@@ -50,20 +50,12 @@ public class GlvdService {
         return cveRepository.findById(cveId).orElseThrow(NotFoundException::new);
     }
 
-    public List<SourcePackageCve> getCveForDistribution(String product, String codename) {
-        return cveRepository.cvesForDistribution(product, codename).stream().map(this::parseDbResponse).toList();
+    public List<SourcePackageCve> getCveForDistribution(String distro, String distroVersion) {
+        return cveRepository.cvesForDistribution(distro, distroVersion).stream().map(this::parseDbResponse).toList();
     }
 
-    public List<SourcePackageCve> getCveForDistributionVersion(String product, String version) {
-        return cveRepository.cvesForDistributionVersion(product, version).stream().map(this::parseDbResponse).toList();
-    }
-
-    public List<SourcePackageCve> getCveForPackages(String product, String codename, String packages) {
-        return cveRepository.cvesForPackageList(product, codename,"{"+packages+"}").stream().map(this::parseDbResponse).toList();
-    }
-
-    public List<SourcePackageCve> getCveForPackagesVersion(String product, String version, String packages) {
-        return cveRepository.cvesForPackageListVersion(product, version,"{"+packages+"}").stream().map(this::parseDbResponse).toList();
+    public List<SourcePackageCve> getCveForPackages(String distro, String distroVersion, String packages) {
+        return cveRepository.cvesForPackageList(distro, distroVersion,"{"+packages+"}").stream().map(this::parseDbResponse).toList();
     }
 
     public List<String> getPackagesForDistro(String distro, String distroVersion) {
