@@ -1,0 +1,19 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GLVD: List vulnerabilities in distro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<p th:text="|Vulnerabilities list for ${distro} ${version}|" />
+
+<table>
+    <tr th:each="item: ${sourcePackageCves}">
+        <td th:text="${item.id}" />
+        <td th:text="${item.cvePublishedDate}" />
+        <td th:text="${item.sourcePackage}" />
+    </tr>
+</table>
+
+</body>
+</html>
