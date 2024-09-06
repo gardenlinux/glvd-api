@@ -112,7 +112,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/1592/packages/crun,vim")
+                .when().port(this.port).get("/v1/cves/gardenlinux/1592.0/packages/crun,vim")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
