@@ -39,4 +39,18 @@ public interface PackagesRepository extends JpaRepository<PackageEntity, String>
             """, nativeQuery = true)
     List<PackageEntity> packageWithVulnerabilitiesByVersion(@Param("sourcePackage") String sourcePackage, @Param("sourcePackageVersion") String sourcePackageVersion);
 
+    @Query(value = """
+            SELECT
+                all_cve.cve_id , deb_cve.deb_source , deb_cve.deb_version  , deb_cve.debsec_vulnerable
+            FROM
+                all_cve
+                INNER JOIN deb_cve USING (cve_id)
+                INNER JOIN dist_cpe ON (deb_cve.dist_id = dist_cpe.id)
+            WHERE
+                dist_cpe.cpe_product = :distro
+                AND dist_cpe.cpe_version = :distroVersion
+                AND all_cve.cve_id = :cveId
+            """, nativeQuery = true)
+    List<PackageEntity> packagesByVulnerability(@Param("distro") String distro, @Param("distroVersion") String distroVersion, @Param("cveId") String cvdId);
+
 }

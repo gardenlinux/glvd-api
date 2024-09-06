@@ -27,6 +27,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
@@ -131,7 +132,7 @@ class GlvdControllerTest {
                 .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592")
+                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0")
                 .then().statusCode(200);
     }
 
@@ -153,6 +154,16 @@ class GlvdControllerTest {
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1")
                 .then().statusCode(200);
+    }
+
+    @Test
+    public void shouldGetPackagesByVulnerability() {
+        given(this.spec).accept("application/json")
+                .filter(document("getPackagesByVulnerability",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0/CVE-2023-50387")
+                .then().statusCode(200).body("[0].cveId", equalTo("CVE-2023-50387"));
     }
 
 }

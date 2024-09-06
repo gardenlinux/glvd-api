@@ -78,4 +78,8 @@ public class GlvdService {
     public List<PackageEntity> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
         return packagesRepository.packageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion);
     }
+
+    public List<PackageEntity> getPackagesByVulnerability(String distro, String distroVersion, String cveId) {
+        return packagesRepository.packagesByVulnerability(distro, distroVersion, cveId);
+    }
 }

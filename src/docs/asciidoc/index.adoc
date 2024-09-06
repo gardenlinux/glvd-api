@@ -88,3 +88,13 @@ include::{snippets}/getPackageWithVulnerabilities/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
+
+=== Get Packages By Vulnerabilities
+
+Give a list of affected packages by vulnerability
+
+include::{snippets}/getPackagesByVulnerability/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getPackagesByVulnerability/http-response.adoc[]

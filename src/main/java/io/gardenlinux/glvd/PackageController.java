@@ -36,4 +36,9 @@ public class PackageController {
     ResponseEntity<List<PackageEntity>> packageWithVulnerabilitiesByVersion(@PathVariable final String sourcePackage, @PathVariable final String sourcePackageVersion) {
         return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion));
     }
+
+    @GetMapping("/distro/{distro}/{distroVersion}/{cveId}")
+    ResponseEntity<List<PackageEntity>> packagesByVulnerability(@PathVariable final String distro, @PathVariable final String distroVersion, @PathVariable final String cveId) {
+        return ResponseEntity.ok(glvdService.getPackagesByVulnerability(distro, distroVersion, cveId));
+    }
 }
