@@ -56,4 +56,19 @@ public class UiController {
         return "getCveForPackages";
     }
 
+    @GetMapping("/getPackagesByVulnerability")
+    public String getPackagesByVulnerability(
+            @RequestParam(name = "distro", required = false, defaultValue = "gardenlinux") String distro,
+            @RequestParam(name = "version", required = true) String version,
+            @RequestParam(name = "cveId", required = true) String cveId,
+            Model model
+    ) {
+        var packageEntities = glvdService.getPackagesByVulnerability(distro, version, cveId);
+        model.addAttribute("packageEntities", packageEntities);
+        model.addAttribute("distro", distro);
+        model.addAttribute("version", version);
+        model.addAttribute("cveId", cveId);
+        return "getPackagesByVulnerability";
+    }
+
 }
