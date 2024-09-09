@@ -81,6 +81,16 @@ The expected response looks like this:
 
 include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
 
+=== Get Package With Vulnerabilities by Version
+
+Gives you a list of vulnerabilities for a specific package with the specified version.
+
+include::{snippets}/getPackageWithVulnerabilitiesByVersion/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getPackageWithVulnerabilitiesByVersion/http-response.adoc[]
+
 === Get Packages By Vulnerabilities
 
 Give a list of affected packages by vulnerability
