@@ -61,14 +61,6 @@ The expected response looks like this:
 
 include::{snippets}/getCveForPackages/http-response.adoc[]
 
-To use a specific distribution version number, use this endpoint:
-
-include::{snippets}/getCveForPackagesByDistroVersion/curl-request.adoc[]
-
-The expected response looks like this:
-
-include::{snippets}/getCveForPackagesByDistroVersion/http-response.adoc[]
-
 === Get List of Packages
 
 Just gives you a list of packages in a given distribution.
