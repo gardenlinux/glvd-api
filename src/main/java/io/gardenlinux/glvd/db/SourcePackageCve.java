@@ -1,10 +1,7 @@
 package io.gardenlinux.glvd.db;
 
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -13,47 +10,64 @@ import java.util.Objects;
 public class SourcePackageCve {
 
     @Id
+    @Column(name = "my_id", nullable = false)
+    private String myId;
+
     @Column(name = "cve_id", nullable = false)
-    private String id;
+    private String cveId;
 
-    @Column(name = "deb_source", nullable = false)
-    @Nonnull
-    private String debSource;
+    @Column(name = "source_package_name", nullable = false)
+    private String sourcePackageName;
 
-    @Column(name = "deb_version", nullable = false)
-    @Nonnull
-    private String debVersion;
+    @Column(name = "source_package_version", nullable = false)
+    private String sourcePackageVersion;
 
-    @Column(name = "debsec_vulnerable", nullable = false)
-    @Nonnull
-    private String debsecVulnerable;
+    @Column(name = "gardenlinux_version", nullable = false)
+    private String gardenlinuxVersion;
+
+    @Column(name = "is_vulnerable", nullable = false)
+    private boolean isVulnerable;
+
+    @Column(name = "cve_published_date", nullable = false)
+    private String cvePublishedDate;
 
     public SourcePackageCve() {
     }
 
-    public SourcePackageCve(String id, @Nonnull String debSource, @Nonnull String debVersion, @Nonnull String debsecVulnerable) {
-        this.id = id;
-        this.debSource = debSource;
-        this.debVersion = debVersion;
-        this.debsecVulnerable = debsecVulnerable;
+    public SourcePackageCve(String cveId, @Nonnull String sourcePackageName, @Nonnull String sourcePackageVersion, @Nonnull String gardenlinuxVersion, boolean isVulnerable, @Nonnull String cvePublishedDate) {
+        this.cveId = cveId;
+        this.sourcePackageName = sourcePackageName;
+        this.sourcePackageVersion = sourcePackageVersion;
+        this.gardenlinuxVersion = gardenlinuxVersion;
+        this.isVulnerable = isVulnerable;
+        this.cvePublishedDate = cvePublishedDate;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    @Nonnull
-    public String getDebSource() {
-        return debSource;
+    public String getCveId() {
+        return cveId;
     }
 
     @Nonnull
-    public String getDebVersion() {
-        return debVersion;
+    public String getSourcePackageName() {
+        return sourcePackageName;
     }
 
     @Nonnull
-    public String getDebsecVulnerable() {
-        return debsecVulnerable;
+    public String getSourcePackageVersion() {
+        return sourcePackageVersion;
+    }
+
+    @Nonnull
+    public String getGardenlinuxVersion() {
+        return gardenlinuxVersion;
+    }
+
+    public boolean isVulnerable() {
+        return isVulnerable;
+    }
+
+    @Nonnull
+    public String getCvePublishedDate() {
+        return cvePublishedDate;
     }
 }
