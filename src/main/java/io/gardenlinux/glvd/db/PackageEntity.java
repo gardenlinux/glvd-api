@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 
 import java.util.Objects;
 
-@Entity
+@Entity(name = "debsrc")
 public class PackageEntity {
 
     @Id
