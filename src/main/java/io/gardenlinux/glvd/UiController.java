@@ -18,55 +18,49 @@ public class UiController {
 
     @GetMapping("/getPackagesForDistro")
     public String getPackagesForDistro(
-            @RequestParam(name = "distro", required = false, defaultValue = "gardenlinux") String distro,
-            @RequestParam(name = "version", required = true) String version,
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             Model model) {
-        var packages = glvdService.getPackagesForDistro(distro, version);
+        var packages = glvdService.getPackagesForDistro(gardenlinuxVersion);
         model.addAttribute("packages", packages);
-        model.addAttribute("distro", distro);
-        model.addAttribute("version", version);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getPackagesForDistro";
     }
 
     @GetMapping("/getCveForDistribution")
     public String getCveForDistribution(
-            @RequestParam(name = "distro", required = false, defaultValue = "gardenlinux") String distro,
-            @RequestParam(name = "version", required = true) String version,
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getCveForDistribution(distro, version);
+        var sourcePackageCves = glvdService.getCveForDistribution(gardenlinuxVersion);
         model.addAttribute("sourcePackageCves", sourcePackageCves);
-        model.addAttribute("distro", distro);
-        model.addAttribute("version", version);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getCveForDistribution";
     }
 
     @GetMapping("/getCveForPackages")
     public String getCveForPackages(
-            @RequestParam(name = "distro", required = false, defaultValue = "gardenlinux") String distro,
-            @RequestParam(name = "version", required = true) String version,
+
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             @RequestParam(name = "packages", required = true) String packages,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getCveForPackages(distro, version, packages);
+        var sourcePackageCves = glvdService.getCveForPackages(gardenlinuxVersion, packages);
         model.addAttribute("sourcePackageCves", sourcePackageCves);
-        model.addAttribute("distro", distro);
-        model.addAttribute("version", version);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("packages", packages);
         return "getCveForPackages";
     }
 
     @GetMapping("/getPackagesByVulnerability")
     public String getPackagesByVulnerability(
-            @RequestParam(name = "distro", required = false, defaultValue = "gardenlinux") String distro,
-            @RequestParam(name = "version", required = true) String version,
+
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             @RequestParam(name = "cveId", required = true) String cveId,
             Model model
     ) {
-        var packageEntities = glvdService.getPackagesByVulnerability(distro, version, cveId);
-        model.addAttribute("packageEntities", packageEntities);
-        model.addAttribute("distro", distro);
-        model.addAttribute("version", version);
+        var sourcePackageCves = glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId);
+        model.addAttribute("sourcePackageCves", sourcePackageCves);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("cveId", cveId);
         return "getPackagesByVulnerability";
     }

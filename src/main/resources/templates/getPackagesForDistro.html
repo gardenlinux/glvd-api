@@ -5,11 +5,18 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p th:text="|Package list for ${distro} ${version}|" />
+<p th:text="|Package list for Garden Linux ${gardenlinuxVersion}|" />
 
 <table>
+    <thead>
+    <tr>
+        <th>Source Package</th>
+        <th>Version</th>
+    </tr>
+    </thead>
     <tr th:each="package: ${packages}">
-        <td th:text="${package}" />
+        <td th:text="${package.sourcePackageName}" />
+        <td th:text="${package.sourcePackageVersion}" />
     </tr>
 </table>
 

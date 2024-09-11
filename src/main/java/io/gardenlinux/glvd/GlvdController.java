@@ -5,7 +5,10 @@ import io.gardenlinux.glvd.db.SourcePackageCve;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -20,22 +23,22 @@ public class GlvdController {
         this.glvdService = glvdService;
     }
 
-    @GetMapping("/cves/{distro}/{distroVersion}")
-    ResponseEntity<List<SourcePackageCve>> getCveDistro(@PathVariable final String distro,
-                                                        @PathVariable final String distroVersion) {
-        return ResponseEntity.ok().body(glvdService.getCveForDistribution(distro, distroVersion));
+    @GetMapping("/cves/{distro}/{gardenlinuxVersion}")
+    ResponseEntity<List<SourcePackageCve>> getCveDistro(
+            @PathVariable final String gardenlinuxVersion) {
+        return ResponseEntity.ok().body(glvdService.getCveForDistribution(gardenlinuxVersion));
     }
 
-    @GetMapping("/cves/{distro}/{distroVersion}/packages/{packageList}")
-    ResponseEntity<List<SourcePackageCve>> getCvePackages(@PathVariable final String distro,
-                                                          @PathVariable final String distroVersion, @PathVariable final String packageList) {
-        var cveForPackages = glvdService.getCveForPackages(distro, distroVersion, packageList);
+    @GetMapping("/cves/{distro}/{gardenlinuxVersion}/packages/{packageList}")
+    ResponseEntity<List<SourcePackageCve>> getCvePackages(
+            @PathVariable final String gardenlinuxVersion, @PathVariable final String packageList) {
+        var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList);
         return ResponseEntity.ok().body(cveForPackages);
     }
 
-    @GetMapping("/packages/distro/{distro}/{distroVersion}")
-    ResponseEntity<List<SourcePackage>> packagesForDistro(@PathVariable final String distro, @PathVariable final String distroVersion) {
-        return ResponseEntity.ok(glvdService.getPackagesForDistro(distro, distroVersion));
+    @GetMapping("/packages/distro/{distro}/{gardenlinuxVersion}")
+    ResponseEntity<List<SourcePackage>> packagesForDistro(@PathVariable final String gardenlinuxVersion) {
+        return ResponseEntity.ok(glvdService.getPackagesForDistro(gardenlinuxVersion));
     }
 
     @GetMapping("/packages/{sourcePackage}")
@@ -48,9 +51,9 @@ public class GlvdController {
         return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion));
     }
 
-    @GetMapping("/packages/distro/{distro}/{distroVersion}/{cveId}")
-    ResponseEntity<List<SourcePackageCve>> packagesByVulnerability(@PathVariable final String distro, @PathVariable final String distroVersion, @PathVariable final String cveId) {
-        return ResponseEntity.ok(glvdService.getPackagesByVulnerability(distro, distroVersion, cveId));
+    @GetMapping("/packages/distro/{distro}/{gardenlinuxVersion}/{cveId}")
+    ResponseEntity<List<SourcePackageCve>> packagesByVulnerability(@PathVariable final String gardenlinuxVersion, @PathVariable final String cveId) {
+        return ResponseEntity.ok(glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId));
     }
 
 }

@@ -5,13 +5,24 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-<p th:text="|Vulnerabilities list for ${distro} ${version}|" />
+<p th:text="|Vulnerabilities list for Garden Linux ${gardenlinuxVersion}|" />
 
 <table>
+    <thead>
+    <tr>
+        <th>CVE ID</th>
+        <th>CVE Published Date</th>
+        <th>Source Package</th>
+        <th>Version</th>
+        <th>Is Vulnerable?</th>
+    </tr>
+    </thead>
     <tr th:each="item: ${sourcePackageCves}">
-        <td th:text="${item.id}" />
+        <td th:text="${item.cveId}" />
         <td th:text="${item.cvePublishedDate}" />
-        <td th:text="${item.sourcePackage}" />
+        <td th:text="${item.sourcePackageName}" />
+        <td th:text="${item.sourcePackageVersion}" />
+        <td th:text="${item.isVulnerable}" />
     </tr>
 </table>
 

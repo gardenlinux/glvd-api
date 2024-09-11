@@ -20,16 +20,16 @@ public class GlvdService {
         this.sourcePackageRepository = sourcePackageRepository;
     }
 
-    public List<SourcePackageCve> getCveForDistribution(String distro, String distroVersion) {
-        return sourcePackageCveRepository.findByGardenlinuxVersion(distroVersion);
+    public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion) {
+        return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
-    public List<SourcePackageCve> getCveForPackages(String distro, String distroVersion, String packages) {
-        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{"+packages+"}", distroVersion);
+    public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages) {
+        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{"+packages+"}", gardenlinuxVersion);
     }
 
-    public List<SourcePackage> getPackagesForDistro(String distro, String distroVersion) {
-        return sourcePackageRepository.findByGardenlinuxVersion(distroVersion);
+    public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion) {
+        return sourcePackageRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
     public List<SourcePackageCve> getPackageWithVulnerabilities(String sourcePackage) {
@@ -40,7 +40,7 @@ public class GlvdService {
         return sourcePackageCveRepository.findBySourcePackageNameAndSourcePackageVersion(sourcePackage, sourcePackageVersion);
     }
 
-    public List<SourcePackageCve> getPackagesByVulnerability(String distro, String distroVersion, String cveId) {
-        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(cveId, distroVersion);
+    public List<SourcePackageCve> getPackagesByVulnerability(String gardenlinuxVersion, String cveId) {
+        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(cveId, gardenlinuxVersion);
     }
 }
