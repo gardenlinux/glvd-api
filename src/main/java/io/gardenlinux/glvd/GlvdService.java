@@ -1,9 +1,6 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
-import io.gardenlinux.glvd.dto.Readiness;
-import io.gardenlinux.glvd.exceptions.DbNotConnectedException;
-import io.gardenlinux.glvd.exceptions.NotFoundException;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Service;
 
@@ -13,73 +10,37 @@ import java.util.List;
 public class GlvdService {
 
     @Nonnull
-    private final CveRepository cveRepository;
+    private final SourcePackageCveRepository sourcePackageCveRepository;
 
     @Nonnull
-    private final PackagesRepository packagesRepository;
+    private final SourcePackageRepository sourcePackageRepository;
 
-    @Nonnull
-    private final HealthCheckRepository healthCheckRepository;
-
-    public GlvdService(@Nonnull CveRepository cveRepository, @Nonnull PackagesRepository packagesRepository, @Nonnull HealthCheckRepository healthCheckRepository) {
-        this.cveRepository = cveRepository;
-        this.packagesRepository = packagesRepository;
-        this.healthCheckRepository = healthCheckRepository;
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository) {
+        this.sourcePackageCveRepository = sourcePackageCveRepository;
+        this.sourcePackageRepository = sourcePackageRepository;
     }
 
-    public Readiness getReadiness() throws DbNotConnectedException {
-        try {
-            var connection = healthCheckRepository.checkDbConnection();
-            return new Readiness(connection);
-        } catch (Exception e) {
-            throw new DbNotConnectedException(e);
-        }
+    public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion) {
+        return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
-    // Not the most elegant solution. This might be replaced by a VIEW in the database,
-    // or some other feature in spring data jpa?
-    private SourcePackageCve parseDbResponse(String input) {
-        var parts = input.split(",");
-        var packageName = parts[0];
-        var cveId = parts[1];
-        var cvePublishedDate = parts[2];
-        return new SourcePackageCve(cveId, cvePublishedDate, packageName);
+    public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages) {
+        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{"+packages+"}", gardenlinuxVersion);
     }
 
-    public CveEntity getCve(String cveId) throws NotFoundException {
-        return cveRepository.findById(cveId).orElseThrow(NotFoundException::new);
+    public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion) {
+        return sourcePackageRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
-    public List<SourcePackageCve> getCveForDistribution(String distro, String distroVersion) {
-        return cveRepository.cvesForDistribution(distro, distroVersion).stream().map(this::parseDbResponse).toList();
+    public List<SourcePackageCve> getPackageWithVulnerabilities(String sourcePackage) {
+        return sourcePackageCveRepository.findBySourcePackageName(sourcePackage);
     }
 
-    public List<SourcePackageCve> getCveForPackages(String distro, String distroVersion, String packages) {
-        return cveRepository.cvesForPackageList(distro, distroVersion,"{"+packages+"}").stream().map(this::parseDbResponse).toList();
+    public List<SourcePackageCve> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
+        return sourcePackageCveRepository.findBySourcePackageNameAndSourcePackageVersion(sourcePackage, sourcePackageVersion);
     }
 
-    public List<String> getPackagesForDistro(String distro, String distroVersion) {
-        return cveRepository.packagesForDistribution(distro, distroVersion);
-    }
-
-    private PackageEntity parseDbResponsePackageWithVulnerabilities(String input) {
-        var parts = input.split(",");
-        var cveId = parts[0];
-        var debSource = parts[1];
-        var debVersion = parts[2];
-        var debsecVulnerable = parts[3];
-        return new PackageEntity(cveId, debSource, debVersion, debsecVulnerable);
-    }
-
-    public List<PackageEntity> getPackageWithVulnerabilities(String sourcePackage) {
-        return packagesRepository.packageWithVulnerabilities(sourcePackage);
-    }
-
-    public List<PackageEntity> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
-        return packagesRepository.packageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion);
-    }
-
-    public List<PackageEntity> getPackagesByVulnerability(String distro, String distroVersion, String cveId) {
-        return packagesRepository.packagesByVulnerability(distro, distroVersion, cveId);
+    public List<SourcePackageCve> getPackagesByVulnerability(String gardenlinuxVersion, String cveId) {
+        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(cveId, gardenlinuxVersion);
     }
 }

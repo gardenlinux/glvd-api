@@ -1,6 +1,5 @@
 package io.gardenlinux.glvd;
 
-import io.gardenlinux.glvd.db.CveRepository;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -47,9 +46,6 @@ class GlvdControllerTest {
             .withDatabaseName("glvd")
             .withUsername("glvd").withPassword("glvd");
 
-    @Autowired
-    CveRepository cveRepository;
-
     @LocalServerPort
     private Integer port;
 
@@ -80,23 +76,6 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void shouldGetCveById() {
-        given(this.spec).accept("application/json")
-                .filter(document("getCve",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/CVE-2024-1549")
-				.then().statusCode(HttpStatus.SC_OK).body("id", containsString("CVE-2024-1549"));
-    }
-
-    @Test
-    void tryGetNonExistingCveById() {
-        given().contentType(ContentType.JSON)
-				.when().get("/v1/cves/CVE-1989-1234")
-				.then().statusCode(HttpStatus.SC_NOT_FOUND);
-    }
-
-    @Test
     public void shouldReturnCvesForBookworm() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForDistro",
@@ -114,16 +93,6 @@ class GlvdControllerTest {
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/gardenlinux/1592.0/packages/crun,vim")
                 .then().statusCode(HttpStatus.SC_OK);
-    }
-
-    @Test
-    public void shouldBeReady() {
-        given(this.spec)
-                .filter(document("readiness",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
-                        preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/readiness")
-				.then().statusCode(HttpStatus.SC_OK).body("dbCheck", containsString("true"));
     }
 
     @Test
