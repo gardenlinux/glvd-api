@@ -2,6 +2,7 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
 import jakarta.annotation.Nonnull;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +21,8 @@ public class GlvdService {
         this.sourcePackageRepository = sourcePackageRepository;
     }
 
-    public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion) {
-        return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
+    public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, String sortBy) {
+        return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion, Sort.by(sortBy));
     }
 
     public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages) {
@@ -32,15 +33,19 @@ public class GlvdService {
         return sourcePackageRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
-    public List<SourcePackageCve> getPackageWithVulnerabilities(String sourcePackage) {
-        return sourcePackageCveRepository.findBySourcePackageName(sourcePackage);
+    public List<SourcePackageCve> getPackageWithVulnerabilities(String sourcePackage, String sortBy) {
+        return sourcePackageCveRepository.findBySourcePackageName(sourcePackage, Sort.by(sortBy));
     }
 
-    public List<SourcePackageCve> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion) {
-        return sourcePackageCveRepository.findBySourcePackageNameAndSourcePackageVersion(sourcePackage, sourcePackageVersion);
+    public List<SourcePackageCve> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion, String sortBy) {
+        return sourcePackageCveRepository.findBySourcePackageNameAndSourcePackageVersion(sourcePackage, sourcePackageVersion, Sort.by(sortBy));
     }
 
-    public List<SourcePackageCve> getPackagesByVulnerability(String gardenlinuxVersion, String cveId) {
-        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(cveId, gardenlinuxVersion);
+    public List<SourcePackageCve> getPackagesByVulnerability(String gardenlinuxVersion, String cveId, String sortBy) {
+        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(cveId, gardenlinuxVersion, Sort.by(sortBy));
+    }
+
+    public List<SourcePackageCve> getSorted(String sortBy) {
+        return sourcePackageCveRepository.findAll(Sort.by(sortBy));
     }
 }
