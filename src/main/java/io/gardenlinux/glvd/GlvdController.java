@@ -20,7 +20,7 @@ public class GlvdController {
         this.glvdService = glvdService;
     }
 
-    @GetMapping("/cves/{distro}/{gardenlinuxVersion}")
+    @GetMapping("/cves/{gardenlinuxVersion}")
     ResponseEntity<List<SourcePackageCve>> getCveDistro(
             @PathVariable final String gardenlinuxVersion,
             @RequestParam(defaultValue = "cveId") final String sortBy,
@@ -29,20 +29,11 @@ public class GlvdController {
         return ResponseEntity.ok().body(glvdService.getCveForDistribution(gardenlinuxVersion, sortBy, sortOrder));
     }
 
-    @GetMapping("/cves/{distro}/{gardenlinuxVersion}/packages/{packageList}")
+    @GetMapping("/cves/{gardenlinuxVersion}/packages/{packageList}")
     ResponseEntity<List<SourcePackageCve>> getCvePackages(
             @PathVariable final String gardenlinuxVersion, @PathVariable final String packageList) {
         var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList);
         return ResponseEntity.ok().body(cveForPackages);
-    }
-
-    @GetMapping("/packages/distro/{distro}/{gardenlinuxVersion}")
-    ResponseEntity<List<SourcePackage>> packagesForDistro(
-            @PathVariable final String gardenlinuxVersion,
-            @RequestParam(defaultValue = "sourcePackageName") final String sortBy,
-            @RequestParam(defaultValue = "ASC") final String sortOrder
-    ) {
-        return ResponseEntity.ok(glvdService.getPackagesForDistro(gardenlinuxVersion, sortBy, sortOrder));
     }
 
     @GetMapping("/packages/{sourcePackage}")
@@ -63,7 +54,16 @@ public class GlvdController {
         return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion, sortBy));
     }
 
-    @GetMapping("/packages/distro/{distro}/{gardenlinuxVersion}/{cveId}")
+    @GetMapping("/distro/{gardenlinuxVersion}")
+    ResponseEntity<List<SourcePackage>> packagesForDistro(
+            @PathVariable final String gardenlinuxVersion,
+            @RequestParam(defaultValue = "sourcePackageName") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder
+    ) {
+        return ResponseEntity.ok(glvdService.getPackagesForDistro(gardenlinuxVersion, sortBy, sortOrder));
+    }
+
+    @GetMapping("/distro/{gardenlinuxVersion}/{cveId}")
     ResponseEntity<List<SourcePackageCve>> packagesByVulnerability(
             @PathVariable final String gardenlinuxVersion,
             @PathVariable final String cveId,
