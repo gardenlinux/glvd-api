@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface SourcePackageCveRepository extends JpaRepository<SourcePackageCve, String> {
 
-    List<SourcePackageCve> findBySourcePackageName(@Param("source_package_name") String source_package_name, Sort sort);
-    List<SourcePackageCve> findBySourcePackageNameAndSourcePackageVersion(@Param("source_package_name") String source_package_name, @Param("source_package_version") String source_package_version, Sort sort);
-    List<SourcePackageCve> findByCveIdAndGardenlinuxVersion(@Param("cve_id") String cve_id, @Param("gardenlinux_version") String gardenlinux_version, Sort sort);
+    List<SourcePackageCve> findBySourcePackageName(@Param("source_package_name") String source_package_name, Pageable pageable);
+    List<SourcePackageCve> findBySourcePackageNameAndSourcePackageVersion(@Param("source_package_name") String source_package_name, @Param("source_package_version") String source_package_version, Pageable pageable);
+    List<SourcePackageCve> findByCveIdAndGardenlinuxVersion(@Param("cve_id") String cve_id, @Param("gardenlinux_version") String gardenlinux_version, Pageable pageable);
 
-    List<SourcePackageCve> findByGardenlinuxVersion(@Param("gardenlinux_version") String gardenlinux_version, Sort sort);
+    List<SourcePackageCve> findByGardenlinuxVersion(@Param("gardenlinux_version") String gardenlinux_version, Pageable pageable);
 
     // would be nice if we did not need a native query here
     // is this (the in-array search for packages) possible in any other way with spring data jpa?

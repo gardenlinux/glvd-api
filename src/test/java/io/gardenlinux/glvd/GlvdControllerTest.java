@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
@@ -79,7 +78,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/1592.0?sortBy=cveId&sortOrder=DESC")
+                .when().port(this.port).get("/v1/cves/1592.0?sortBy=cveId&sortOrder=DESC&pageNumber=4&pageSize=2")
 				.then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -89,7 +88,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/1592.0/packages/crun,vim")
+                .when().port(this.port).get("/v1/cves/1592.0/packages/crun,vim?pageNumber=4&pageSize=2")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -99,7 +98,7 @@ class GlvdControllerTest {
                 .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/distro/1592.0")
+                .when().port(this.port).get("/v1/distro/1592.0?pageNumber=4&pageSize=2")
                 .then().statusCode(200);
     }
 
@@ -109,7 +108,7 @@ class GlvdControllerTest {
                 .filter(document("getPackageWithVulnerabilities",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/vim")
+                .when().port(this.port).get("/v1/packages/vim?pageNumber=4&pageSize=2")
                 .then().statusCode(200);
     }
 
@@ -119,7 +118,7 @@ class GlvdControllerTest {
                 .filter(document("getPackageWithVulnerabilitiesByVersion",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1")
+                .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1?pageNumber=4&pageSize=2")
                 .then().statusCode(200);
     }
 
