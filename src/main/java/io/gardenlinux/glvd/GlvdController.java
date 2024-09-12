@@ -33,8 +33,14 @@ public class GlvdController {
 
     @GetMapping("/cves/{gardenlinuxVersion}/packages/{packageList}")
     ResponseEntity<List<SourcePackageCve>> getCvePackages(
-            @PathVariable final String gardenlinuxVersion, @PathVariable final String packageList) {
-        var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList);
+            @PathVariable final String gardenlinuxVersion,
+            @PathVariable final String packageList,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize
+    ) {
+        var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
         return ResponseEntity.ok().body(cveForPackages);
     }
 

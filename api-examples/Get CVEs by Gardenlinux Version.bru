@@ -5,11 +5,13 @@ meta {
 }
 
 get {
-  url: {{schema_hostname_port}}/v1/cves/1592.0?sortBy=cveId
+  url: {{schema_hostname_port}}/v1/cves/1592.0?sortBy=cveId&pageNumber=1&pageSize=3
   body: none
   auth: none
 }
 
 params:query {
   sortBy: cveId
+  pageNumber: 1
+  pageSize: 3
 }

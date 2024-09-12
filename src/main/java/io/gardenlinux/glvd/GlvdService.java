@@ -51,8 +51,8 @@ public class GlvdService {
         return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
     }
 
-    public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages) {
-        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{" + packages + "}", gardenlinuxVersion);
+    public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages, SortAndPageOptions sortAndPageOptions) {
+        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{" + packages + "}", gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
     }
 
     public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {

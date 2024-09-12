@@ -49,9 +49,13 @@ public class UiController {
     public String getCveForPackages(
             @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             @RequestParam(name = "packages", required = true) String packages,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getCveForPackages(gardenlinuxVersion, packages);
+        var sourcePackageCves = glvdService.getCveForPackages(gardenlinuxVersion, packages, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("packages", packages);

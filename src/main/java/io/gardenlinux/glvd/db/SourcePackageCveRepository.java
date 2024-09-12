@@ -19,9 +19,10 @@ public interface SourcePackageCveRepository extends JpaRepository<SourcePackageC
     // would be nice if we did not need a native query here
     // is this (the in-array search for packages) possible in any other way with spring data jpa?
     // fixme: does not support sorting, cf https://github.com/spring-projects/spring-data-jpa/issues/2504#issuecomment-1527743003
+    // pagination seems to work ok
     @Query(value = """
     SELECT * FROM sourcepackagecve
     WHERE source_package_name = ANY(:source_package_names ::TEXT[]) AND gardenlinux_version = :gardenlinux_version
     """, nativeQuery = true)
-    List<SourcePackageCve> findBySourcePackageNameInAndGardenlinuxVersion(@Param("source_package_names") String source_package_names, @Param("gardenlinux_version") String gardenlinux_version);
+    List<SourcePackageCve> findBySourcePackageNameInAndGardenlinuxVersion(@Param("source_package_names") String source_package_names, @Param("gardenlinux_version") String gardenlinux_version, Pageable pageable);
 }
