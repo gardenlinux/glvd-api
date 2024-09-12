@@ -47,12 +47,28 @@ public class GlvdService {
         return Pageable.unpaged(sort);
     }
 
+    // native query does not support sorting
+    private Pageable determinePageAndSortFeatures2(SortAndPageOptions sortAndPageOptions) {
+        if (!StringUtils.isEmpty(sortAndPageOptions.pageNumber()) && !StringUtils.isEmpty(sortAndPageOptions.pageSize())) {
+            try {
+                var num = Integer.parseInt(sortAndPageOptions.pageNumber());
+                var size = Integer.parseInt(sortAndPageOptions.pageSize());
+                return PageRequest.of(num, size);
+            } catch (NumberFormatException e) {
+                // fall through, don't page
+                logger.warn("Could not parse paging parameters", e);
+            }
+        }
+
+        return Pageable.unpaged();
+    }
+
     public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
         return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
     }
 
     public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{" + packages + "}", gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
+        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{" + packages + "}", gardenlinuxVersion, determinePageAndSortFeatures2(sortAndPageOptions));
     }
 
     public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
