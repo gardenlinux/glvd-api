@@ -5,7 +5,11 @@ meta {
 }
 
 get {
-  url: http://{{hostname}}:{{port}}/v1/cves/gardenlinux/1592.0
+  url: http://{{hostname}}:{{port}}/v1/cves/gardenlinux/1592.0?sortBy=cveId
   body: none
   auth: none
+}
+
+params:query {
+  sortBy: cveId
 }
