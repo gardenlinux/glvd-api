@@ -79,7 +79,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/1592.0?sortBy=cveId&sortOrder=DESC")
+                .when().port(this.port).get("/v1/cves/1592.0?sortBy=cveId&sortOrder=DESC")
 				.then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -89,7 +89,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/1592.0/packages/crun,vim")
+                .when().port(this.port).get("/v1/cves/1592.0/packages/crun,vim")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -99,7 +99,7 @@ class GlvdControllerTest {
                 .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0")
+                .when().port(this.port).get("/v1/distro/1592.0")
                 .then().statusCode(200);
     }
 
@@ -129,7 +129,7 @@ class GlvdControllerTest {
                 .filter(document("getPackagesByVulnerability",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/distro/gardenlinux/1592.0/CVE-2023-50387")
+                .when().port(this.port).get("/v1/distro/1592.0/CVE-2023-50387")
                 .then().statusCode(200).body("[0].cveId", equalTo("CVE-2023-50387"));
     }
 
