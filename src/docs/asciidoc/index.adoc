@@ -19,7 +19,7 @@ To query all CVEs for a given distribution by version, you may use this endpoint
 
 include::{snippets}/getCveForDistro/curl-request.adoc[]
 
-TIP: Acceptable distributions here are `gardenlinux` and `debian`.
+TIP: For all the endpoints: The `sortBy` and `sortOrder` query parameters are optional. If omitted, default sorting will be applied.
 
 The expected response looks like this:
 

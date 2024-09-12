@@ -2,7 +2,6 @@ package io.gardenlinux.glvd;
 
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.AfterAll;
@@ -25,7 +24,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
@@ -76,12 +74,12 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void shouldReturnCvesForBookworm() {
+    public void shouldReturnCvesForGardenlinux() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/gardenlinux/1592.0")
+                .when().port(this.port).get("/v1/cves/gardenlinux/1592.0?sortBy=cveId&sortOrder=DESC")
 				.then().statusCode(HttpStatus.SC_OK);
     }
 

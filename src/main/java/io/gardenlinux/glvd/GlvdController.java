@@ -5,10 +5,7 @@ import io.gardenlinux.glvd.db.SourcePackageCve;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,8 +22,11 @@ public class GlvdController {
 
     @GetMapping("/cves/{distro}/{gardenlinuxVersion}")
     ResponseEntity<List<SourcePackageCve>> getCveDistro(
-            @PathVariable final String gardenlinuxVersion) {
-        return ResponseEntity.ok().body(glvdService.getCveForDistribution(gardenlinuxVersion));
+            @PathVariable final String gardenlinuxVersion,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder
+    ) {
+        return ResponseEntity.ok().body(glvdService.getCveForDistribution(gardenlinuxVersion, sortBy, sortOrder));
     }
 
     @GetMapping("/cves/{distro}/{gardenlinuxVersion}/packages/{packageList}")
@@ -37,23 +37,40 @@ public class GlvdController {
     }
 
     @GetMapping("/packages/distro/{distro}/{gardenlinuxVersion}")
-    ResponseEntity<List<SourcePackage>> packagesForDistro(@PathVariable final String gardenlinuxVersion) {
-        return ResponseEntity.ok(glvdService.getPackagesForDistro(gardenlinuxVersion));
+    ResponseEntity<List<SourcePackage>> packagesForDistro(
+            @PathVariable final String gardenlinuxVersion,
+            @RequestParam(defaultValue = "sourcePackageName") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder
+    ) {
+        return ResponseEntity.ok(glvdService.getPackagesForDistro(gardenlinuxVersion, sortBy, sortOrder));
     }
 
     @GetMapping("/packages/{sourcePackage}")
-    ResponseEntity<List<SourcePackageCve>> packageWithVulnerabilities(@PathVariable final String sourcePackage) {
-        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilities(sourcePackage));
+    ResponseEntity<List<SourcePackageCve>> packageWithVulnerabilities(
+            @PathVariable final String sourcePackage,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder
+    ) {
+        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilities(sourcePackage, sortBy, sortOrder));
     }
 
     @GetMapping("/packages/{sourcePackage}/{sourcePackageVersion}")
-    ResponseEntity<List<SourcePackageCve>> packageWithVulnerabilitiesByVersion(@PathVariable final String sourcePackage, @PathVariable final String sourcePackageVersion) {
-        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion));
+    ResponseEntity<List<SourcePackageCve>> packageWithVulnerabilitiesByVersion(
+            @PathVariable final String sourcePackage,
+            @PathVariable final String sourcePackageVersion,
+            @RequestParam(defaultValue = "cveId") final String sortBy
+    ) {
+        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion, sortBy));
     }
 
     @GetMapping("/packages/distro/{distro}/{gardenlinuxVersion}/{cveId}")
-    ResponseEntity<List<SourcePackageCve>> packagesByVulnerability(@PathVariable final String gardenlinuxVersion, @PathVariable final String cveId) {
-        return ResponseEntity.ok(glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId));
+    ResponseEntity<List<SourcePackageCve>> packagesByVulnerability(
+            @PathVariable final String gardenlinuxVersion,
+            @PathVariable final String cveId,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder
+    ) {
+        return ResponseEntity.ok(glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId, sortBy, sortOrder));
     }
 
 }
