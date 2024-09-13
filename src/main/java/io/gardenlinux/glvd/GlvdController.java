@@ -44,6 +44,20 @@ public class GlvdController {
         return ResponseEntity.ok().body(cveForPackages);
     }
 
+    @PutMapping("/cves/{gardenlinuxVersion}/packages")
+    ResponseEntity<List<SourcePackageCve>> getCvePackagesxx(
+            @PathVariable final String gardenlinuxVersion,
+            @RequestBody final PackageList packages,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize
+    ) {
+        var packageList = packages.toString();
+        var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        return ResponseEntity.ok().body(cveForPackages);
+    }
+
     @GetMapping("/packages/{sourcePackage}")
     ResponseEntity<List<SourcePackageCve>> packageWithVulnerabilities(
             @PathVariable final String sourcePackage,

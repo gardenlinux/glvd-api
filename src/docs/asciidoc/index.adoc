@@ -37,6 +37,17 @@ The expected response looks like this:
 
 include::{snippets}/getCveForPackages/http-response.adoc[]
 
+=== Get a list of CVEs for packages by distro via PUT
+
+This endpoint will give you all the CVE for a list of packages in a specified distro.
+Package names are provided in the request body in json-encoded form.
+
+include::{snippets}/getCveForPackagesPut/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveForPackagesPut/http-response.adoc[]
+
 === Get List of Packages
 
 Just gives you a list of packages in a given distribution.

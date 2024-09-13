@@ -93,6 +93,28 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldReturnCvesForPutListOfPackages() {
+        var packageList = """
+                  {
+                  "packageNames": [
+                    "vim",
+                    "bash",
+                    "python3",
+                    "curl"
+                  ]
+                }""";
+
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForPackagesPut",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .contentType("application/json")
+                .body(packageList)
+                .when().port(this.port).put("/v1/cves/1592.0/packages?pageNumber=4&pageSize=2")
+                .then().statusCode(HttpStatus.SC_OK);
+    }
+
+    @Test
     public void shouldGetPackagesForDistro() {
         given(this.spec).accept("application/json")
                 .filter(document("getPackages",

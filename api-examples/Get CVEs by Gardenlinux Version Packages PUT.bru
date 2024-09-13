@@ -1,0 +1,15 @@
+meta {
+  name: Get CVEs by Gardenlinux Version Packages PUT
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{schema_hostname_port}}/v1/cves/1592.0/packages
+  body: json
+  auth: none
+}
+
+body:json {
+  ["vim","bash","python3","curl"]
+}
