@@ -13,6 +13,9 @@ public class SourcePackageCve {
     @Column(name = "cve_id", nullable = false)
     private String cveId;
 
+    @Column(name = "base_score", nullable = true)
+    private float baseScore;
+
     @Column(name = "source_package_name", nullable = false)
     private String sourcePackageName;
 
@@ -31,8 +34,9 @@ public class SourcePackageCve {
     public SourcePackageCve() {
     }
 
-    public SourcePackageCve(String cveId, @Nonnull String sourcePackageName, @Nonnull String sourcePackageVersion, @Nonnull String gardenlinuxVersion, boolean isVulnerable, @Nonnull String cvePublishedDate) {
+    public SourcePackageCve(String cveId, float baseScore, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate) {
         this.cveId = cveId;
+        this.baseScore = baseScore;
         this.sourcePackageName = sourcePackageName;
         this.sourcePackageVersion = sourcePackageVersion;
         this.gardenlinuxVersion = gardenlinuxVersion;
@@ -44,17 +48,18 @@ public class SourcePackageCve {
         return cveId;
     }
 
-    @Nonnull
+    public float getBaseScore() {
+        return baseScore;
+    }
+
     public String getSourcePackageName() {
         return sourcePackageName;
     }
 
-    @Nonnull
     public String getSourcePackageVersion() {
         return sourcePackageVersion;
     }
 
-    @Nonnull
     public String getGardenlinuxVersion() {
         return gardenlinuxVersion;
     }
@@ -63,7 +68,6 @@ public class SourcePackageCve {
         return isVulnerable;
     }
 
-    @Nonnull
     public String getCvePublishedDate() {
         return cvePublishedDate;
     }
