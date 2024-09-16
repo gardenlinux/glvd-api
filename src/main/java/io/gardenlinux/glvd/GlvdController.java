@@ -28,7 +28,9 @@ public class GlvdController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize
     ) {
-        return ResponseEntity.ok().body(glvdService.getCveForDistribution(gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)));
+        return ResponseEntity.ok().body(glvdService.getCveForDistribution(
+                gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize))
+        );
     }
 
     @GetMapping("/cves/{gardenlinuxVersion}/packages/{packageList}")
@@ -40,7 +42,9 @@ public class GlvdController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize
     ) {
-        var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        var cveForPackages = glvdService.getCveForPackages(
+                gardenlinuxVersion, packageList, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        );
         return ResponseEntity.ok().body(cveForPackages);
     }
 
@@ -54,7 +58,9 @@ public class GlvdController {
             @RequestParam(required = false) final String pageSize
     ) {
         var packageList = packages.toString();
-        var cveForPackages = glvdService.getCveForPackages(gardenlinuxVersion, packageList, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        var cveForPackages = glvdService.getCveForPackages(
+                gardenlinuxVersion, packageList, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        );
         return ResponseEntity.ok().body(cveForPackages);
     }
 
@@ -66,7 +72,9 @@ public class GlvdController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize
     ) {
-        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilities(sourcePackage, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)));
+        return ResponseEntity.ok(
+                glvdService.getPackageWithVulnerabilities(sourcePackage, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize))
+        );
     }
 
     @GetMapping("/packages/{sourcePackage}/{sourcePackageVersion}")
@@ -78,7 +86,11 @@ public class GlvdController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize
     ) {
-        return ResponseEntity.ok(glvdService.getPackageWithVulnerabilitiesByVersion(sourcePackage, sourcePackageVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)));
+        return ResponseEntity.ok(
+                glvdService.getPackageWithVulnerabilitiesByVersion(
+                        sourcePackage, sourcePackageVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+                )
+        );
     }
 
     @GetMapping("/distro/{gardenlinuxVersion}")
@@ -89,7 +101,9 @@ public class GlvdController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize
     ) {
-        return ResponseEntity.ok(glvdService.getPackagesForDistro(gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)));
+        return ResponseEntity.ok(
+                glvdService.getPackagesForDistro(gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize))
+        );
     }
 
     @GetMapping("/distro/{gardenlinuxVersion}/{cveId}")
@@ -101,7 +115,9 @@ public class GlvdController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize
     ) {
-        return ResponseEntity.ok(glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)));
+        return ResponseEntity.ok(
+                glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize))
+        );
     }
 
 }

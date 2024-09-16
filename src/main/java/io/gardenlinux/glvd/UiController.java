@@ -24,7 +24,9 @@ public class UiController {
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize,
             Model model) {
-        var packages = glvdService.getPackagesForDistro(gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        var packages = glvdService.getPackagesForDistro(
+                gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        );
         model.addAttribute("packages", packages);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getPackagesForDistro";
@@ -39,7 +41,9 @@ public class UiController {
             @RequestParam(required = false) final String pageSize,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getCveForDistribution(gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        var sourcePackageCves = glvdService.getCveForDistribution(
+                gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        );
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getCveForDistribution";
@@ -55,7 +59,9 @@ public class UiController {
             @RequestParam(required = false) final String pageSize,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getCveForPackages(gardenlinuxVersion, packages, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        var sourcePackageCves = glvdService.getCveForPackages(
+                gardenlinuxVersion, packages, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        );
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("packages", packages);
@@ -72,7 +78,9 @@ public class UiController {
             @RequestParam(required = false) final String pageSize,
             Model model
     ) {
-        var sourcePackageCves = glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize));
+        var sourcePackageCves = glvdService.getPackagesByVulnerability(
+                gardenlinuxVersion, cveId, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        );
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("cveId", cveId);

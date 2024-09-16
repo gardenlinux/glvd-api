@@ -64,27 +64,43 @@ public class GlvdService {
     }
 
     public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findByGardenlinuxVersion(gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
+        return sourcePackageCveRepository.findByGardenlinuxVersion(
+                gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
+        );
+    }
+
+    private String wrap(String input) {
+        return "{" + input + "}";
     }
 
     public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion("{" + packages + "}", gardenlinuxVersion, determinePageAndSortFeatures2(sortAndPageOptions));
+        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion(
+                wrap(packages), gardenlinuxVersion, determinePageAndSortFeatures2(sortAndPageOptions)
+        );
     }
 
     public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageRepository.findByGardenlinuxVersion(gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
+        return sourcePackageRepository.findByGardenlinuxVersion(
+                gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
+        );
     }
 
     public List<SourcePackageCve> getPackageWithVulnerabilities(String sourcePackage, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findBySourcePackageName(sourcePackage, determinePageAndSortFeatures(sortAndPageOptions));
+        return sourcePackageCveRepository.findBySourcePackageName(
+                sourcePackage, determinePageAndSortFeatures(sortAndPageOptions)
+        );
     }
 
     public List<SourcePackageCve> getPackageWithVulnerabilitiesByVersion(String sourcePackage, String sourcePackageVersion, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findBySourcePackageNameAndSourcePackageVersion(sourcePackage, sourcePackageVersion, determinePageAndSortFeatures(sortAndPageOptions));
+        return sourcePackageCveRepository.findBySourcePackageNameAndSourcePackageVersion(
+                sourcePackage, sourcePackageVersion, determinePageAndSortFeatures(sortAndPageOptions)
+        );
     }
 
     public List<SourcePackageCve> getPackagesByVulnerability(String gardenlinuxVersion, String cveId, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(cveId, gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions));
+        return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(
+                cveId, gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
+        );
     }
 
 }
