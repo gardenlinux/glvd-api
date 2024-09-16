@@ -68,13 +68,12 @@ jobs:
           java-version: '21'
           distribution: 'sapmachine'
 
-      # Configure Gradle for optimal use in GiHub Actions, including caching of downloaded dependencies.
-      # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808 # v4
-
-      - name: Build with Gradle Wrapper
-        run: ./gradlew build
+      - run: mkdir -p build
+      - name: Download built jar
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build
 
       - name: Install qemu dependency for multi-arch build
         run: |
