@@ -55,7 +55,7 @@ jobs:
     needs:
       - build
     env:
-      IMAGE_NAME: ghcr.io/gardenlinux/glvd-api
+      IMAGE_NAME: gardenlinux/glvd-api
       IMAGE_TAG: latest
 
     steps:
@@ -112,6 +112,10 @@ jobs:
       - name: Print image url
         if: ${{ github.event_name != 'pull_request' }}
         run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.registry-paths }}"
+
+      - name: Print digest
+        if: ${{ github.event_name != 'pull_request' }}
+        run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.digest }}"
 
   dependency-submission:
 
