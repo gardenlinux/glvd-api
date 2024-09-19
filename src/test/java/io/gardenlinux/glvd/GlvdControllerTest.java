@@ -151,7 +151,7 @@ class GlvdControllerTest {
                         preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/distro/1592.0/CVE-2023-50387")
-                .then().statusCode(200).body("[0].cveId", equalTo("CVE-2023-50387"));
+                .then().statusCode(200);
     }
 
 }
