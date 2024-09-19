@@ -19,7 +19,7 @@ public class UiController {
     @GetMapping("/getPackagesForDistro")
     public String getPackagesForDistro(
             @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
-            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "sourcePackageName") final String sortBy,
             @RequestParam(defaultValue = "ASC") final String sortOrder,
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize,
@@ -35,8 +35,8 @@ public class UiController {
     @GetMapping("/getCveForDistribution")
     public String getCveForDistribution(
             @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
-            @RequestParam(defaultValue = "cveId") final String sortBy,
-            @RequestParam(defaultValue = "ASC") final String sortOrder,
+            @RequestParam(defaultValue = "baseScore") final String sortBy,
+            @RequestParam(defaultValue = "DESC") final String sortOrder,
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize,
             Model model

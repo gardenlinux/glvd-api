@@ -3,6 +3,19 @@
 <head>
     <title>GLVD: List vulnerabilities in distro</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        table {
+          table-layout: fixed;
+          width: 100%;
+        }
+
+        td {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+    </style>
 </head>
 <body>
 <p th:text="|Vulnerabilities list for Garden Linux ${gardenlinuxVersion}|" />
@@ -11,6 +24,8 @@
     <thead>
     <tr>
         <th>CVE ID</th>
+        <th>CVE Base Score</th>
+        <th>Vector String</th>
         <th>CVE Published Date</th>
         <th>Source Package</th>
         <th>Version</th>
@@ -19,6 +34,8 @@
     </thead>
     <tr th:each="item: ${sourcePackageCves}">
         <td th:text="${item.cveId}" />
+        <td th:text="${item.baseScore}" />
+        <td th:text="${item.vectorString}" />
         <td th:text="${item.cvePublishedDate}" />
         <td th:text="${item.sourcePackageName}" />
         <td th:text="${item.sourcePackageVersion}" />

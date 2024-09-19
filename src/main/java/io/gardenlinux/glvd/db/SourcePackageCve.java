@@ -1,9 +1,9 @@
 package io.gardenlinux.glvd.db;
 
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.*;
-
-import java.util.Objects;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "sourcepackagecve")
@@ -28,6 +28,12 @@ public class SourcePackageCve {
     @Column(name = "cve_published_date", nullable = false)
     private String cvePublishedDate;
 
+    @Column(name = "base_score", nullable = true)
+    private Float baseScore;
+
+    @Column(name = "vector_string", nullable = true)
+    private String vectorString;
+
     @Column(name = "base_score_v40", nullable = true)
     private Float baseScoreV40;
 
@@ -36,6 +42,9 @@ public class SourcePackageCve {
 
     @Column(name = "base_score_v30", nullable = true)
     private Float baseScoreV30;
+
+    @Column(name = "base_score_v2", nullable = true)
+    private Float baseScoreV2;
 
     @Column(name = "vector_string_v40", nullable = true)
     private String vectorStringV40;
@@ -46,22 +55,29 @@ public class SourcePackageCve {
     @Column(name = "vector_string_v30", nullable = true)
     private String vectorStringV30;
 
+    @Column(name = "vector_string_v2", nullable = true)
+    private String vectorStringV2;
+
     public SourcePackageCve() {
     }
 
-    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, String vectorStringV40, String vectorStringV31, String vectorStringV30) {
+    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.sourcePackageName = sourcePackageName;
         this.sourcePackageVersion = sourcePackageVersion;
         this.gardenlinuxVersion = gardenlinuxVersion;
         this.isVulnerable = isVulnerable;
         this.cvePublishedDate = cvePublishedDate;
+        this.baseScore = baseScore;
+        this.vectorString = vectorString;
         this.baseScoreV40 = baseScoreV40;
         this.baseScoreV31 = baseScoreV31;
         this.baseScoreV30 = baseScoreV30;
+        this.baseScoreV2 = baseScoreV2;
         this.vectorStringV40 = vectorStringV40;
         this.vectorStringV31 = vectorStringV31;
         this.vectorStringV30 = vectorStringV30;
+        this.vectorStringV2 = vectorStringV2;
     }
 
     public String getCveId() {
@@ -88,6 +104,14 @@ public class SourcePackageCve {
         return cvePublishedDate;
     }
 
+    public Float getBaseScore() {
+        return baseScore;
+    }
+
+    public String getVectorString() {
+        return vectorString;
+    }
+
     public Float getBaseScoreV40() {
         return baseScoreV40;
     }
@@ -100,6 +124,10 @@ public class SourcePackageCve {
         return baseScoreV30;
     }
 
+    public Float getBaseScoreV2() {
+        return baseScoreV2;
+    }
+
     public String getVectorStringV40() {
         return vectorStringV40;
     }
@@ -110,5 +138,9 @@ public class SourcePackageCve {
 
     public String getVectorStringV30() {
         return vectorStringV30;
+    }
+
+    public String getVectorStringV2() {
+        return vectorStringV2;
     }
 }
