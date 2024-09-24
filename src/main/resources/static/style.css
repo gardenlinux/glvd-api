@@ -1,0 +1,18 @@
+body, html {
+    font-family: Sans-Serif;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+td {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+table tr:nth-child(odd) td{
+    background-color: #CCCCCC;
+}

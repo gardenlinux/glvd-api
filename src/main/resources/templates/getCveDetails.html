@@ -3,27 +3,17 @@
 <head>
     <title>GLVD: CVE Details</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style>
-        table {
-          table-layout: fixed;
-          width: 100%;
-        }
-
-        td {
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-
-    </style>
+    <link href="style.css" rel="stylesheet" media="screen" />
 </head>
 <body>
 
-<p th:text="|Details for ${cveDetails.cveId}|" />
+<h1 th:text="|Details for ${cveDetails.cveId}|" />
 
-<a th:href="@{https://nvd.nist.gov/vuln/detail/} + ${cveDetails.cveId}">NIST NATIONAL VULNERABILITY DATABASE</a>
+<a th:href="@{https://nvd.nist.gov/vuln/detail/} + ${cveDetails.cveId}">NIST National Vulnerability Database Entry</a>
 
-<p th:text="|Description: ${cveDetails.description}|" />
+<blockquote>
+    <p th:text="|Description: ${cveDetails.description}|" />
+</blockquote>
 
 <p th:text="|Vulnerability Status: ${cveDetails.vulnStatus}|" />
 
