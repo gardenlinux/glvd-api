@@ -21,6 +21,8 @@
 
 <p th:text="|Details for ${cveDetails.cveId}|" />
 
+<a th:href="@{https://nvd.nist.gov/vuln/detail/} + ${cveDetails.cveId}">NIST NATIONAL VULNERABILITY DATABASE</a>
+
 <p th:text="|Description: ${cveDetails.description}|" />
 
 <p th:text="|Vulnerability Status: ${cveDetails.vulnStatus}|" />
@@ -28,13 +30,15 @@
 <p th:text="|Published Date: ${cveDetails.cvePublishedDate}|" />
 
 <p th:text="|Base Score (Version 4): ${cveDetails.baseScoreV40}|" />
-<p th:text="|Base Score (Version 3.1): ${cveDetails.baseScoreV31}|" />
-<p th:text="|Base Score (Version 3.0): ${cveDetails.baseScoreV30}|" />
-<p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
-
 <p th:text="|Vector String (Version 4): ${cveDetails.vectorStringV40}|" />
+
+<p th:text="|Base Score (Version 3.1): ${cveDetails.baseScoreV31}|" />
 <p th:text="|Vector String (Version 3.1): ${cveDetails.vectorStringV31}|" />
+
+<p th:text="|Base Score (Version 3.0): ${cveDetails.baseScoreV30}|" />
 <p th:text="|Vector String (Version 3.0): ${cveDetails.vectorStringV30}|" />
+
+<p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
 <p th:text="|Vector String (Version 2): ${cveDetails.vectorStringV2}|" />
 
 

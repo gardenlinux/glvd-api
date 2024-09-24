@@ -33,7 +33,7 @@
     </tr>
     </thead>
     <tr th:each="item: ${sourcePackageCves}">
-        <td th:text="${item.cveId}" />
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"/> </a></td>
         <td th:text="${item.baseScore}" />
         <td th:text="${item.vectorString}" />
         <td th:text="${item.cvePublishedDate}" />
