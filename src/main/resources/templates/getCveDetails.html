@@ -31,6 +31,27 @@
 <p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
 <p th:text="|Vector String (Version 2): ${cveDetails.vectorStringV2}|" />
 
+<h2>Affected Linux Versions</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>Distro</th>
+        <th>Version</th>
+        <th>Source Package</th>
+        <th>Package Version</th>
+        <th>Is Vulnerable</th>
+    </tr>
+    </thead>
+    <tr th:each="distro,iterStat : ${cveDetails.distro}">
+        <td th:text="${distro}"></td>
+        <td th:text="${cveDetails.distroVersion[__${iterStat.index}__]}"></td>
+        <td th:text="${cveDetails.sourcePackageName[__${iterStat.index}__]}"></td>
+        <td th:text="${cveDetails.sourcePackageVersion[__${iterStat.index}__]}"></td>
+        <td th:text="${cveDetails.isVulnerable[__${iterStat.index}__]}"></td>
+    </tr>
+
+</table>
 
 </body>
 </html>
