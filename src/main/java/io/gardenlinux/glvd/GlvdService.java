@@ -1,9 +1,6 @@
 package io.gardenlinux.glvd;
 
-import io.gardenlinux.glvd.db.SourcePackage;
-import io.gardenlinux.glvd.db.SourcePackageCve;
-import io.gardenlinux.glvd.db.SourcePackageCveRepository;
-import io.gardenlinux.glvd.db.SourcePackageRepository;
+import io.gardenlinux.glvd.db.*;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,11 +21,15 @@ public class GlvdService {
     @Nonnull
     private final SourcePackageRepository sourcePackageRepository;
 
+    @Nonnull
+    private final CveDetailsRepository cveDetailsRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
+        this.cveDetailsRepository = cveDetailsRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -101,6 +102,10 @@ public class GlvdService {
         return sourcePackageCveRepository.findByCveIdAndGardenlinuxVersion(
                 cveId, gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
         );
+    }
+
+    public CveDetails getCveDetails(String cveId) {
+        return cveDetailsRepository.findByCveId(cveId);
     }
 
 }

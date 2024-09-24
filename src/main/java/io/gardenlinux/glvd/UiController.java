@@ -87,4 +87,11 @@ public class UiController {
         return "getPackagesByVulnerability";
     }
 
+    @GetMapping("/getCveDetails")
+    public String getCveDetails(@RequestParam(name = "cveId", required = true) String cveId, Model model) {
+        var cveDetails = glvdService.getCveDetails(cveId);
+        model.addAttribute("cveDetails", cveDetails);
+        return "getCveDetails";
+    }
+
 }
