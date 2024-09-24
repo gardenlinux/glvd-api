@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.List;
+
 @Entity
 @Table(name = "cvedetails")
 public class CveDetails {
@@ -20,6 +22,21 @@ public class CveDetails {
 
     @Column(name = "published", nullable = false)
     private String cvePublishedDate;
+
+    @Column(name = "distro", nullable = true)
+    private List<String> distro;
+
+    @Column(name = "distro_version", nullable = true)
+    private List<String> distroVersion;
+
+    @Column(name = "is_vulnerable", nullable = true)
+    private List<Boolean> isVulnerable;
+
+    @Column(name = "source_package_name", nullable = false)
+    private List<String> sourcePackageName;
+
+    @Column(name = "source_package_version", nullable = false)
+    private List<String> sourcePackageVersion;
 
     @Column(name = "base_score_v40", nullable = true)
     private Float baseScoreV40;
@@ -48,11 +65,16 @@ public class CveDetails {
     public CveDetails() {
     }
 
-    public CveDetails(String cveId, String vulnStatus, String description, String cvePublishedDate, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+    public CveDetails(String cveId, String vulnStatus, String description, String cvePublishedDate, List<String> distro, List<String> distroVersion, List<Boolean> isVulnerable, List<String> sourcePackageName, List<String> sourcePackageVersion, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.vulnStatus = vulnStatus;
         this.description = description;
         this.cvePublishedDate = cvePublishedDate;
+        this.distro = distro;
+        this.distroVersion = distroVersion;
+        this.isVulnerable = isVulnerable;
+        this.sourcePackageName = sourcePackageName;
+        this.sourcePackageVersion = sourcePackageVersion;
         this.baseScoreV40 = baseScoreV40;
         this.baseScoreV31 = baseScoreV31;
         this.baseScoreV30 = baseScoreV30;
@@ -77,6 +99,26 @@ public class CveDetails {
 
     public String getCvePublishedDate() {
         return cvePublishedDate;
+    }
+
+    public List<String> getDistro() {
+        return distro;
+    }
+
+    public List<String> getDistroVersion() {
+        return distroVersion;
+    }
+
+    public List<Boolean> getIsVulnerable() {
+        return isVulnerable;
+    }
+
+    public List<String> getSourcePackageName() {
+        return sourcePackageName;
+    }
+
+    public List<String> getSourcePackageVersion() {
+        return sourcePackageVersion;
     }
 
     public Float getBaseScoreV40() {
