@@ -76,7 +76,7 @@ class GlvdControllerTest {
     public void shouldReturnCvesForGardenlinux() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForDistro",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.0?sortBy=cveId&sortOrder=DESC&pageNumber=4&pageSize=2")
 				.then().statusCode(HttpStatus.SC_OK);
@@ -86,7 +86,7 @@ class GlvdControllerTest {
     public void shouldReturnCvesForListOfPackages() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForPackages",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.0/packages/crun,vim?pageNumber=4&pageSize=2")
                 .then().statusCode(HttpStatus.SC_OK);
@@ -106,7 +106,7 @@ class GlvdControllerTest {
 
         given(this.spec).accept("application/json")
                 .filter(document("getCveForPackagesPut",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .contentType("application/json")
                 .body(packageList)
@@ -118,7 +118,7 @@ class GlvdControllerTest {
     public void shouldGetPackagesForDistro() {
         given(this.spec).accept("application/json")
                 .filter(document("getPackages",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/distro/1592.0?pageNumber=4&pageSize=2")
                 .then().statusCode(200);
@@ -128,7 +128,7 @@ class GlvdControllerTest {
     public void shouldPackageWithVulnerabilities() {
         given(this.spec).accept("application/json")
                 .filter(document("getPackageWithVulnerabilities",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/packages/vim?pageNumber=4&pageSize=2")
                 .then().statusCode(200);
@@ -138,7 +138,7 @@ class GlvdControllerTest {
     public void shouldPackageWithVulnerabilitiesByVersion() {
         given(this.spec).accept("application/json")
                 .filter(document("getPackageWithVulnerabilitiesByVersion",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1?pageNumber=4&pageSize=2")
                 .then().statusCode(200);
@@ -148,7 +148,7 @@ class GlvdControllerTest {
     public void shouldGetPackagesByVulnerability() {
         given(this.spec).accept("application/json")
                 .filter(document("getPackagesByVulnerability",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.gardenlinux.io").removePort()),
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/distro/1592.0/CVE-2023-50387")
                 .then().statusCode(200);
