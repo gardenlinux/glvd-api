@@ -11,8 +11,6 @@ This document describes the HTTP API endpoints of Garden Linux Vulnerability Dat
 
 CAUTION: This document and the API are work in progress and subject to change at any time.
 
-CAUTION: This document uses `glvd.gardenlinux.io` as the hostname in samples. This does not work currently. When running locally, replace it with `localhost:8080`, or with the real hostname of your demo system.
-
 === Get a list of CVEs by distro
 
 To query all CVEs for a given distribution by version, you may use this endpoint:
