@@ -94,10 +94,24 @@ jobs:
       - name: Check images created
         run: buildah images | grep '${{ env.IMAGE_NAME }}'
 
+      - run: |
+          podman save --format oci-archive ${{ steps.build_image.outputs.image }}:${{ env.IMAGE_TAG }} > glvd.oci
+
+          podman pull ghcr.io/gardenlinux/gardenlinux:1592
+          podman save --format oci-archive ghcr.io/gardenlinux/gardenlinux:1592 > gardenlinux.oci
+
+          ./unbase_oci --exclude exclude --include include --ldd-dependencies --print-tree gardenlinux.oci glvd.oci glvd_bare.oci
+
+          image="$(podman load < glvd_bare.oci | awk '{ print $NF }')"
+          podman tag "$image" ${{ steps.build_image.outputs.image }}:${{ env.IMAGE_TAG }}_bare
+
+
       - name: Check manifest
         run: |
           set -x
           buildah manifest inspect ${{ steps.build_image.outputs.image }}:${{ env.IMAGE_TAG }}
+          buildah manifest inspect ${{ steps.build_image.outputs.image }}:${{ env.IMAGE_TAG }}_bare
+
 
       - name: Push To ghcr.io
         id: push-to-ghcr
