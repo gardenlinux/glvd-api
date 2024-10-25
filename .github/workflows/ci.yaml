@@ -122,7 +122,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push To ghcr.io
-        id: push-to-ghcr
+        id: push-to-ghcr-bare
         if: ${{ github.event_name != 'pull_request' }}
         uses: redhat-actions/push-to-registry@v2
         with:
