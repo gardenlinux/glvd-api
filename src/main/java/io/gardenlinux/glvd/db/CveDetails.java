@@ -32,6 +32,9 @@ public class CveDetails {
     @Column(name = "is_vulnerable", nullable = true)
     private List<Boolean> isVulnerable;
 
+    @Column(name = "cve_context_description", nullable = true)
+    private List<String> cveContextDescription;
+
     @Column(name = "source_package_name", nullable = false)
     private List<String> sourcePackageName;
 
@@ -65,7 +68,7 @@ public class CveDetails {
     public CveDetails() {
     }
 
-    public CveDetails(String cveId, String vulnStatus, String description, String cvePublishedDate, List<String> distro, List<String> distroVersion, List<Boolean> isVulnerable, List<String> sourcePackageName, List<String> sourcePackageVersion, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+    public CveDetails(String cveId, String vulnStatus, String description, String cvePublishedDate, List<String> distro, List<String> distroVersion, List<Boolean> isVulnerable, List<String> cveContextDescription, List<String> sourcePackageName, List<String> sourcePackageVersion, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.vulnStatus = vulnStatus;
         this.description = description;
@@ -73,6 +76,7 @@ public class CveDetails {
         this.distro = distro;
         this.distroVersion = distroVersion;
         this.isVulnerable = isVulnerable;
+        this.cveContextDescription = cveContextDescription;
         this.sourcePackageName = sourcePackageName;
         this.sourcePackageVersion = sourcePackageVersion;
         this.baseScoreV40 = baseScoreV40;
@@ -107,6 +111,10 @@ public class CveDetails {
 
     public List<String> getDistroVersion() {
         return distroVersion;
+    }
+
+    public List<String> getCveContextDescription() {
+        return cveContextDescription;
     }
 
     public List<Boolean> getIsVulnerable() {
