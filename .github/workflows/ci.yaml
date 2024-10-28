@@ -91,17 +91,6 @@ jobs:
           echo "Tags: ${{ steps.build_image.outputs.tags }}"
           echo "Tagged Image: ${{ steps.build_image.outputs.image-with-tag }}"
 
-      - run: |
-          podman save --format oci-archive ${{ steps.build_image.outputs.image }}:${{ env.IMAGE_TAG }} > glvd.oci
-
-          podman pull ghcr.io/gardenlinux/gardenlinux:1592
-          podman save --format oci-archive ghcr.io/gardenlinux/gardenlinux:1592 > gardenlinux.oci
-
-          ./unbase_oci --exclude exclude --include include --ldd-dependencies --print-tree gardenlinux.oci glvd.oci glvd_bare.oci
-
-          image="$(podman load < glvd_bare.oci | awk '{ print $NF }')"
-          podman tag "$image" ${{ steps.build_image.outputs.image }}:${{ env.IMAGE_TAG }}_bare
-
       - name: Check images created
         run: buildah images | grep '${{ env.IMAGE_NAME }}'
 
@@ -121,16 +110,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Push To ghcr.io
-        id: push-to-ghcr-bare
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: redhat-actions/push-to-registry@v2
+      - name: Log in to ghcr.io
+        uses: redhat-actions/podman-login@v1
         with:
-          image: ${{ steps.build_image.outputs.image }}
-          tags: latest_bare
-          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Build bare images
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          ./build_bare.sh
+          podman push ghcr.io/gardenlinux/glvd-api:latest-linuxamd64_bare
+          podman push ghcr.io/gardenlinux/glvd-api:latest-linuxarm64_bare
 
       - name: Print image url
         if: ${{ github.event_name != 'pull_request' }}
