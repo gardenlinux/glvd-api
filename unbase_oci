@@ -2,7 +2,7 @@
 
 set -eufo pipefail
 
-container_image=ghcr.io/gardenlinux/unbase_oci:233f4213036fadd4b91b965b4ca71b457f1a6b88
+container_image=localhost/unbase_oci
 container_engine=podman
 
 container_mount_opts=()
@@ -52,4 +52,4 @@ container_mount_opts+=(-v "$(realpath "$1"):/mnt$(realpath "$1")")
 container_mount_opts+=(-v "$(realpath "$3"):/mnt$(realpath "$3")")
 args+=("/mnt$(realpath "$1")" "/mnt$(realpath "$2")" "/mnt$(realpath "$3")")
 
-"$container_engine" run --rm --read-only --tmpfs /tmp:rw,exec "${container_mount_opts[@]}" "$container_image" "${args[@]}"
+"$container_engine" run --rm --security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt label=disable --read-only --tmpfs /tmp:rw,exec "${container_mount_opts[@]}" "$container_image" "${args[@]}"
