@@ -119,10 +119,12 @@ jobs:
 
       - name: Build bare images
         if: ${{ github.event_name != 'pull_request' }}
+        id: bare
         run: |
           ./build_bare.sh
-          podman push ghcr.io/gardenlinux/glvd-api:latest-linuxamd64_bare
+          podman push --digestfile=bare-amd64-digest ghcr.io/gardenlinux/glvd-api:latest-linuxamd64_bare
           podman push ghcr.io/gardenlinux/glvd-api:latest-linuxarm64_bare
+          echo "bare-amd64-digest=$(cat ./bare-amd64-digest)" >> $GITHUB_OUTPUT
 
       - name: Print image url
         if: ${{ github.event_name != 'pull_request' }}
@@ -147,7 +149,7 @@ jobs:
 
       - name: Deploy the image
         if: ${{ github.event_name != 'pull_request' }}
-        run: kubectl --namespace default --token "${{ steps.get-token.outputs.idToken }}" set image deploy/glvd glvd-api=ghcr.io/gardenlinux/glvd-api:latest@${{ steps.push-to-ghcr.outputs.digest }}
+        run: kubectl --namespace default --token "${{ steps.get-token.outputs.idToken }}" set image deploy/glvd glvd-api=ghcr.io/gardenlinux/glvd-api:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
 
   dependency-submission:
 
