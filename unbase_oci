@@ -2,7 +2,7 @@
 
 set -eufo pipefail
 
-container_image=localhost/unbase_oci
+container_image=ghcr.io/gardenlinux/unbase_oci:8e33b68bf7b93d392fa8ef3248adb0a65d43c67a
 container_engine=podman
 
 container_mount_opts=()
