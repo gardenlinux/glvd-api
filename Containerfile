@@ -22,10 +22,7 @@ FROM ghcr.io/gardenlinux/gardenlinux:1592
 
 EXPOSE 8080
 
-ENV JAVA_HOME /user/java/jdk17
-ENV PATH $JAVA_HOME/bin:$PATH
-COPY --from=build /tinysapmachine $JAVA_HOME
-RUN mkdir /glvd
-COPY --from=build /usr/src/glvd/glvd-0.0.1-SNAPSHOT.jar /glvd/
-WORKDIR /glvd
-ENTRYPOINT java -jar glvd-0.0.1-SNAPSHOT.jar
+COPY --from=build /tinysapmachine /jre
+COPY --from=build /usr/src/glvd/glvd-0.0.1-SNAPSHOT.jar /
+
+CMD ["/jre/bin/java", "-jar", "/glvd-0.0.1-SNAPSHOT.jar"]
