@@ -43,7 +43,7 @@ jobs:
       uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808 # v4
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew build asciidoctor
+      run: ./gradlew --no-daemon build asciidoctor
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -135,20 +135,20 @@ jobs:
         run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.digest }}"
 
       - name: Get OIDC token
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'ref/head/main' }}
         id: get-token
         run: |
           IDTOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=glvd" | jq -r '.value')
           echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
 
       - uses: azure/k8s-set-context@v4
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'ref/head/main' }}
         with:
            method: kubeconfig
            kubeconfig: "${{ secrets.KUBECONFIG }}"
 
       - name: Deploy the image
-        if: ${{ github.event_name != 'pull_request' }}
+        if: ${{ github.ref == 'ref/head/main' }}
         run: kubectl --namespace default --token "${{ steps.get-token.outputs.idToken }}" set image deploy/glvd glvd-api=ghcr.io/gardenlinux/glvd-api:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
 
   dependency-submission:
