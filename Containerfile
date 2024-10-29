@@ -3,7 +3,7 @@ RUN apt-get update -q && apt-get install -y binutils
 RUN mkdir /usr/src/glvd
 COPY . /usr/src/glvd
 WORKDIR /usr/src/glvd
-COPY build/libs/glvd-0.0.1-SNAPSHOT.jar glvd.jar
+COPY build/libs/glvd-0.0.1-SNAPSHOT.jar glvd-0.0.1-SNAPSHOT.jar
 RUN jar xf glvd-0.0.1-SNAPSHOT.jar
 RUN jdeps --ignore-missing-deps -q  \
     --recursive  \
