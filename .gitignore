@@ -38,3 +38,5 @@ out/
 
 ### Unbase OCI ###
 *.oci
+
+glvd-*-SNAPSHOT

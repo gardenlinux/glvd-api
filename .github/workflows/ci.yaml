@@ -51,6 +51,14 @@ jobs:
         name: build-artifacts
         path: 'build'
 
+    - run: java -Djarmode=tools -jar build/libs/glvd-0.0.1-SNAPSHOT.jar extract
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: extracted-jar
+        path: 'glvd-0.0.1-SNAPSHOT'
+
   container-image:
     runs-on: ubuntu-24.04
     needs:
@@ -67,8 +75,8 @@ jobs:
       - name: Download built jar
         uses: actions/download-artifact@v4
         with:
-          name: build-artifacts
-          path: build
+          name: extracted-jar
+          path: 'glvd-0.0.1-SNAPSHOT'
 
       - name: Install qemu dependency for multi-arch build
         run: |
