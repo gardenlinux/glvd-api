@@ -3,7 +3,7 @@ RUN apt-get update -q && apt-get install -y binutils
 RUN mkdir /usr/src/glvd
 COPY . /usr/src/glvd
 WORKDIR /usr/src/glvd
-RUN ./gradlew build -x asciidoctor -x test
+RUN ./gradlew --no-daemon build -x asciidoctor -x test
 RUN jar xf build/libs/glvd-0.0.1-SNAPSHOT.jar
 RUN jdeps --ignore-missing-deps -q  \
     --recursive  \
@@ -14,7 +14,6 @@ RUN jdeps --ignore-missing-deps -q  \
 RUN jlink \
     --add-modules $(cat deps.info) \
     --strip-debug \
-    --compress 2 \
     --no-header-files \
     --no-man-pages \
     --output /tinysapmachine

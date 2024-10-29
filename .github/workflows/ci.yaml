@@ -43,7 +43,7 @@ jobs:
       uses: gradle/actions/setup-gradle@d156388eb19639ec20ade50009f3d199ce1e2808 # v4
 
     - name: Build with Gradle Wrapper
-      run: ./gradlew build asciidoctor
+      run: ./gradlew --no-daemon build asciidoctor
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -53,8 +53,6 @@ jobs:
 
   container-image:
     runs-on: ubuntu-24.04
-    needs:
-      - build
     env:
       IMAGE_NAME: gardenlinux/glvd-api
       IMAGE_TAG: latest
