@@ -53,6 +53,8 @@ jobs:
 
   container-image:
     runs-on: ubuntu-24.04
+    needs:
+      - build
     env:
       IMAGE_NAME: gardenlinux/glvd-api
       IMAGE_TAG: latest
@@ -60,6 +62,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - run: mkdir -p build
+      - name: Download built jar
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: build
 
       - name: Install qemu dependency for multi-arch build
         run: |
