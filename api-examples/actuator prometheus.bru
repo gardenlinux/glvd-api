@@ -1,0 +1,11 @@
+meta {
+  name: actuator prometheus
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{schema_hostname_port}}/actuator/prometheus
+  body: none
+  auth: none
+}
