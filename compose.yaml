@@ -1,12 +1,33 @@
 services:
+  glvd-postgres:
+    image: ghcr.io/gardenlinux/glvd-postgres:latest
+    hostname: glvd-postgres
+    networks:
+      - glvd
+    volumes:
+      - glvd_db_volume:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: glvd
+      POSTGRES_DB: glvd
+      POSTGRES_PASSWORD: glvd
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U glvd -d glvd"]
+      interval: 10s
+      retries: 10
+      start_period: 30s
+      timeout: 10s
   glvd:
     build:
       dockerfile: ./Containerfile
     hostname: glvd
+    networks:
+      - glvd
     depends_on:
       glvd-postgres:
         condition: service_healthy
-        restart: true
+        restart: false
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://glvd-postgres:5432/glvd"
       SPRING_DATASOURCE_USERNAME: "glvd"
@@ -17,18 +38,26 @@ services:
       SPRING_SQL_INIT_MODE: "never"
     ports:
       - "8080:8080"
-  glvd-postgres:
-    image: ghcr.io/gardenlinux/glvd-postgres:edgefulldata
-    hostname: glvd-postgres
-    environment:
-      POSTGRES_USER: glvd
-      POSTGRES_DB: glvd
-      POSTGRES_PASSWORD: glvd
+  # Dashboard, see https://perses.dev for more info
+  perses:
+    image: docker.io/persesdev/perses:latest
+    hostname: perses
+    networks:
+      - glvd
     ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 10s
-      retries: 10
-      start_period: 30s
-      timeout: 10s
+      - "8070:8080"
+
+  prometheus:
+    image: docker.io/prom/prometheus:latest
+    hostname: prometheus
+    networks:
+      - glvd
+    ports:
+      - "9090:9090"
+
+
+networks:
+  glvd: {}
+
+volumes:
+  glvd_db_volume:
