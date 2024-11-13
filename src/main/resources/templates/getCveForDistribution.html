@@ -8,6 +8,8 @@
 <body>
 <h1 th:text="|Vulnerabilities list for Garden Linux ${gardenlinuxVersion}|" />
 
+<p th:text="|Found ${#lists.size(sourcePackageCves)} potential security issues|"></p>
+
 <table>
     <thead>
     <tr>
