@@ -24,12 +24,17 @@ public class GlvdService {
     @Nonnull
     private final CveDetailsRepository cveDetailsRepository;
 
+    @Nonnull
+    private final CveContextRepository cveContextRepository;
+
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
+        this.cveContextRepository = cveContextRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -108,4 +113,7 @@ public class GlvdService {
         return cveDetailsRepository.findByCveId(cveId);
     }
 
+    public List<CveContext> getCveContexts(String cveId) {
+        return cveContextRepository.findByCveId(cveId);
+    }
 }

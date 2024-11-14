@@ -112,7 +112,9 @@ public class UiController {
     @GetMapping("/getCveDetails")
     public String getCveDetails(@RequestParam(name = "cveId", required = true) String cveId, Model model) {
         var cveDetails = glvdService.getCveDetails(cveId);
+        var cveContexts = glvdService.getCveContexts(cveId);
         model.addAttribute("cveDetails", cveDetails);
+        model.addAttribute("cveContexts", cveContexts);
         return "getCveDetails";
     }
 

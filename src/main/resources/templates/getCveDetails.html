@@ -53,5 +53,15 @@
 
 </table>
 
+<h2>CVE Context</h2>
+
+<!-- FIXME not yet clear how this information is properly displayed as we have have many entries for each cve.. for now just dump the info here. -->
+<div th:each="context: ${cveContexts}">
+    <p th:text="${context.description}"/>
+    <p th:text="${context.createDate}"/>
+    <p th:text="${context.getResolved}"/>
+    <p th:text="${context.scoreOverride}"/>
+</div>
+
 </body>
 </html>
