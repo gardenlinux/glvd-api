@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.SourcePackageCve;
 import jakarta.annotation.Nonnull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -39,6 +40,26 @@ public class UiController {
             @RequestParam(defaultValue = "DESC") final String sortOrder,
             @RequestParam(required = false) final String pageNumber,
             @RequestParam(required = false) final String pageSize,
+            @RequestParam(required = false, defaultValue = "true") final boolean onlyVulnerable,
+            Model model
+    ) {
+        var sourcePackageCves = glvdService.getCveForDistribution(
+                gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+        ).stream().filter(SourcePackageCve::isVulnerable).toList();
+        model.addAttribute("sourcePackageCves", sourcePackageCves);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
+        model.addAttribute("onlyVulnerable", onlyVulnerable);
+        return "getCveForDistribution";
+    }
+
+    @GetMapping("/getCveForDistributionAll")
+    public String getCveForDistributionAll(
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
+            @RequestParam(defaultValue = "baseScore") final String sortBy,
+            @RequestParam(defaultValue = "DESC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize,
+            @RequestParam(required = false, defaultValue = "true") final boolean onlyVulnerable,
             Model model
     ) {
         var sourcePackageCves = glvdService.getCveForDistribution(
@@ -46,7 +67,8 @@ public class UiController {
         );
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
-        return "getCveForDistribution";
+        model.addAttribute("onlyVulnerable", onlyVulnerable);
+        return "getCveForDistributionAll";
     }
 
     @GetMapping("/getCveForPackages")

@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GLVD: List vulnerabilities in distro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="style.css" rel="stylesheet" media="screen" />
+</head>
+<body>
+<h1 th:text="|Vulnerabilities list for Garden Linux ${gardenlinuxVersion} (showing resolved issues)|" />
+
+<p th:text="|Found ${#lists.size(sourcePackageCves)} potential security issues|"></p>
+
+<a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},onlyVulnerable=true)}">Show only unresolved potential issues</a>
+
+<table>
+    <thead>
+    <tr>
+        <th>CVE ID
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveId,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveId,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
+        </th>
+
+        <th>CVE Base Score
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=baseScore,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=baseScore,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
+        </th>
+
+        <th>Vector String</th>
+
+        <th>CVE Published Date
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cvePublishedDate,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cvePublishedDate,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
+        </th>
+
+        <th>Source Package
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=sourcePackageName,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=sourcePackageName,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
+        </th>
+
+        <th>Version</th>
+        <th>Is Vulnerable?</th>
+    </tr>
+    </thead>
+    <tr th:each="item: ${sourcePackageCves}">
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"/> </a></td>
+        <td th:text="${item.baseScore}" />
+        <td th:text="${item.vectorString}" />
+        <td th:text="${item.cvePublishedDate}" />
+        <td th:text="${item.sourcePackageName}" />
+        <td th:text="${item.sourcePackageVersion}" />
+        <td th:text="${item.isVulnerable}" />
+    </tr>
+</table>
+
+</body>
+</html>
