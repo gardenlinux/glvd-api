@@ -2,8 +2,9 @@
 
 set -eufo pipefail
 
-container_image=ghcr.io/gardenlinux/unbase_oci:8e33b68bf7b93d392fa8ef3248adb0a65d43c67a
+container_image=ghcr.io/gardenlinux/unbase_oci:50a92af51a5a357f6b93afbc1293124e24aed241
 container_engine=podman
+arch=x
 
 container_mount_opts=()
 
@@ -15,6 +16,10 @@ while [ $# -gt 0 ]; do
 			;;
 		--container-engine)
 			container_engine="$2"
+			shift 2
+			;;
+		--arch)
+			arch="$2"
 			shift 2
 			;;
 		--print-container-image)
@@ -46,10 +51,72 @@ while [ $# -gt 0 ]; do
 	esac
 done
 
-container_mount_opts+=(-v "$(realpath "$1"):/mnt$(realpath "$1")")
-[ "$1" = "$2" ] || container_mount_opts+=(-v "$(realpath "$2"):/mnt$(realpath "$2")")
-[ -e "$3" ] || touch "$3"
-container_mount_opts+=(-v "$(realpath "$3"):/mnt$(realpath "$3")")
-args+=("/mnt$(realpath "$1")" "/mnt$(realpath "$2")" "/mnt$(realpath "$3")")
+tmp_files=()
 
-"$container_engine" run --rm --security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt label=disable --read-only --tmpfs /tmp:rw,exec "${container_mount_opts[@]}" "$container_image" "${args[@]}"
+for key in base input output; do
+	if [[ "$1" == :* ]]; then
+		[[ "$value" =~ ^([a-z]+):(.*)$ ]]
+		prev_engine="${BASH_REMATCH[1]}"
+		prev_image="${BASH_REMATCH[2]}"
+		value="$prev_engine:${prev_image%:*}$1"
+	else
+		value="$1"
+	fi
+	shift
+	declare "${key}"="$value"
+	if [[ "$value" =~ ^([a-z]+):(.*)$ ]]; then
+		declare "${key}_container_engine"="${BASH_REMATCH[1]}"
+		declare "${key}_container_image"="${BASH_REMATCH[2]}"
+		tmp_file="$(mktemp)"
+		tmp_files+=("$tmp_file")
+		declare "${key}_file"="$tmp_file"
+	else
+		declare "${key}_container_engine"=""
+		declare "${key}_container_image"=""
+		declare "${key}_file"="$value"
+	fi
+done
+
+if [ "$base" = auto ]; then
+	[ -n "$input_container_engine" ] && [ -n "$input_container_image" ]
+	image="$input_container_image"
+	parent="$("$input_container_engine" image inspect "$image" | jq -r '.[0] | .Parent')"
+	repo_tag="null"
+	while [ "$repo_tag" == null ]; do
+		if [ -z "$parent" ]; then
+			echo "failed to auto determine base image" >&2
+			exit 1
+		fi
+		repo_tag="$("$input_container_engine" image inspect "$parent" | jq -r '.[0] | .RepoTags.[0]')"
+		parent="$("$input_container_engine" image inspect "$parent" | jq -r '.[0] | .Parent')"
+	done
+
+	echo "auto determined base image: $repo_tag"
+
+	base_container_engine="$input_container_engine"
+	base_container_image="$repo_tag"
+	tmp_file="$(mktemp)"
+	tmp_files+=("$tmp_file")
+	base_file="$tmp_file"
+fi
+
+[ -z "$base_container_engine" ] || "$base_container_engine" save --format oci-archive "$base_container_image" > "$base_file"
+[ -z "$input_container_engine" ] || "$input_container_engine" save --format oci-archive "$input_container_image" > "$input_file"
+
+container_mount_opts+=(-v "$(realpath "$base_file"):/mnt$(realpath "$base_file")")
+[ "$base_file" = "$input_file" ] || container_mount_opts+=(-v "$(realpath "$input_file"):/mnt$(realpath "$input_file")")
+[ -e "$output_file" ] || touch "$output_file"
+container_mount_opts+=(-v "$(realpath "$output_file"):/mnt$(realpath "$output_file")")
+args+=("/mnt$(realpath "$base_file")" "/mnt$(realpath "$input_file")" "/mnt$(realpath "$output_file")")
+
+"$container_engine" run --rm --arch=$arch --security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt label=disable --read-only --tmpfs /tmp:rw,exec "${container_mount_opts[@]}" "$container_image" "${args[@]}"
+
+if [ -n "$output_container_engine" ]; then
+	image_id="$("$output_container_engine" load < "$output_file" | awk '{ print $NF }')"
+	"$output_container_engine" tag "$image_id" "$output_container_image"
+	echo "tagged $output_container_image -> $image_id"
+fi
+
+for tmp_file in "${tmp_files[@]}"; do
+	rm "$tmp_file"
+done
