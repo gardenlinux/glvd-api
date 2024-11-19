@@ -118,10 +118,13 @@ jobs:
           registry: ghcr.io
 
       - name: Build bare images
+        run: |
+          ./build_bare.sh
+
+      - name: Push bare images
         if: ${{ github.event_name != 'pull_request' }}
         id: bare
         run: |
-          ./build_bare.sh
           podman push --digestfile=bare-amd64-digest ghcr.io/gardenlinux/glvd-api:latest-linuxamd64_bare
           podman push ghcr.io/gardenlinux/glvd-api:latest-linuxarm64_bare
           echo "bare-amd64-digest=$(cat ./bare-amd64-digest)" >> $GITHUB_OUTPUT
