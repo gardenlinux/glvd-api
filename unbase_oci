@@ -4,7 +4,6 @@ set -eufo pipefail
 
 container_image=ghcr.io/gardenlinux/unbase_oci:50a92af51a5a357f6b93afbc1293124e24aed241
 container_engine=podman
-arch=x
 
 container_mount_opts=()
 
@@ -16,10 +15,6 @@ while [ $# -gt 0 ]; do
 			;;
 		--container-engine)
 			container_engine="$2"
-			shift 2
-			;;
-		--arch)
-			arch="$2"
 			shift 2
 			;;
 		--print-container-image)
@@ -109,7 +104,7 @@ container_mount_opts+=(-v "$(realpath "$base_file"):/mnt$(realpath "$base_file")
 container_mount_opts+=(-v "$(realpath "$output_file"):/mnt$(realpath "$output_file")")
 args+=("/mnt$(realpath "$base_file")" "/mnt$(realpath "$input_file")" "/mnt$(realpath "$output_file")")
 
-"$container_engine" run --rm --arch=$arch --security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt label=disable --read-only --tmpfs /tmp:rw,exec "${container_mount_opts[@]}" "$container_image" "${args[@]}"
+"$container_engine" run --rm --security-opt seccomp=unconfined --security-opt apparmor=unconfined --security-opt label=disable --read-only --tmpfs /tmp:rw,exec "${container_mount_opts[@]}" "$container_image" "${args[@]}"
 
 if [ -n "$output_container_engine" ]; then
 	image_id="$("$output_container_engine" load < "$output_file" | awk '{ print $NF }')"
