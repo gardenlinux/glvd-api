@@ -41,6 +41,7 @@
         <th>Source Package</th>
         <th>Package Version</th>
         <th>Is Vulnerable</th>
+        <th>Is fixed in Version</th>
     </tr>
     </thead>
     <tr th:each="distro,iterStat : ${cveDetails.distro}">
@@ -49,6 +50,7 @@
         <td th:text="${cveDetails.sourcePackageName[__${iterStat.index}__]}"></td>
         <td th:text="${cveDetails.sourcePackageVersion[__${iterStat.index}__]}"></td>
         <td th:text="${cveDetails.isVulnerable[__${iterStat.index}__]}"></td>
+        <td th:text="${cveDetails.versionFixed[__${iterStat.index}__]}"></td>
     </tr>
 
 </table>
