@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.CveDetailsWithContext;
 import io.gardenlinux.glvd.db.SourcePackage;
 import io.gardenlinux.glvd.db.SourcePackageCve;
 import jakarta.annotation.Nonnull;
@@ -118,6 +119,14 @@ public class GlvdController {
         return ResponseEntity.ok(
                 glvdService.getPackagesByVulnerability(gardenlinuxVersion, cveId, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize))
         );
+    }
+
+    @GetMapping("/cveDetails/{cveId}")
+    ResponseEntity<CveDetailsWithContext> cveDetails(@PathVariable final String cveId) {
+        var cveDetails = glvdService.getCveDetails(cveId);
+        var cveContexts = glvdService.getCveContexts(cveId);
+
+        return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
     }
 
 }

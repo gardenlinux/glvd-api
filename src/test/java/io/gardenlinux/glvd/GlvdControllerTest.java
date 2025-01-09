@@ -154,4 +154,14 @@ class GlvdControllerTest {
                 .then().statusCode(200);
     }
 
+    @Test
+    public void shouldGetCveDetailsWithContexts() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsWithContexts",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/CVE-2023-50387")
+                .then().statusCode(200);
+    }
+
 }
