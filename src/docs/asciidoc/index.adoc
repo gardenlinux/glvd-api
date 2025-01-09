@@ -85,3 +85,13 @@ include::{snippets}/getPackagesByVulnerability/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getPackagesByVulnerability/http-response.adoc[]
+
+=== Get CVE Details with Contexts
+
+Give information on a CVE by CVE ID
+
+include::{snippets}/getCveDetailsWithContexts/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
