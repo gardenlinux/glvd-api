@@ -41,7 +41,9 @@ class GlvdControllerTest {
     @ServiceConnection
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(glvdPostgresImage)
             .withDatabaseName("glvd")
-            .withUsername("glvd").withPassword("glvd");
+            .withUsername("glvd")
+            .withPassword("glvd")
+            .withInitScripts("test-data/01-schema.sql", "test-data/02-sample-data.sql");
 
     @LocalServerPort
     private Integer port;
