@@ -80,7 +80,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForDistro",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/1592.0?sortBy=cveId&sortOrder=DESC&pageNumber=4&pageSize=2")
+                .when().port(this.port).get("/v1/cves/1592.4?sortBy=cveId&sortOrder=DESC")
 				.then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -90,7 +90,7 @@ class GlvdControllerTest {
                 .filter(document("getCveForPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/cves/1592.0/packages/crun,vim?pageNumber=4&pageSize=2")
+                .when().port(this.port).get("/v1/cves/1592.4/packages/jinja2,vim")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -102,7 +102,8 @@ class GlvdControllerTest {
                     "vim",
                     "bash",
                     "python3",
-                    "curl"
+                    "curl",
+                    "jinja2"
                   ]
                 }""";
 
@@ -112,7 +113,7 @@ class GlvdControllerTest {
                         preprocessResponse(prettyPrint())))
                 .contentType("application/json")
                 .body(packageList)
-                .when().port(this.port).put("/v1/cves/1592.0/packages?pageNumber=4&pageSize=2")
+                .when().port(this.port).put("/v1/cves/1592.4/packages?pageNumber=1&pageSize=2")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -122,7 +123,7 @@ class GlvdControllerTest {
                 .filter(document("getPackages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/distro/1592.0?pageNumber=4&pageSize=2")
+                .when().port(this.port).get("/v1/distro/1592.4")
                 .then().statusCode(200);
     }
 
@@ -132,7 +133,7 @@ class GlvdControllerTest {
                 .filter(document("getPackageWithVulnerabilities",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/vim?pageNumber=4&pageSize=2")
+                .when().port(this.port).get("/v1/packages/jinja2")
                 .then().statusCode(200);
     }
 
@@ -142,7 +143,7 @@ class GlvdControllerTest {
                 .filter(document("getPackageWithVulnerabilitiesByVersion",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/packages/vim/2:9.1.0496-1+b1?pageNumber=4&pageSize=2")
+                .when().port(this.port).get("/v1/packages/jinja2/3.1.3-1")
                 .then().statusCode(200);
     }
 
@@ -152,7 +153,7 @@ class GlvdControllerTest {
                 .filter(document("getPackagesByVulnerability",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/distro/1592.0/CVE-2023-50387")
+                .when().port(this.port).get("/v1/distro/1592.4/CVE-2023-50387")
                 .then().statusCode(200);
     }
 

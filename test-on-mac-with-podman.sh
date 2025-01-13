@@ -6,4 +6,4 @@
  export TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
  export TESTCONTAINERS_RYUK_DISABLED=true
 
- ./gradlew --info test
+ ./gradlew --info test asciidoctor
