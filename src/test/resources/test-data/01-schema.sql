@@ -1,3 +1,26 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: debversion; Type: EXTENSION; Schema: -; Owner: -
+--
+
 CREATE EXTENSION IF NOT EXISTS debversion WITH SCHEMA public;
 
 
@@ -47,10 +70,10 @@ ALTER TABLE public.cve_context OWNER TO glvd;
 --
 
 CREATE VIEW public.cve_with_context AS
- SELECT cve_context.dist_id,
-    cve_context.cve_id
+ SELECT dist_id,
+    cve_id
    FROM public.cve_context
-  GROUP BY cve_context.dist_id, cve_context.cve_id;
+  GROUP BY dist_id, cve_id;
 
 
 ALTER VIEW public.cve_with_context OWNER TO glvd;
@@ -233,24 +256,24 @@ ALTER VIEW public.sourcepackagecve OWNER TO glvd;
 --
 
 CREATE VIEW public.recentsourcepackagecve AS
- SELECT sourcepackagecve.cve_id,
-    sourcepackagecve.source_package_name,
-    sourcepackagecve.source_package_version,
-    sourcepackagecve.gardenlinux_version,
-    sourcepackagecve.is_vulnerable,
-    sourcepackagecve.cve_published_date,
-    sourcepackagecve.base_score,
-    sourcepackagecve.vector_string,
-    sourcepackagecve.base_score_v40,
-    sourcepackagecve.base_score_v31,
-    sourcepackagecve.base_score_v30,
-    sourcepackagecve.base_score_v2,
-    sourcepackagecve.vector_string_v40,
-    sourcepackagecve.vector_string_v31,
-    sourcepackagecve.vector_string_v30,
-    sourcepackagecve.vector_string_v2
+ SELECT cve_id,
+    source_package_name,
+    source_package_version,
+    gardenlinux_version,
+    is_vulnerable,
+    cve_published_date,
+    base_score,
+    vector_string,
+    base_score_v40,
+    base_score_v31,
+    base_score_v30,
+    base_score_v2,
+    vector_string_v40,
+    vector_string_v31,
+    vector_string_v30,
+    vector_string_v2
    FROM public.sourcepackagecve
-  WHERE ((sourcepackagecve.cve_published_date)::timestamp with time zone > (now() - '10 days'::interval));
+  WHERE ((cve_published_date)::timestamp with time zone > (now() - '10 days'::interval));
 
 
 ALTER VIEW public.recentsourcepackagecve OWNER TO glvd;
