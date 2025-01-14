@@ -113,7 +113,7 @@ class GlvdControllerTest {
                         preprocessResponse(prettyPrint())))
                 .contentType("application/json")
                 .body(packageList)
-                .when().port(this.port).put("/v1/cves/1592.4/packages?pageNumber=1&pageSize=2")
+                .when().port(this.port).put("/v1/cves/1592.4/packages")
                 .then().statusCode(HttpStatus.SC_OK);
     }
 
@@ -153,7 +153,7 @@ class GlvdControllerTest {
                 .filter(document("getPackagesByVulnerability",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/distro/1592.4/CVE-2023-50387")
+                .when().port(this.port).get("/v1/distro/1592.4/CVE-2024-56326")
                 .then().statusCode(200);
     }
 
