@@ -33,13 +33,13 @@
         </th>
 
         <th>CVE Last Modified Date
-            <a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastModifiedDate,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
-            <a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastModifiedDate,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastModifiedDate,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastModifiedDate,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
         </th>
 
         <th>CVE Last Ingested Date
-            <a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastIngestedDate,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
-            <a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastIngestedDate,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastIngestedDate,sortOrder=ASC,onlyVulnerable=false)}">&uarr;</a>
+            <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},sortBy=cveLastIngestedDate,sortOrder=DESC,onlyVulnerable=false)}">&darr;</a>
         </th>
 
         <th>Source Package
