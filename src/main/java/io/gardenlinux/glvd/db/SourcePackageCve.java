@@ -28,6 +28,12 @@ public class SourcePackageCve {
     @Column(name = "cve_published_date", nullable = false)
     private String cvePublishedDate;
 
+    @Column(name = "cve_last_modified_date", nullable = false)
+    private String cveLastModifiedDate;
+
+    @Column(name = "cve_last_ingested_date", nullable = false)
+    private String cveLastIngestedDate;
+
     @Column(name = "base_score", nullable = true)
     private Float baseScore;
 
@@ -61,13 +67,15 @@ public class SourcePackageCve {
     public SourcePackageCve() {
     }
 
-    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.sourcePackageName = sourcePackageName;
         this.sourcePackageVersion = sourcePackageVersion;
         this.gardenlinuxVersion = gardenlinuxVersion;
         this.isVulnerable = isVulnerable;
         this.cvePublishedDate = cvePublishedDate;
+        this.cveLastModifiedDate = cveLastModifiedDate;
+        this.cveLastIngestedDate = cveLastIngestedDate;
         this.baseScore = baseScore;
         this.vectorString = vectorString;
         this.baseScoreV40 = baseScoreV40;
@@ -102,6 +110,14 @@ public class SourcePackageCve {
 
     public String getCvePublishedDate() {
         return cvePublishedDate;
+    }
+
+    public String getCveLastModifiedDate() {
+        return cveLastModifiedDate;
+    }
+
+    public String getCveLastIngestedDate() {
+        return cveLastIngestedDate;
     }
 
     public Float getBaseScore() {
