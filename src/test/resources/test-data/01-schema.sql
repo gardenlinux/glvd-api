@@ -220,6 +220,8 @@ CREATE VIEW public.sourcepackagecve AS
     deb_cve.debsec_vulnerable,
     cve_context.is_resolved,
     (all_cve.data ->> 'published'::text) AS cve_published_date,
+    (all_cve.data ->> 'lastModified'::text) AS cve_last_modified_date,
+    all_cve.last_mod::text AS cve_last_ingested_date,
         CASE
             WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
             WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
