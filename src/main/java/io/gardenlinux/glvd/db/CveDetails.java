@@ -23,6 +23,12 @@ public class CveDetails {
     @Column(name = "published", nullable = false)
     private String cvePublishedDate;
 
+    @Column(name = "modified", nullable = false)
+    private String cveModifiedDate;
+
+    @Column(name = "ingested", nullable = false)
+    private String cveIngestedDate;
+
     @Column(name = "distro", nullable = true)
     private List<String> distro;
 
@@ -68,11 +74,13 @@ public class CveDetails {
     public CveDetails() {
     }
 
-    public CveDetails(String cveId, String vulnStatus, String description, String cvePublishedDate, List<String> distro, List<String> distroVersion, List<Boolean> isVulnerable, List<String> sourcePackageName, List<String> sourcePackageVersion, List<String> versionFixed, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+    public CveDetails(String cveId, String vulnStatus, String description, String cvePublishedDate, String cveModifiedDate, String cveIngestedDate, List<String> distro, List<String> distroVersion, List<Boolean> isVulnerable, List<String> sourcePackageName, List<String> sourcePackageVersion, List<String> versionFixed, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.vulnStatus = vulnStatus;
         this.description = description;
         this.cvePublishedDate = cvePublishedDate;
+        this.cveModifiedDate = cveModifiedDate;
+        this.cveIngestedDate = cveIngestedDate;
         this.distro = distro;
         this.distroVersion = distroVersion;
         this.isVulnerable = isVulnerable;
@@ -103,6 +111,14 @@ public class CveDetails {
 
     public String getCvePublishedDate() {
         return cvePublishedDate;
+    }
+
+    public String getCveModifiedDate() {
+        return cveModifiedDate;
+    }
+
+    public String getCveIngestedDate() {
+        return cveIngestedDate;
     }
 
     public List<String> getDistro() {
