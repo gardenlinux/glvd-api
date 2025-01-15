@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped by pg_dump version 17.2 (Debian 17.2-1+b1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,7 +25,7 @@ CREATE EXTENSION IF NOT EXISTS debversion WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION debversion IS 'Debian version number data type';
@@ -87,6 +87,8 @@ SELECT
     NULL::text AS cve_id,
     NULL::json AS vulnstatus,
     NULL::json AS published,
+    NULL::json AS modified,
+    NULL::timestamp with time zone AS ingested,
     NULL::text[] AS cve_context_description,
     NULL::text[] AS distro,
     NULL::text[] AS distro_version,
@@ -221,7 +223,7 @@ CREATE VIEW public.sourcepackagecve AS
     cve_context.is_resolved,
     (all_cve.data ->> 'published'::text) AS cve_published_date,
     (all_cve.data ->> 'lastModified'::text) AS cve_last_modified_date,
-    all_cve.last_mod::text AS cve_last_ingested_date,
+    all_cve.last_mod AS cve_last_ingested_date,
         CASE
             WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
             WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
@@ -373,6 +375,8 @@ CREATE OR REPLACE VIEW public.cvedetails AS
  SELECT all_cve.cve_id,
     (all_cve.data -> 'vulnStatus'::text) AS vulnstatus,
     (all_cve.data -> 'published'::text) AS published,
+    (all_cve.data -> 'lastModified'::text) AS modified,
+    all_cve.last_mod AS ingested,
     array_agg(cve_context.description) AS cve_context_description,
     array_agg(dist_cpe.cpe_product) AS distro,
     array_agg(dist_cpe.cpe_version) AS distro_version,
