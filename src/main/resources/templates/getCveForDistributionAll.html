@@ -8,6 +8,14 @@
 <body>
 <h1 th:text="|Vulnerabilities list for Garden Linux ${gardenlinuxVersion} (showing resolved issues)|" />
 
+<div>Switch Garden Linux Version: </div>
+
+<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=today,onlyVulnerable=false)}">today</a>
+
+<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1592.4,onlyVulnerable=false)}">1592.4</a>
+
+<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1592.5,onlyVulnerable=false)}">1592.5</a>
+
 <p th:text="|Found ${#lists.size(sourcePackageCves)} potential security issues|"></p>
 
 <a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},onlyVulnerable=true)}">Show only unresolved potential issues</a>
