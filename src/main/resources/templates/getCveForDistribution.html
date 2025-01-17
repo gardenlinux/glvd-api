@@ -72,5 +72,26 @@
     </tr>
 </table>
 
+<h2 th:text="|CVE Contexts for Garden Linux ${gardenlinuxVersion} |" />
+
+<table>
+    <thead>
+    <tr>
+        <th>CVE ID</th>
+        <th>Create Date</th>
+        <th>Descriptor</th>
+        <th>Description</th>
+        <th>Is Resolved?</th>
+    </tr>
+    </thead>
+    <tr th:each="item: ${cveContexts}">
+        <td th:text="${item.cveId}"></td>
+        <td th:text="${item.createDate}"></td>
+        <td th:text="${item.contextDescriptor}"></td>
+        <td th:text="${item.description}"></td>
+        <td th:text="${item.getResolved}"></td>
+    </tr>
+</table>
+
 </body>
 </html>
