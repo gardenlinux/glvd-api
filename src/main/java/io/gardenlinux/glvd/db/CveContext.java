@@ -15,7 +15,7 @@ public class CveContext {
     private String cveId;
 
     @Column(name = "dist_id", nullable = false)
-    private String distId;
+    private Integer distId;
 
     @Column(name = "create_date", nullable = false)
     private String createDate;
@@ -35,7 +35,7 @@ public class CveContext {
     public CveContext() {
     }
 
-    public CveContext(String cveId, String distId, String createDate, String contextDescriptor, Float scoreOverride, String description, Boolean isResolved) {
+    public CveContext(String cveId, Integer distId, String createDate, String contextDescriptor, Float scoreOverride, String description, Boolean isResolved) {
         this.cveId = cveId;
         this.distId = distId;
         this.createDate = createDate;
@@ -49,7 +49,7 @@ public class CveContext {
         return cveId;
     }
 
-    public String getDistId() {
+    public Integer getDistId() {
         return distId;
     }
 

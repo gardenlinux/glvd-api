@@ -46,9 +46,11 @@ public class UiController {
         var sourcePackageCves = glvdService.getCveForDistribution(
                 gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
         ).stream().filter(SourcePackageCve::isVulnerable).toList();
+        var contexts = glvdService.getCveContextsForDist(glvdService.distVersionToId(gardenlinuxVersion));
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("onlyVulnerable", onlyVulnerable);
+        model.addAttribute("cveContexts", contexts);
         return "getCveForDistribution";
     }
 
@@ -65,9 +67,11 @@ public class UiController {
         var sourcePackageCves = glvdService.getCveForDistribution(
                 gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
         );
+        var contexts = glvdService.getCveContextsForDist(glvdService.distVersionToId(gardenlinuxVersion));
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("onlyVulnerable", onlyVulnerable);
+        model.addAttribute("cveContexts", contexts);
         return "getCveForDistributionAll";
     }
 

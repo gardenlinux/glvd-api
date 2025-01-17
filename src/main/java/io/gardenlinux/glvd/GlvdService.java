@@ -27,14 +27,18 @@ public class GlvdService {
     @Nonnull
     private final CveContextRepository cveContextRepository;
 
+    @Nonnull
+    private final DistCpeRepository distCpeRepository;
+
 
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
         this.cveContextRepository = cveContextRepository;
+        this.distCpeRepository = distCpeRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -115,5 +119,13 @@ public class GlvdService {
 
     public List<CveContext> getCveContexts(String cveId) {
         return cveContextRepository.findByCveId(cveId);
+    }
+
+    public List<CveContext> getCveContextsForDist(String dist_id) {
+        return cveContextRepository.findByDistId(Integer.valueOf(dist_id)).stream().filter(cveContext -> !cveContext.getContextDescriptor().equalsIgnoreCase("dummy")).toList();
+    }
+
+    public String distVersionToId(String version) {
+        return distCpeRepository.getByCpeVersion(version).getId();
     }
 }
