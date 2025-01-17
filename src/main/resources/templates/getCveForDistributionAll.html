@@ -60,7 +60,7 @@
     </tr>
     </thead>
     <tr th:each="item: ${sourcePackageCves}">
-        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"/> </a></td>
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="[DETAILS]"></div> </a> <div th:text="${item.cveId}"/> </td>
         <td th:text="${item.baseScore}" />
         <td th:text="${item.vectorString}" />
         <td th:text="${item.cvePublishedDate}" />
@@ -85,7 +85,7 @@
     </tr>
     </thead>
     <tr th:each="item: ${cveContexts}">
-        <td th:text="${item.cveId}"></td>
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="[DETAILS]"></div> </a> <div th:text="${item.cveId}"/> </td>
         <td th:text="${item.createDate}"></td>
         <td th:text="${item.contextDescriptor}"></td>
         <td th:text="${item.description}"></td>
