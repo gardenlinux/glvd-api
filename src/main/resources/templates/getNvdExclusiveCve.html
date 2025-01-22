@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GLVD: List CVE only available in NVD</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="style.css" rel="stylesheet" media="screen" />
+</head>
+<body>
+
+<table>
+    <thead>
+    <tr>
+        <th>CVE ID
+        </th>
+    </tr>
+    </thead>
+
+    <tr th:each="item: ${cves}">
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"></div> </a></td>
+    </tr>
+</table>
+
+</body>
+</html>

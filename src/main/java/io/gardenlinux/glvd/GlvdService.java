@@ -30,15 +30,18 @@ public class GlvdService {
     @Nonnull
     private final DistCpeRepository distCpeRepository;
 
+    @Nonnull
+    private final NvdExclusiveCveRepository nvdExclusiveCveRepository;
 
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
         this.cveContextRepository = cveContextRepository;
         this.distCpeRepository = distCpeRepository;
+        this.nvdExclusiveCveRepository = nvdExclusiveCveRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -127,5 +130,9 @@ public class GlvdService {
 
     public String distVersionToId(String version) {
         return distCpeRepository.getByCpeVersion(version).getId();
+    }
+
+    public Iterable<NvdExclusiveCve> getAllNvdExclusiveCve() {
+        return nvdExclusiveCveRepository.findAll();
     }
 }
