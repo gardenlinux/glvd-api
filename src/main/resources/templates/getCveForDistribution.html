@@ -16,6 +16,10 @@
 
 <a th:href="@{/getCveForDistribution(gardenlinuxVersion=1592.5,onlyVulnerable=true)}">1592.5</a>
 
+<div>
+    <a th:href="@{/getNvdExclusiveCve}">NVD Exclusive CVEs (need to triage)</a>
+</div>
+
 <p th:text="|Found ${#lists.size(sourcePackageCves)} potential security issues|"></p>
 
 <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},onlyVulnerable=false)}">Show all potential issues</a>

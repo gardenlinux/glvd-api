@@ -122,4 +122,11 @@ public class UiController {
         return "getCveDetails";
     }
 
+    @GetMapping("/getNvdExclusiveCve")
+    public String getNvdExclusiveCve(Model model) {
+        var cves = glvdService.getAllNvdExclusiveCve();
+        model.addAttribute("cves", cves);
+        return "getNvdExclusiveCve";
+    }
+
 }
