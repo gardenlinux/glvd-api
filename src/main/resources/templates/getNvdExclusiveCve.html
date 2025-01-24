@@ -17,7 +17,7 @@
 
 <ul>
     <li th:each="item: ${cves}">
-        <a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"></div> </a>
+        CVE ID: <div th:text="${item.cveId}"></div>
         Vulnerability Status: <div th:text="${item.vulnStatus}"></div>
         CVE Published Date: <div th:text="${item.cvePublishedDate}"></div>
         CVE Modified Date: <div th:text="${item.cveModifiedDate}"></div>
