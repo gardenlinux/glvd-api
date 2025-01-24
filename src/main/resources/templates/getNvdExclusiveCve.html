@@ -7,18 +7,23 @@
 </head>
 <body>
 
-<table>
-    <thead>
-    <tr>
-        <th>CVE ID
-        </th>
-    </tr>
-    </thead>
+<h1>NVD Exclusive CVEs</h1>
 
-    <tr th:each="item: ${cves}">
-        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"></div> </a></td>
-    </tr>
-</table>
+<div>
+    The following list contains recent CVEs which are not in debian's security tracker (yet).
+    There is a good chance that those don't affect Garden Linux at all, but some of them might.
+    They are shown here to get a chance to react as quickly as possible, in case any of them is relevant.
+</div>
+
+<ul>
+    <li th:each="item: ${cves}">
+        <a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="${item.cveId}"></div> </a>
+        Vulnerability Status: <div th:text="${item.vulnStatus}"></div>
+        CVE Published Date: <div th:text="${item.cvePublishedDate}"></div>
+        CVE Modified Date: <div th:text="${item.cveModifiedDate}"></div>
+        Description: <label th:text="${item.description}"></label>
+    </li>
+</ul>
 
 </body>
 </html>
