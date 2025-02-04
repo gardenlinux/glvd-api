@@ -33,15 +33,19 @@ public class GlvdService {
     @Nonnull
     private final NvdExclusiveCveRepository nvdExclusiveCveRepository;
 
+    @Nonnull
+    private final DebSrcRepository debSrcRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
         this.cveContextRepository = cveContextRepository;
         this.distCpeRepository = distCpeRepository;
         this.nvdExclusiveCveRepository = nvdExclusiveCveRepository;
+        this.debSrcRepository = debSrcRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -134,5 +138,9 @@ public class GlvdService {
 
     public Iterable<NvdExclusiveCve> getAllNvdExclusiveCve() {
         return nvdExclusiveCveRepository.findAll();
+    }
+
+    public List<DebSrc> sourcePackagesByGardenLinuxVersion(String version) {
+        return debSrcRepository.findByDistId(Integer.parseInt(distVersionToId(version)));
     }
 }

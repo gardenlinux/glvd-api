@@ -167,4 +167,10 @@ class GlvdControllerTest {
                 .then().statusCode(200);
     }
 
+    @Test
+    public void foo() {
+        var foo = given(this.spec).port(this.port).get("/v1/patchReleaseNotes/1592.5").body();
+        System.out.println(foo.prettyPrint());
+    }
+
 }

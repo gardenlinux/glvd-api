@@ -1,6 +1,7 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.CveDetailsWithContext;
+import io.gardenlinux.glvd.db.DebSrc;
 import io.gardenlinux.glvd.db.SourcePackage;
 import io.gardenlinux.glvd.db.SourcePackageCve;
 import jakarta.annotation.Nonnull;
@@ -8,7 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/v1", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -127,6 +131,71 @@ public class GlvdController {
         var cveContexts = glvdService.getCveContexts(cveId);
 
         return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
+    }
+
+    // https://github.com/gardenlinux/glvd/issues/132
+    // Assumptions:
+    //  - Not used for .0 versions
+    //  - No burnt versions
+    @GetMapping("/patchReleaseNotes/{gardenlinuxVersion}")
+    List<ReleaseNotesPackage> releaseNotes(@PathVariable final String gardenlinuxVersion) {
+        var cvesNewVersion = glvdService.getCveForDistribution(gardenlinuxVersion, new SortAndPageOptions("cveId", "ASC", "0", "100000"));
+
+        System.out.println(cvesNewVersion);
+
+        var versionComponents = gardenlinuxVersion.split("\\.");
+        var major = versionComponents[0];
+        var patch = versionComponents[1];
+
+        var patchAsInt = Integer.parseInt(patch);
+
+        var oldVersion = major + "." + (patchAsInt - 1);
+
+        var cvesOldVersion = glvdService.getCveForDistribution(oldVersion, new SortAndPageOptions("cveId", "ASC", "0", "100000"));
+
+        System.out.println(cvesOldVersion);
+
+        var cvesNewVersionCveIds = cvesNewVersion.stream().map(SourcePackageCve::getCveId).collect(Collectors.joining());
+
+        var diff = cvesOldVersion.stream().filter(sourcePackageCve -> ! cvesNewVersionCveIds.contains(sourcePackageCve.getCveId())).toList();
+
+        var packagesNew = glvdService.sourcePackagesByGardenLinuxVersion(gardenlinuxVersion);
+        var packagesOld = glvdService.sourcePackagesByGardenLinuxVersion(oldVersion);
+
+
+        HashMap<String, List<String>> ret = new HashMap<>();
+
+        System.out.println(diff);
+
+        for (SourcePackageCve sourcePackageCve : diff) {
+            System.out.println(sourcePackageCve.getCveId());
+            System.out.println(sourcePackageCve.getSourcePackageName());
+//            System.out.println(sourcePackageCve.getSourcePackageVersion());
+
+            for (DebSrc debSrc : packagesOld) {
+                if (debSrc.getDebSource().equalsIgnoreCase(sourcePackageCve.getSourcePackageName())) {
+                    System.out.println(debSrc.getDebVersion());
+                }
+            }
+
+            for (DebSrc debSrc : packagesNew) {
+                if (debSrc.getDebSource().equalsIgnoreCase(sourcePackageCve.getSourcePackageName())) {
+                    System.out.println(debSrc.getDebVersion());
+                }
+            }
+
+            var x = ret.get(sourcePackageCve.getSourcePackageName());
+            if (x == null) {
+                x = new ArrayList<>();
+            }
+            x.add(sourcePackageCve.getCveId());
+            ret.put(sourcePackageCve.getSourcePackageName(), x);
+        }
+
+        List<ReleaseNotesPackage> xx = new ArrayList<>();
+        ret.forEach((sourcePackage, cves) -> xx.add(new ReleaseNotesPackage(sourcePackage, "", "", cves)));
+
+        return xx;
     }
 
 }
