@@ -129,4 +129,15 @@ public class UiController {
         return "getNvdExclusiveCve";
     }
 
+    @GetMapping("/getPatchReleaseNotes")
+    public String getPatchReleaseNotes(
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
+            Model model
+    ) {
+        var releaseNotes = glvdService.releaseNote(gardenlinuxVersion);
+        model.addAttribute("releaseNotes", releaseNotes);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
+        return "getPatchReleaseNotes";
+    }
+
 }
