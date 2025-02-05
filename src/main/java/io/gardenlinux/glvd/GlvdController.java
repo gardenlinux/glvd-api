@@ -133,11 +133,21 @@ public class GlvdController {
         return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
     }
 
+    @GetMapping("/releases")
+    List<String> releases() {
+        return glvdService.getGardenLinuxVersions();
+    }
+
+    @GetMapping("/releases/{gardenlinuxVersion}")
+    List<String> releases(@PathVariable final String gardenlinuxVersion) {
+        return List.of("/releases/"+gardenlinuxVersion+"/releaseNotes");
+    }
+
     // https://github.com/gardenlinux/glvd/issues/132
     // Assumptions:
     //  - Not used for .0 versions
     //  - No burnt versions
-    @GetMapping("/patchReleaseNotes/{gardenlinuxVersion}")
+    @GetMapping("/releases/{gardenlinuxVersion}/releaseNotes")
     ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
         return glvdService.releaseNote(gardenlinuxVersion);
     }

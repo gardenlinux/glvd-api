@@ -186,4 +186,8 @@ public class GlvdService {
 
         return new ReleaseNote(gardenlinuxVersion, releaseNotesPackages);
     }
+
+    public List<String> getGardenLinuxVersions() {
+        return distCpeRepository.getByCpeProduct("gardenlinux").stream().map(DistCpe::getCpeVersion).toList();
+    }
 }
