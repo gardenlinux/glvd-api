@@ -133,49 +133,13 @@ public class GlvdController {
         return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
     }
 
-    private String getVersionByPackageName(List<DebSrc> input, String packageName) {
-        for (DebSrc debSrc : input) {
-            if (debSrc.getDebSource().equalsIgnoreCase(packageName)) {
-                return debSrc.getDebVersion();
-            }
-        }
-        return "";
-    }
-
     // https://github.com/gardenlinux/glvd/issues/132
     // Assumptions:
     //  - Not used for .0 versions
     //  - No burnt versions
     @GetMapping("/patchReleaseNotes/{gardenlinuxVersion}")
     ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
-        if (gardenlinuxVersion.endsWith(".0")) {
-            return new ReleaseNote(gardenlinuxVersion, List.of());
-        }
-        var v = new GardenLinuxVersion(gardenlinuxVersion);
-        var cvesNewVersion = glvdService.getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var cvesOldVersion = glvdService.getCveForDistribution(v.previousPatchVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var cvesNewVersionCveIds = cvesNewVersion.stream().map(SourcePackageCve::getCveId).collect(Collectors.joining());
-        var diff = cvesOldVersion.stream().filter(sourcePackageCve -> !cvesNewVersionCveIds.contains(sourcePackageCve.getCveId())).toList();
-        var packagesNew = glvdService.sourcePackagesByGardenLinuxVersion(v.printVersion());
-        var packagesOld = glvdService.sourcePackagesByGardenLinuxVersion(v.previousPatchVersion());
-        HashMap<String, List<String>> sourcePackageNameToCveListMapping = new HashMap<>();
-        for (SourcePackageCve sourcePackageCve : diff) {
-            var cveList = sourcePackageNameToCveListMapping.getOrDefault(sourcePackageCve.getSourcePackageName(), new ArrayList<>());
-            cveList.add(sourcePackageCve.getCveId());
-            sourcePackageNameToCveListMapping.put(sourcePackageCve.getSourcePackageName(), cveList);
-        }
-
-        List<ReleaseNotesPackage> releaseNotesPackages = new ArrayList<>();
-        sourcePackageNameToCveListMapping.forEach((sourcePackage, cves) ->
-                releaseNotesPackages.add(
-                        new ReleaseNotesPackage(sourcePackage,
-                                getVersionByPackageName(packagesOld, sourcePackage),
-                                getVersionByPackageName(packagesNew, sourcePackage),
-                                cves)
-                )
-        );
-
-        return new ReleaseNote(gardenlinuxVersion, releaseNotesPackages);
+        return glvdService.releaseNote(gardenlinuxVersion);
     }
 
 }

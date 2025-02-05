@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GLVD: List vulnerabilities in distro</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="style.css" rel="stylesheet" media="screen" />
+</head>
+<body>
+<h1 th:text="|Patch Release Notes for Garden Linux ${gardenlinuxVersion}|"/>
+
+<div>
+    This page provides information about fixed vulnerabilities in a Garden Linux patch release.
+    Note that this list might not be accurate and might be incomplete.
+    Use with caution.
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Source Package Name</th>
+        <th>Old Version</th>
+        <th>New Version</th>
+        <th>Fixed CVEs</th>
+    </tr>
+    </thead>
+    <tr th:each="item: ${releaseNotes.packageList}">
+        <td th:text="${item.sourcePackageName}"/>
+        <td th:text="${item.oldVersion}"/>
+        <td th:text="${item.newVersion}"/>
+        <td th:text="${item.fixedCves}"/>
+    </tr>
+</table>
+
+</body>
+</html>
