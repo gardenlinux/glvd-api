@@ -95,3 +95,11 @@ include::{snippets}/getCveDetailsWithContexts/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
+
+=== Get Patch Release Notes Information
+
+include::{snippets}/patchReleaseNotes/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/patchReleaseNotes/http-response.adoc[]
