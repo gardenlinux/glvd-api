@@ -1,6 +1,5 @@
 package io.gardenlinux.glvd.db;
 
-import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
