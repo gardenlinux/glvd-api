@@ -163,8 +163,17 @@ public class GlvdService {
         var v = new GardenLinuxVersion(gardenlinuxVersion);
         var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
         var cvesOldVersion = getCveForDistribution(v.previousPatchVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var cvesNewVersionCveIds = cvesNewVersion.stream().map(SourcePackageCve::getCveId).collect(Collectors.joining());
+
+
+        var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
+
+        var cvesNewVersionIgnoreResolved = cvesNewVersion.stream().filter(sourcePackageCve -> !resolvedInNew.contains(sourcePackageCve.getCveId())).toList();
+
+        var cvesNewVersionCveIds = cvesNewVersionIgnoreResolved.stream().map(SourcePackageCve::getCveId).collect(Collectors.joining());
+
         var diff = cvesOldVersion.stream().filter(sourcePackageCve -> !cvesNewVersionCveIds.contains(sourcePackageCve.getCveId())).toList();
+
+
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
         var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousPatchVersion());
         HashMap<String, List<String>> sourcePackageNameToCveListMapping = new HashMap<>();
