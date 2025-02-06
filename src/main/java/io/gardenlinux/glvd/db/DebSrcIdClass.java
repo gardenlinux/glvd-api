@@ -2,7 +2,6 @@ package io.gardenlinux.glvd.db;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package io.gardenlinux.glvd;
+package io.gardenlinux.glvd.releasenotes;
 
 import java.util.List;
 

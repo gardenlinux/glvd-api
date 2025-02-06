@@ -98,6 +98,8 @@ include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
 
 === Get Patch Release Notes Information
 
+Get information about fixed security vulnerabilities in a new patch release.
+
 include::{snippets}/patchReleaseNotes/curl-request.adoc[]
 
 The expected response looks like this:

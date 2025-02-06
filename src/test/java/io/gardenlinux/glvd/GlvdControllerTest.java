@@ -187,7 +187,7 @@ class GlvdControllerTest {
                 .body("version", equalTo("1592.5"))
                 .body("packageList.sourcePackageName", hasItems("jinja2", "rsync", "curl", "python3.12"))
                 .body("packageList.fixedCves", hasItems(List.of("CVE-2024-56326"), List.of("CVE-2024-12085",
-                        "CVE-2024-12086"), List.of("CVE-2024-11053"), List.of("CVE-2024-9287")));
+                        "CVE-2024-12086"), List.of("CVE-2024-11053"), List.of("CVE-2024-9287", "CVE-2025-0938")));
     }
 
 }
