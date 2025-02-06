@@ -1,18 +1,15 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.CveDetailsWithContext;
-import io.gardenlinux.glvd.db.DebSrc;
 import io.gardenlinux.glvd.db.SourcePackage;
 import io.gardenlinux.glvd.db.SourcePackageCve;
+import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/v1", produces = MediaType.APPLICATION_JSON_VALUE)
