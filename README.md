@@ -32,9 +32,10 @@ The API is documented [here](https://gardenlinux.github.io/glvd-api/).
 Those requests and responses are generated from tests automatically using [Spring REST Docs](https://spring.io/projects/spring-restdocs).
 Note that you will need to adapt the hostname given in those docs.
 
-## Running the Tests locally
+## Running the tests
 
-GLVD API uses testcontainers to bring up the database automatically.
-For running it with `podman`, some setup is needed as described [here](https://java.testcontainers.org/supported_docker_environment/#podman).
+Since the tests depend on our specific postgres image with a defined set of data, we make use of a container for providing that.
 
-Running `test-on-mac-with-podman.sh` should work on macos with podman and a jdk set up.
+Starting this container can be done using the `start-db-for-test.sh` script.
+
+Once this is up, the tests can be run via Gradle or via any java IDE.
