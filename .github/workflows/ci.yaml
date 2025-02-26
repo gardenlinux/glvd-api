@@ -42,9 +42,6 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b # v4
 
-    - name: Build container image for DB in test
-      run: podman build -t localhost/glvd-postgres-test:latest -f TestDb.Containerfile .
-
     - name: Start container with postgres for testing
       run: docker compose --file unit-test-db-compose.yaml up --build --wait --detach
 
