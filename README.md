@@ -36,6 +36,11 @@ Note that you will need to adapt the hostname given in those docs.
 
 Since the tests depend on our specific postgres image with a defined set of data, we make use of a container for providing that.
 
-Starting this container can be done using the `start-db-for-test.sh` script.
+Running the tests should be as easy as:
 
-Once this is up, the tests can be run via Gradle or via any java IDE.
+```bash
+./start-db-for-test.sh
+./gradlew test --info
+```
+
+Alternativly, you can run the tests also in the Java IDE of your choice, as long as the db container is running.
