@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
--- Dumped by pg_dump version 17.2 (Debian 17.2-1+b1)
+-- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped by pg_dump version 17.4 (Debian 17.4-2)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,11 +25,50 @@ CREATE EXTENSION IF NOT EXISTS debversion WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION debversion IS 'Debian version number data type';
 
+
+--
+-- Name: assert_latest_migration(integer); Type: FUNCTION; Schema: public; Owner: glvd
+--
+
+CREATE FUNCTION public.assert_latest_migration(id integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    latest_id integer;
+BEGIN
+    SELECT
+        MAX(migrations.id) INTO latest_id
+    FROM
+        migrations;
+    ASSERT latest_id = id,
+    'migration assertion ' || id || ' failed, current latest is ' || latest_id;
+    RETURN;
+END;
+$$;
+
+
+ALTER FUNCTION public.assert_latest_migration(id integer) OWNER TO glvd;
+
+--
+-- Name: log_migration(integer); Type: FUNCTION; Schema: public; Owner: glvd
+--
+
+CREATE FUNCTION public.log_migration(id integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    INSERT INTO "migrations" (id)
+        VALUES (id);
+END;
+$$;
+
+
+ALTER FUNCTION public.log_migration(id integer) OWNER TO glvd;
 
 SET default_tablespace = '';
 
@@ -54,6 +93,7 @@ ALTER TABLE public.all_cve OWNER TO glvd;
 
 CREATE TABLE public.cve_context (
     dist_id integer NOT NULL,
+    gardenlinux_version text,
     cve_id text NOT NULL,
     create_date timestamp with time zone DEFAULT now() NOT NULL,
     context_descriptor text NOT NULL,
@@ -64,6 +104,22 @@ CREATE TABLE public.cve_context (
 
 
 ALTER TABLE public.cve_context OWNER TO glvd;
+
+--
+-- Name: cve_context_kernel; Type: TABLE; Schema: public; Owner: glvd
+--
+
+CREATE TABLE public.cve_context_kernel (
+    cve_id text NOT NULL,
+    lts_version text NOT NULL,
+    fixed_version text,
+    is_fixed boolean NOT NULL,
+    is_relevant_subsystem boolean NOT NULL,
+    source_data jsonb NOT NULL
+);
+
+
+ALTER TABLE public.cve_context_kernel OWNER TO glvd;
 
 --
 -- Name: cve_with_context; Type: VIEW; Schema: public; Owner: glvd
@@ -115,6 +171,7 @@ ALTER VIEW public.cvedetails OWNER TO glvd;
 
 CREATE TABLE public.deb_cve (
     dist_id integer NOT NULL,
+    gardenlinux_version text,
     cve_id text NOT NULL,
     last_mod timestamp with time zone DEFAULT now() NOT NULL,
     cvss_severity integer,
@@ -134,6 +191,7 @@ ALTER TABLE public.deb_cve OWNER TO glvd;
 
 CREATE TABLE public.debsec_cve (
     dist_id integer NOT NULL,
+    gardenlinux_version text,
     cve_id text NOT NULL,
     last_mod timestamp with time zone DEFAULT now() NOT NULL,
     deb_source text NOT NULL,
@@ -151,6 +209,7 @@ ALTER TABLE public.debsec_cve OWNER TO glvd;
 
 CREATE TABLE public.debsrc (
     dist_id integer NOT NULL,
+    gardenlinux_version text,
     last_mod timestamp with time zone DEFAULT now() NOT NULL,
     deb_source text NOT NULL,
     deb_version public.debversion NOT NULL
@@ -178,23 +237,27 @@ ALTER TABLE public.dist_cpe OWNER TO glvd;
 -- Name: dist_cpe_id_seq; Type: SEQUENCE; Schema: public; Owner: glvd
 --
 
-CREATE SEQUENCE public.dist_cpe_id_seq
-    AS integer
+ALTER TABLE public.dist_cpe ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.dist_cpe_id_seq
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
     NO MAXVALUE
-    CACHE 1;
+    CACHE 1
+);
 
-
-ALTER SEQUENCE public.dist_cpe_id_seq OWNER TO glvd;
 
 --
--- Name: dist_cpe_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: glvd
+-- Name: migrations; Type: TABLE; Schema: public; Owner: glvd
 --
 
-ALTER SEQUENCE public.dist_cpe_id_seq OWNED BY public.dist_cpe.id;
+CREATE TABLE public.migrations (
+    id integer NOT NULL,
+    migrated_at timestamp with time zone DEFAULT now() NOT NULL
+);
 
+
+ALTER TABLE public.migrations OWNER TO glvd;
 
 --
 -- Name: nvd_cve; Type: TABLE; Schema: public; Owner: glvd
@@ -298,18 +361,19 @@ CREATE VIEW public.sourcepackage AS
 ALTER VIEW public.sourcepackage OWNER TO glvd;
 
 --
--- Name: dist_cpe id; Type: DEFAULT; Schema: public; Owner: glvd
---
-
-ALTER TABLE ONLY public.dist_cpe ALTER COLUMN id SET DEFAULT nextval('public.dist_cpe_id_seq'::regclass);
-
-
---
 -- Name: all_cve all_cve_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
 --
 
 ALTER TABLE ONLY public.all_cve
     ADD CONSTRAINT all_cve_pkey PRIMARY KEY (cve_id);
+
+
+--
+-- Name: cve_context_kernel cve_context_kernel_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.cve_context_kernel
+    ADD CONSTRAINT cve_context_kernel_pkey PRIMARY KEY (cve_id, lts_version);
 
 
 --
@@ -353,6 +417,14 @@ ALTER TABLE ONLY public.dist_cpe
 
 
 --
+-- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.migrations
+    ADD CONSTRAINT migrations_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: nvd_cve nvd_cve_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
 --
 
@@ -372,11 +444,11 @@ CREATE INDEX deb_cve_search ON public.deb_cve USING btree (dist_id, debsec_vulne
 --
 
 CREATE OR REPLACE VIEW public.cvedetails AS
- SELECT all_cve.cve_id,
-    (all_cve.data -> 'vulnStatus'::text) AS vulnstatus,
-    (all_cve.data -> 'published'::text) AS published,
-    (all_cve.data -> 'lastModified'::text) AS modified,
-    all_cve.last_mod AS ingested,
+ SELECT nvd_cve.cve_id,
+    (nvd_cve.data -> 'vulnStatus'::text) AS vulnstatus,
+    (nvd_cve.data -> 'published'::text) AS published,
+    (nvd_cve.data -> 'lastModified'::text) AS modified,
+    nvd_cve.last_mod AS ingested,
     array_agg(cve_context.description) AS cve_context_description,
     array_agg(dist_cpe.cpe_product) AS distro,
     array_agg(dist_cpe.cpe_version) AS distro_version,
@@ -384,20 +456,20 @@ CREATE OR REPLACE VIEW public.cvedetails AS
     array_agg(deb_cve.deb_source) AS source_package_name,
     array_agg((deb_cve.deb_version)::text) AS source_package_version,
     array_agg((deb_cve.deb_version_fixed)::text) AS version_fixed,
-    (((all_cve.data -> 'descriptions'::text) -> 0) -> 'value'::text) AS description,
-    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v40,
-    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v31,
-    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v30,
-    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v2,
-    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v40,
-    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v31,
-    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v30,
-    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2
-   FROM (((public.all_cve
+    (((nvd_cve.data -> 'descriptions'::text) -> 0) -> 'value'::text) AS description,
+    ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v40,
+    ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v31,
+    ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v30,
+    ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v2,
+    (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v40,
+    (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v31,
+    (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v30,
+    (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2
+   FROM (((public.nvd_cve
      JOIN public.deb_cve USING (cve_id))
      JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
      FULL JOIN public.cve_context USING (cve_id, dist_id))
-  GROUP BY all_cve.cve_id;
+  GROUP BY nvd_cve.cve_id;
 
 
 --
