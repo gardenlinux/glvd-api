@@ -248,16 +248,28 @@ ALTER TABLE public.dist_cpe ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
--- Name: migrations; Type: TABLE; Schema: public; Owner: glvd
+-- Name: kernel_vulns; Type: VIEW; Schema: public; Owner: glvd
 --
 
-CREATE TABLE public.migrations (
-    id integer NOT NULL,
-    migrated_at timestamp with time zone DEFAULT now() NOT NULL
-);
+CREATE VIEW public.kernel_vulns AS
+ SELECT all_cve.cve_id,
+    deb_cve.deb_source AS source_package_name,
+    deb_cve.deb_version AS source_package_version,
+    dist_cpe.cpe_version AS gardenlinux_version,
+    ((((deb_cve.deb_version OPERATOR(public.<) (cve_context_kernel.fixed_version)::public.debversion) OR (cve_context_kernel.fixed_version IS NULL)) AND (cve_context_kernel.is_relevant_subsystem IS TRUE) AND (cve_context.is_resolved IS NOT TRUE)) = true) AS is_vulnerable,
+    cve_context_kernel.is_relevant_subsystem,
+    cve_context_kernel.lts_version,
+    (cve_context_kernel.fixed_version)::public.debversion AS fixed_version,
+    cve_context_kernel.is_fixed
+   FROM ((((public.all_cve
+     JOIN public.deb_cve USING (cve_id))
+     JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
+     FULL JOIN public.cve_context USING (cve_id, dist_id))
+     JOIN public.cve_context_kernel cve_context_kernel(cve_id_1, lts_version, fixed_version, is_fixed, is_relevant_subsystem, source_data) ON (((all_cve.cve_id = cve_context_kernel.cve_id_1) AND (cve_context_kernel.lts_version = concat(split_part((deb_cve.deb_version)::text, '.'::text, 1), '.', split_part((deb_cve.deb_version)::text, '.'::text, 2))))))
+  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND ((((deb_cve.deb_version OPERATOR(public.<) (cve_context_kernel.fixed_version)::public.debversion) OR (cve_context_kernel.fixed_version IS NULL)) AND (cve_context_kernel.is_relevant_subsystem IS TRUE) AND (cve_context.is_resolved IS NOT TRUE)) = true) AND (deb_cve.deb_source = 'linux'::text));
 
 
-ALTER TABLE public.migrations OWNER TO glvd;
+ALTER VIEW public.kernel_vulns OWNER TO glvd;
 
 --
 -- Name: nvd_cve; Type: TABLE; Schema: public; Owner: glvd
@@ -271,6 +283,61 @@ CREATE TABLE public.nvd_cve (
 
 
 ALTER TABLE public.nvd_cve OWNER TO glvd;
+
+--
+-- Name: kernel_cve; Type: VIEW; Schema: public; Owner: glvd
+--
+
+CREATE VIEW public.kernel_cve AS
+ SELECT k.cve_id,
+    k.source_package_name,
+    k.source_package_version,
+    k.gardenlinux_version,
+    k.lts_version,
+    k.is_vulnerable,
+    k.fixed_version,
+    (nvd.data ->> 'published'::text) AS cve_published_date,
+    (nvd.data ->> 'lastModified'::text) AS cve_last_modified_date,
+    nvd.last_mod AS cve_last_ingested_date,
+        CASE
+            WHEN (((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            ELSE NULL::numeric
+        END AS base_score,
+        CASE
+            WHEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            WHEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            WHEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            WHEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            ELSE NULL::text
+        END AS vector_string,
+    ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v40,
+    ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v31,
+    ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v30,
+    ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v2,
+    (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v40,
+    (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v31,
+    (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v30,
+    (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2
+   FROM (public.kernel_vulns k
+     JOIN public.nvd_cve nvd USING (cve_id));
+
+
+ALTER VIEW public.kernel_cve OWNER TO glvd;
+
+--
+-- Name: migrations; Type: TABLE; Schema: public; Owner: glvd
+--
+
+CREATE TABLE public.migrations (
+    id integer NOT NULL,
+    migrated_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.migrations OWNER TO glvd;
 
 --
 -- Name: sourcepackagecve; Type: VIEW; Schema: public; Owner: glvd
@@ -313,7 +380,7 @@ CREATE VIEW public.sourcepackagecve AS
      JOIN public.deb_cve USING (cve_id))
      JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
      FULL JOIN public.cve_context USING (cve_id, dist_id))
-  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true));
+  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true) AND (deb_cve.deb_source <> 'linux'::text));
 
 
 ALTER VIEW public.sourcepackagecve OWNER TO glvd;

@@ -38,9 +38,12 @@ public class GlvdService {
     @Nonnull
     private final DebSrcRepository debSrcRepository;
 
+    @Nonnull
+    private final KernelCveRepository kernelCveRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
@@ -48,6 +51,7 @@ public class GlvdService {
         this.distCpeRepository = distCpeRepository;
         this.nvdExclusiveCveRepository = nvdExclusiveCveRepository;
         this.debSrcRepository = debSrcRepository;
+        this.kernelCveRepository = kernelCveRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -158,6 +162,10 @@ public class GlvdService {
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
 
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
+    }
+
+    public List<KernelCve> kernelCvesForLtsVersion (String ltsVersion) {
+        return kernelCveRepository.findByLtsVersion(ltsVersion);
     }
 
 }

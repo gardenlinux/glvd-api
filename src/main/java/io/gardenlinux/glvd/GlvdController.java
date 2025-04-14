@@ -1,6 +1,7 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.CveDetailsWithContext;
+import io.gardenlinux.glvd.db.KernelCve;
 import io.gardenlinux.glvd.db.SourcePackage;
 import io.gardenlinux.glvd.db.SourcePackageCve;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
@@ -139,4 +140,8 @@ public class GlvdController {
         return glvdService.releaseNote(gardenlinuxVersion);
     }
 
+    @GetMapping("/kernel/{ltsVersion}")
+    ResponseEntity<List<KernelCve>> kernelCves(@PathVariable String ltsVersion) {
+        return ResponseEntity.ok(glvdService.kernelCvesForLtsVersion(ltsVersion));
+    }
 }
