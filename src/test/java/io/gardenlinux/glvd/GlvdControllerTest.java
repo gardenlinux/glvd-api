@@ -45,7 +45,8 @@ class GlvdControllerTest {
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.4?sortBy=cveId&sortOrder=DESC")
-                .then().statusCode(HttpStatus.SC_OK);
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("sourcePackageName", hasItems("curl", "rsync", "jinja2", "python3.12", "linux"));
     }
 
     @Test
@@ -138,6 +139,18 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldGetCveDetailsWithContextsForKernelCve() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsWithContexts",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/CVE-2025-21864")
+                .then().statusCode(200)
+                .body("details.cveId", equalTo("CVE-2025-21864"))
+                .body("contexts.description", hasItems("asdfasdf"));
+    }
+
+    @Test
     public void shouldGeneratePatchReleaseNotesInformation() {
         given(this.spec).accept("application/json")
                 .filter(document("patchReleaseNotes",
@@ -149,6 +162,19 @@ class GlvdControllerTest {
                 .body("packageList.sourcePackageName", hasItems("jinja2", "rsync", "curl", "python3.12"))
                 .body("packageList.fixedCves", hasItems(List.of("CVE-2024-56326"), List.of("CVE-2024-12085",
                         "CVE-2024-12086"), List.of("CVE-2024-11053"), List.of("CVE-2024-9287", "CVE-2025-0938")));
+    }
+
+    @Test
+    public void shouldGeneratePatchReleaseNotesInformationWithKernelCveResolved() {
+        given(this.spec).accept("application/json")
+                .filter(document("patchReleaseNotes",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/patchReleaseNotes/1592.7")
+                .then().statusCode(200)
+                .body("version", equalTo("1592.7"))
+                .body("packageList.sourcePackageName", hasItems("linux"))
+                .body("packageList.fixedCves", hasItems(List.of("CVE-2025-21864")));
     }
 
 }

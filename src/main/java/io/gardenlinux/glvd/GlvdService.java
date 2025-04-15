@@ -43,9 +43,12 @@ public class GlvdService {
     @Nonnull
     private final KernelCveRepository kernelCveRepository;
 
+    @Nonnull
+    private final KernelCveDetailsRepository kernelCveDetailsRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
@@ -54,6 +57,7 @@ public class GlvdService {
         this.nvdExclusiveCveRepository = nvdExclusiveCveRepository;
         this.debSrcRepository = debSrcRepository;
         this.kernelCveRepository = kernelCveRepository;
+        this.kernelCveDetailsRepository = kernelCveDetailsRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -99,7 +103,10 @@ public class GlvdService {
                 .toList();
 
         return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
+    }
 
+    public List<KernelCve> kernelCvesForGardenLinuxVersion (String gardenlinuxVersion) {
+        return kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
     private String wrap(String input) {
@@ -136,8 +143,15 @@ public class GlvdService {
         );
     }
 
-    public CveDetails getCveDetails(String cveId) {
-        return cveDetailsRepository.findByCveId(cveId);
+    public CveDetail getCveDetails(String cveId) {
+        var kernelCveDetailsOptional = kernelCveDetailsRepository.findByCveId(cveId);
+        if (kernelCveDetailsOptional.isPresent()) {
+            var k = kernelCveDetailsOptional.get();
+            return new CveDetail(k.getCveId(), k.getVulnStatus(), k.getDescription(), k.getCvePublishedDate(), k.getCveModifiedDate(), k.getCveIngestedDate(), k.getLtsVersion(), k.getFixedVersion(), k.getIsFixed(), k.getIsRelevantSubsystem(), null, null, null, null, null, k.getFixedVersion(), k.getBaseScoreV40(), k.getBaseScoreV31(), k.getBaseScoreV30(), k.getBaseScoreV2(), k.getVectorStringV40(), k.getVectorStringV31(), k.getVectorStringV30(), k.getVectorStringV2());
+        }
+        var c = cveDetailsRepository.findByCveId(cveId);
+
+        return new CveDetail(c.getCveId(), c.getVulnStatus(), c.getDescription(), c.getCvePublishedDate(), c.getCveModifiedDate(), c.getCveIngestedDate(), null, null, null, null, c.getDistro(), c.getDistroVersion(), c.getIsVulnerable(), c.getSourcePackageName(), c.getSourcePackageVersion(), c.getVersionFixed(), c.getBaseScoreV40(), c.getBaseScoreV31(), c.getBaseScoreV30(), c.getBaseScoreV2(), c.getVectorStringV40(), c.getVectorStringV31(), c.getVectorStringV30(), c.getVectorStringV2());
     }
 
     public List<CveContext> getCveContexts(String cveId) {
@@ -172,14 +186,6 @@ public class GlvdService {
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
 
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
-    }
-
-    public List<KernelCve> kernelCvesForLtsVersion (String ltsVersion) {
-        return kernelCveRepository.findByLtsVersion(ltsVersion);
-    }
-
-    public List<KernelCve> kernelCvesForGardenLinuxVersion (String gardenlinuxVersion) {
-        return kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
 }
