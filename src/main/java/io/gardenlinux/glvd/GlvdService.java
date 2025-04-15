@@ -168,4 +168,8 @@ public class GlvdService {
         return kernelCveRepository.findByLtsVersion(ltsVersion);
     }
 
+    public List<KernelCve> kernelCvesForGardenLinuxVersion (String gardenlinuxVersion) {
+        return kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
+    }
+
 }
