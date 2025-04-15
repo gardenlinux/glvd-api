@@ -140,8 +140,13 @@ public class GlvdController {
         return glvdService.releaseNote(gardenlinuxVersion);
     }
 
-    @GetMapping("/kernel/{ltsVersion}")
-    ResponseEntity<List<KernelCve>> kernelCves(@PathVariable String ltsVersion) {
+    @GetMapping("/kernel/lts/{ltsVersion}")
+    ResponseEntity<List<KernelCve>> kernelCvesLts(@PathVariable String ltsVersion) {
         return ResponseEntity.ok(glvdService.kernelCvesForLtsVersion(ltsVersion));
+    }
+
+    @GetMapping("/kernel/gardenlinux/{gardenlinuxVersion}")
+    ResponseEntity<List<KernelCve>> kernelCvesGardenlinux(@PathVariable String gardenlinuxVersion) {
+        return ResponseEntity.ok(glvdService.kernelCvesForGardenLinuxVersion(gardenlinuxVersion));
     }
 }

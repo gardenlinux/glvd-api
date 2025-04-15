@@ -70,6 +70,9 @@ public class KernelCve {
     @Column(name = "vector_string_v2", nullable = true)
     private String vectorStringV2;
 
+    public KernelCve() {
+    }
+
     public KernelCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, String ltsVersion, boolean isVulnerable, String fixedVersion, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.sourcePackageName = sourcePackageName;
