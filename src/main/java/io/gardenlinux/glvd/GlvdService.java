@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class GlvdService {
@@ -87,9 +89,17 @@ public class GlvdService {
     }
 
     public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findByGardenlinuxVersion(
+        var cvesExcludingKernel =  sourcePackageCveRepository.findByGardenlinuxVersion(
                 gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
         );
+
+        var kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
+                .stream()
+                .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                .toList();
+
+        return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
+
     }
 
     private String wrap(String input) {
