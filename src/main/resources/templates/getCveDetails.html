@@ -35,9 +35,9 @@
 <p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
 <p th:text="|Vector String (Version 2): ${cveDetails.vectorStringV2}|" />
 
-<h2>Affected Kernel Versions</h2>
+<h2 th:if="${cveDetails.ltsVersion != null and !#lists.isEmpty(cveDetails.ltsVersion)}">Affected Kernel Versions</h2>
 
-<table>
+<table th:if="${cveDetails.ltsVersion != null and !#lists.isEmpty(cveDetails.ltsVersion)}">
     <thead>
     <tr>
         <th>LTS Version</th>
@@ -55,9 +55,9 @@
 
 </table>
 
-<h2>Affected Linux Versions</h2>
+<h2 th:if="${cveDetails.distro != null and !#lists.isEmpty(cveDetails.distro)}">Affected Linux Versions</h2>
 
-<table>
+<table th:if="${cveDetails.distro != null and !#lists.isEmpty(cveDetails.distro)}">
     <thead>
     <tr>
         <th>Distro</th>
@@ -65,7 +65,7 @@
         <th>Source Package</th>
         <th>Package Version</th>
         <th>Is Vulnerable</th>
-        <th>Is fixed in Version</th>
+        <th th:if="${cveDetails.ltsVersion == null or #lists.isEmpty(cveDetails.ltsVersion)}">Is fixed in Version</th>
     </tr>
     </thead>
     <tr th:each="distro,iterStat : ${cveDetails.distro}">
@@ -74,7 +74,7 @@
         <td th:text="${cveDetails.sourcePackageName[__${iterStat.index}__]}"></td>
         <td th:text="${cveDetails.sourcePackageVersion[__${iterStat.index}__]}"></td>
         <td th:text="${cveDetails.isVulnerable[__${iterStat.index}__]}"></td>
-        <td th:text="${cveDetails.versionFixed[__${iterStat.index}__]}"></td>
+        <td th:if="${cveDetails.ltsVersion == null or #lists.isEmpty(cveDetails.ltsVersion)}" th:text="${cveDetails.versionFixed[__${iterStat.index}__]}"></td>
     </tr>
 
 </table>

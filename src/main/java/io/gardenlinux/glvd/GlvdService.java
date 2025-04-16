@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -93,7 +92,7 @@ public class GlvdService {
     }
 
     public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
-        var cvesExcludingKernel =  sourcePackageCveRepository.findByGardenlinuxVersion(
+        var cvesExcludingKernel = sourcePackageCveRepository.findByGardenlinuxVersion(
                 gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
         );
 
@@ -105,7 +104,7 @@ public class GlvdService {
         return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
     }
 
-    public List<KernelCve> kernelCvesForGardenLinuxVersion (String gardenlinuxVersion) {
+    public List<KernelCve> kernelCvesForGardenLinuxVersion(String gardenlinuxVersion) {
         return kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
@@ -144,14 +143,19 @@ public class GlvdService {
     }
 
     public CveDetail getCveDetails(String cveId) {
+        // special case handling for kernel cves
+        // the information provided by debian does not apply to Garden Linux because we maintain our own builds of LTS kernels
+        // for this reason, is a cve is looked up, check first if it is a kernel cve and prefer that over what we have
         var kernelCveDetailsOptional = kernelCveDetailsRepository.findByCveId(cveId);
-        if (kernelCveDetailsOptional.isPresent()) {
-            var k = kernelCveDetailsOptional.get();
-            return new CveDetail(k.getCveId(), k.getVulnStatus(), k.getDescription(), k.getCvePublishedDate(), k.getCveModifiedDate(), k.getCveIngestedDate(), k.getLtsVersion(), k.getFixedVersion(), k.getIsFixed(), k.getIsRelevantSubsystem(), null, null, null, null, null, k.getFixedVersion(), k.getBaseScoreV40(), k.getBaseScoreV31(), k.getBaseScoreV30(), k.getBaseScoreV2(), k.getVectorStringV40(), k.getVectorStringV31(), k.getVectorStringV30(), k.getVectorStringV2());
-        }
-        var c = cveDetailsRepository.findByCveId(cveId);
 
-        return new CveDetail(c.getCveId(), c.getVulnStatus(), c.getDescription(), c.getCvePublishedDate(), c.getCveModifiedDate(), c.getCveIngestedDate(), null, null, null, null, c.getDistro(), c.getDistroVersion(), c.getIsVulnerable(), c.getSourcePackageName(), c.getSourcePackageVersion(), c.getVersionFixed(), c.getBaseScoreV40(), c.getBaseScoreV31(), c.getBaseScoreV30(), c.getBaseScoreV2(), c.getVectorStringV40(), c.getVectorStringV31(), c.getVectorStringV30(), c.getVectorStringV2());
+        var debianCveDetails = cveDetailsRepository.findByCveId(cveId);
+
+        if (kernelCveDetailsOptional.isPresent()) {
+            var kernelCveDetails = kernelCveDetailsOptional.get();
+            return CveDetail.fromKernelCve(kernelCveDetails, new KernelDistroVersions(debianCveDetails.getDistro(), debianCveDetails.getDistroVersion(), debianCveDetails.getSourcePackageName(), debianCveDetails.getSourcePackageVersion()));
+        }
+
+        return CveDetail.fromDebianCve(debianCveDetails);
     }
 
     public List<CveContext> getCveContexts(String cveId) {
