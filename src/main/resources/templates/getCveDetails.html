@@ -35,7 +35,7 @@
 <p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
 <p th:text="|Vector String (Version 2): ${cveDetails.vectorStringV2}|" />
 
-<h2 th:if="${cveDetails.ltsVersion != null and !#lists.isEmpty(cveDetails.ltsVersion)}">Affected Kernel Versions</h2>
+<h2 th:if="${cveDetails.ltsVersion != null and !#lists.isEmpty(cveDetails.ltsVersion)}">Affected Linux Kernel Versions</h2>
 
 <table th:if="${cveDetails.ltsVersion != null and !#lists.isEmpty(cveDetails.ltsVersion)}">
     <thead>
@@ -55,7 +55,7 @@
 
 </table>
 
-<h2 th:if="${cveDetails.distro != null and !#lists.isEmpty(cveDetails.distro)}">Affected Linux Versions</h2>
+<h2 th:if="${cveDetails.distro != null and !#lists.isEmpty(cveDetails.distro)}">Affected Linux Images</h2>
 
 <table th:if="${cveDetails.distro != null and !#lists.isEmpty(cveDetails.distro)}">
     <thead>
