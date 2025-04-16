@@ -51,8 +51,6 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
     static CveDetail fromKernelCve(KernelCveDetails k, KernelDistroVersions kernelDistroVersions) {
         var glVulnerability = determineGlVulnerability(k, kernelDistroVersions);
 
-        assert glVulnerability.size() == kernelDistroVersions.distros().size();
-
         var distros = new ArrayList<String>(kernelDistroVersions.distros().size());
         var distroVersions = new ArrayList<String>(kernelDistroVersions.distros().size());
         var sourcePackageNames = new ArrayList<String>(kernelDistroVersions.distros().size());
