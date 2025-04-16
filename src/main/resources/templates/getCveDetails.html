@@ -35,6 +35,26 @@
 <p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
 <p th:text="|Vector String (Version 2): ${cveDetails.vectorStringV2}|" />
 
+<h2>Affected Kernel Versions</h2>
+
+<table>
+    <thead>
+    <tr>
+        <th>LTS Version</th>
+        <th>Is fixed in</th>
+        <th>Is fixed</th>
+        <th>Affects relevant subsystem</th>
+    </tr>
+    </thead>
+    <tr th:each="ltsVersion,iterStat : ${cveDetails.ltsVersion}">
+        <td th:text="${ltsVersion}"></td>
+        <td th:text="${cveDetails.fixedVersion[__${iterStat.index}__]}"></td>
+        <td th:text="${cveDetails.isFixed[__${iterStat.index}__]}"></td>
+        <td th:text="${cveDetails.isRelevantSubsystem[__${iterStat.index}__]}"></td>
+    </tr>
+
+</table>
+
 <h2>Affected Linux Versions</h2>
 
 <table>
