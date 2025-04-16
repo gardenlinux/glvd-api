@@ -141,7 +141,7 @@ class GlvdControllerTest {
     @Test
     public void shouldGetCveDetailsWithContextsForKernelCve() {
         given(this.spec).accept("application/json")
-                .filter(document("getCveDetailsWithContexts",
+                .filter(document("getCveDetailsWithContextsKernel",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cveDetails/CVE-2025-21864")
