@@ -50,7 +50,17 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
 
     static CveDetail fromKernelCve(KernelCveDetails k, KernelDistroVersions kernelDistroVersions) {
         var glVulnerability = determineGlVulnerability(k, kernelDistroVersions);
+        DistroInfo result = filterNonGardenLinuxDistros(kernelDistroVersions);
+        return new CveDetail(k.getCveId(), k.getVulnStatus(), k.getDescription(), k.getCvePublishedDate(),
+                k.getCveModifiedDate(), k.getCveIngestedDate(), k.getLtsVersion(),
+                k.getFixedVersion(), k.getIsFixed(), k.getIsRelevantSubsystem(), result.distros(), result.distroVersions(),
+                glVulnerability, result.sourcePackageNames(), result.kernelVersions(),
+                k.getFixedVersion(), k.getBaseScoreV40(), k.getBaseScoreV31(), k.getBaseScoreV30(), k.getBaseScoreV2(),
+                k.getVectorStringV40(), k.getVectorStringV31(),
+                k.getVectorStringV30(), k.getVectorStringV2());
+    }
 
+    private static DistroInfo filterNonGardenLinuxDistros(KernelDistroVersions kernelDistroVersions) {
         var distros = new ArrayList<String>(kernelDistroVersions.distros().size());
         var distroVersions = new ArrayList<String>(kernelDistroVersions.distros().size());
         var sourcePackageNames = new ArrayList<String>(kernelDistroVersions.distros().size());
@@ -63,13 +73,10 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
                 kernelVersions.add(kernelDistroVersions.kernelVersions().get(i));
             }
         }
-        return new CveDetail(k.getCveId(), k.getVulnStatus(), k.getDescription(), k.getCvePublishedDate(),
-                k.getCveModifiedDate(), k.getCveIngestedDate(), k.getLtsVersion(),
-                k.getFixedVersion(), k.getIsFixed(), k.getIsRelevantSubsystem(), distros, distroVersions,
-                glVulnerability, sourcePackageNames, kernelVersions,
-                k.getFixedVersion(), k.getBaseScoreV40(), k.getBaseScoreV31(), k.getBaseScoreV30(), k.getBaseScoreV2(),
-                k.getVectorStringV40(), k.getVectorStringV31(),
-                k.getVectorStringV30(), k.getVectorStringV2());
+        return new DistroInfo(distros, distroVersions, sourcePackageNames, kernelVersions);
+    }
+
+    private record DistroInfo(ArrayList<String> distros, ArrayList<String> distroVersions, ArrayList<String> sourcePackageNames, ArrayList<String> kernelVersions) {
     }
 
     static CveDetail fromDebianCve(CveDetails c) {

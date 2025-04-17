@@ -16,8 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.document;
 import static org.springframework.restdocs.restassured.RestAssuredRestDocumentation.documentationConfiguration;
@@ -147,7 +146,24 @@ class GlvdControllerTest {
                 .when().port(this.port).get("/v1/cveDetails/CVE-2025-21864")
                 .then().statusCode(200)
                 .body("details.cveId", equalTo("CVE-2025-21864"))
+                .body("details.kernelLtsVersion[0]", equalTo("6.6"))
+                .body("details.kernelLtsVersion[1]", equalTo("6.12"))
                 .body("contexts.description", hasItems("Unit test for https://github.com/gardenlinux/glvd/issues/122"));
+    }
+
+    @Test
+    public void shouldGetCveDetailsForKernelCve() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsKernel",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/CVE-2024-53140")
+                .then().statusCode(200)
+                .body("details.cveId", equalTo("CVE-2024-53140"))
+                .body("details.kernelLtsVersion[0]", equalTo("6.6"))
+                .body("details.kernelLtsVersion[1]", equalTo("6.12"))
+                // has no cve context, assert it has no items in that list
+                .body("contexts", empty());
     }
 
     @Test

@@ -24,11 +24,25 @@ class LinuxKernelVersionTest {
     }
 
     @Test
+    void testParseRawVersionNoPatchVersion() {
+        List<Integer> components = LinuxKernelVersion.parseRawVersion("6.12");
+        assertEquals(List.of(6, 12), components);
+    }
+
+    @Test
+    void testParseRawVersionFourParts() {
+        Exception exception = assertThrows(RuntimeException.class, () -> {
+            LinuxKernelVersion.parseRawVersion("6.12.23.42");
+        });
+        assertEquals("Expected 6.12.23.42 to follow the format of 6.12 or 6.12.23 or 6.12.23-somethingoptional", exception.getMessage());
+    }
+
+    @Test
     void testParseRawVersionInvalidFormat() {
         Exception exception = assertThrows(RuntimeException.class, () -> {
             LinuxKernelVersion.parseRawVersion("invalid-version");
         });
-        assertEquals("Expected invalid-version to follow the format of 6.12.23-somethingoptional", exception.getMessage());
+        assertEquals("Expected invalid-version to follow the format of 6.12 or 6.12.23 or 6.12.23-somethingoptional", exception.getMessage());
     }
 
     @Test
@@ -51,6 +65,14 @@ class LinuxKernelVersionTest {
         String expected = "LinuxKernelVersion{rawVersion='6.12.23', major=6, minor=12, patch=23}";
         assertEquals(expected, version.toString());
     }
+
+    @Test
+    void testToStringNullable() {
+        LinuxKernelVersion version = LinuxKernelVersion.fromRawVersion("6.12");
+        String expected = "LinuxKernelVersion{rawVersion='6.12', major=6, minor=12, patch=null}";
+        assertEquals(expected, version.toString());
+    }
+
 
     @Test
     void testToStringWithDash() {

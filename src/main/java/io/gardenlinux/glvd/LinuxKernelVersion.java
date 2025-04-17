@@ -1,16 +1,20 @@
 package io.gardenlinux.glvd;
 
+import jakarta.annotation.Nullable;
+
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class LinuxKernelVersion implements Comparable<LinuxKernelVersion> {
     final int major;
     final int minor;
-    final int patch;
+    @Nullable
+    final Integer patch;
     private final String rawVersion;
 
 
-    private LinuxKernelVersion(String rawVersion, int major, int minor, int patch) {
+    private LinuxKernelVersion(String rawVersion, int major, int minor, Integer patch) {
         this.rawVersion = rawVersion;
         this.major = major;
         this.minor = minor;
@@ -19,7 +23,10 @@ public class LinuxKernelVersion implements Comparable<LinuxKernelVersion> {
 
     static LinuxKernelVersion fromRawVersion(String rawVersion) {
         var components = parseRawVersion(rawVersion);
-        return new LinuxKernelVersion(rawVersion, components.get(0), components.get(1), components.get(2));
+        if (components.size() == 3) {
+            return new LinuxKernelVersion(rawVersion, components.get(0), components.get(1), components.get(2));
+        }
+        return new LinuxKernelVersion(rawVersion, components.get(0), components.get(1), null);
     }
 
     static List<Integer> parseRawVersion(String rawVersion) {
@@ -28,8 +35,8 @@ public class LinuxKernelVersion implements Comparable<LinuxKernelVersion> {
         var componentsDash = rawVersion.split("-");
         var componentsDot = componentsDash[0].split("\\.");
 
-        if (componentsDot.length != 3) {
-            throw new RuntimeException("Expected " + rawVersion + " to follow the format of 6.12.23-somethingoptional");
+        if (componentsDot.length < 2 || componentsDot.length > 3) {
+            throw new RuntimeException("Expected " + rawVersion + " to follow the format of 6.12 or 6.12.23 or 6.12.23-somethingoptional");
         }
 
         return Arrays.stream(componentsDot).map(Integer::parseInt).toList();
@@ -50,7 +57,7 @@ public class LinuxKernelVersion implements Comparable<LinuxKernelVersion> {
         }
 
         // If minor versions are equal, compare patch versions
-        return Integer.compare(this.patch, o.patch);
+        return Comparator.nullsFirst(Integer::compareTo).compare(this.patch, o.patch);
     }
 
     @Override

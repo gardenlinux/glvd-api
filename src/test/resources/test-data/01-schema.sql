@@ -594,7 +594,7 @@ CREATE OR REPLACE VIEW public.kernel_cvedetails AS
     (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2
    FROM ((public.nvd_cve
      JOIN public.cve_context_kernel USING (cve_id))
-     JOIN public.cve_context USING (cve_id))
+     FULL JOIN public.cve_context USING (cve_id))
   GROUP BY nvd_cve.cve_id;
 
 
