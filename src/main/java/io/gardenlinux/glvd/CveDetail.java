@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record CveDetail(String cveId, String vulnStatus, String description, String cvePublishedDate,
-                        String cveModifiedDate, String cveIngestedDate, List<String> ltsVersion,
-                        List<String> fixedVersion, List<Boolean> isFixed, List<Boolean> isRelevantSubsystem,
+                        String cveModifiedDate, String cveIngestedDate, List<String> kernelLtsVersion,
+                        List<String> kernelFixedVersion, List<Boolean> kernelIsFixed, List<Boolean> kernelIsRelevantSubsystem,
                         List<String> distro, List<String> distroVersion, List<Boolean> isVulnerable,
                         List<String> sourcePackageName, List<String> sourcePackageVersion, List<String> versionFixed,
                         Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2,
