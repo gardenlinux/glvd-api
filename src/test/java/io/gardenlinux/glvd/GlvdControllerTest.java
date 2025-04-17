@@ -146,8 +146,8 @@ class GlvdControllerTest {
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cveDetails/CVE-2025-21864")
                 .then().statusCode(200)
-                .body("details.cveId", equalTo("CVE-2025-21864"));
-        // fixme: test for cve context
+                .body("details.cveId", equalTo("CVE-2025-21864"))
+                .body("contexts.description", hasItems("Unit test for https://github.com/gardenlinux/glvd/issues/122"));
     }
 
     @Test
