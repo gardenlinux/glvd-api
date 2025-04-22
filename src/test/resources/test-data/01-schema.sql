@@ -257,6 +257,7 @@ CREATE VIEW public.kernel_vulns AS
     deb_cve.deb_version AS source_package_version,
     dist_cpe.cpe_version AS gardenlinux_version,
     ((((deb_cve.deb_version OPERATOR(public.<) (cve_context_kernel.fixed_version)::public.debversion) OR (cve_context_kernel.fixed_version IS NULL)) AND (cve_context_kernel.is_relevant_subsystem IS TRUE) AND (cve_context.is_resolved IS NOT TRUE)) = true) AS is_vulnerable,
+    cve_context.is_resolved,
     cve_context_kernel.is_relevant_subsystem,
     cve_context_kernel.lts_version,
     (cve_context_kernel.fixed_version)::public.debversion AS fixed_version,
@@ -266,7 +267,7 @@ CREATE VIEW public.kernel_vulns AS
      JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
      FULL JOIN public.cve_context USING (cve_id, dist_id))
      JOIN public.cve_context_kernel cve_context_kernel(cve_id_1, lts_version, fixed_version, is_fixed, is_relevant_subsystem, source_data) ON (((all_cve.cve_id = cve_context_kernel.cve_id_1) AND (cve_context_kernel.lts_version = concat(split_part((deb_cve.deb_version)::text, '.'::text, 1), '.', split_part((deb_cve.deb_version)::text, '.'::text, 2))))))
-  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND ((((deb_cve.deb_version OPERATOR(public.<) (cve_context_kernel.fixed_version)::public.debversion) OR (cve_context_kernel.fixed_version IS NULL)) AND (cve_context_kernel.is_relevant_subsystem IS TRUE) AND (cve_context.is_resolved IS NOT TRUE)) = true) AND (deb_cve.deb_source = 'linux'::text));
+  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND ((((deb_cve.deb_version OPERATOR(public.<) (cve_context_kernel.fixed_version)::public.debversion) OR (cve_context_kernel.fixed_version IS NULL)) AND (cve_context_kernel.is_relevant_subsystem IS TRUE)) = true) AND (deb_cve.deb_source = 'linux'::text));
 
 
 ALTER VIEW public.kernel_vulns OWNER TO glvd;

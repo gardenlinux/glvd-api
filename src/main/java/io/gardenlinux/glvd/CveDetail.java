@@ -34,11 +34,11 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
                 var myKernelVersion = kernelDistroVersions.kernelVersions().get(i);
                 for (String lts : k.getLtsVersion()) {
                     if (myKernelVersion.startsWith(lts)) {
-                        var yourKernelVersions = k.getFixedVersion().stream().filter(s -> s.startsWith(lts)).toList();
+                        var yourKernelVersions = k.getFixedVersion().stream().filter(s -> s != null && s.startsWith(lts)).toList();
                         if (yourKernelVersions.size() == 1) {
                             ret.add(compareVersions(myKernelVersion, yourKernelVersions.getFirst()));
                         } else {
-                            ret.add(Boolean.FALSE);
+                            ret.add(Boolean.TRUE);
                         }
                     }
                 }

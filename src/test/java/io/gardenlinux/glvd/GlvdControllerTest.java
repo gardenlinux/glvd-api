@@ -49,6 +49,19 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldReturnCvesForGardenlinuxShouldNotReturnKernelCveMarkedAsResolved() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForDistro",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/1592.5?sortBy=cveId&sortOrder=DESC")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("cveId", hasItems("CVE-2025-0938", "CVE-2025-21864", "CVE-2024-44953"))
+                // CVE-2024-44953 is actually vulnerable, but marked as resolved via cve_context, thus it must return 'false' here
+                .body("vulnerable", hasItems(true, true, false));
+    }
+
+    @Test
     public void shouldReturnCvesForListOfPackages() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForPackages",
@@ -164,6 +177,21 @@ class GlvdControllerTest {
                 .body("details.kernelLtsVersion[1]", equalTo("6.12"))
                 // has no cve context, assert it has no items in that list
                 .body("contexts", empty());
+    }
+
+    @Test
+    public void shouldGetCveDetailsWithContextsForKernelCveIsResolved() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsKernel",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/CVE-2024-44953")
+                .then().statusCode(200)
+                .body("details.cveId", equalTo("CVE-2024-44953"))
+                .body("details.kernelLtsVersion[0]", equalTo("6.6"))
+                .body("details.kernelLtsVersion[1]", equalTo("6.12"))
+                // Is explicitly marked as "resolved"
+                .body("contexts.resolved", hasItems(true));
     }
 
     @Test
