@@ -187,6 +187,7 @@ class GlvdControllerTest {
                 .body("details.cveId", equalTo("CVE-2025-21864"))
                 .body("details.kernelLtsVersion[0]", equalTo("6.6"))
                 .body("details.kernelLtsVersion[1]", equalTo("6.12"))
+                .body("details.isVulnerable", is(List.of(false, true, true, true, false, false, false, false)))
                 .body("contexts.description", hasItems("Unit test for https://github.com/gardenlinux/glvd/issues/122"));
     }
 
@@ -201,6 +202,7 @@ class GlvdControllerTest {
                 .body("details.cveId", equalTo("CVE-2024-53140"))
                 .body("details.kernelLtsVersion[0]", equalTo("6.6"))
                 .body("details.kernelLtsVersion[1]", equalTo("6.12"))
+                .body("details.isVulnerable", is(List.of(false, false, false, false, false, false, false, false)))
                 // has no cve context, assert it has no items in that list
                 .body("contexts", empty());
     }
@@ -216,6 +218,8 @@ class GlvdControllerTest {
                 .body("details.cveId", equalTo("CVE-2024-44953"))
                 .body("details.kernelLtsVersion[0]", equalTo("6.6"))
                 .body("details.kernelLtsVersion[1]", equalTo("6.12"))
+                // This CVE is not fixed in any kernel, so all are vulnerable
+                .body("details.isVulnerable", is(List.of(true, true, true, true, true, true, true, true)))
                 // Is explicitly marked as "resolved"
                 .body("contexts.resolved", hasItems(true));
     }
