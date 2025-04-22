@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Service
 public class GlvdService {
@@ -38,9 +40,15 @@ public class GlvdService {
     @Nonnull
     private final DebSrcRepository debSrcRepository;
 
+    @Nonnull
+    private final KernelCveRepository kernelCveRepository;
+
+    @Nonnull
+    private final KernelCveDetailsRepository kernelCveDetailsRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
@@ -48,6 +56,8 @@ public class GlvdService {
         this.distCpeRepository = distCpeRepository;
         this.nvdExclusiveCveRepository = nvdExclusiveCveRepository;
         this.debSrcRepository = debSrcRepository;
+        this.kernelCveRepository = kernelCveRepository;
+        this.kernelCveDetailsRepository = kernelCveDetailsRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -83,9 +93,20 @@ public class GlvdService {
     }
 
     public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findByGardenlinuxVersion(
+        var cvesExcludingKernel = sourcePackageCveRepository.findByGardenlinuxVersion(
                 gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions)
         );
+
+        var kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
+                .stream()
+                .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                .toList();
+
+        return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
+    }
+
+    public List<KernelCve> kernelCvesForGardenLinuxVersion(String gardenlinuxVersion) {
+        return kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion);
     }
 
     private String wrap(String input) {
@@ -93,9 +114,20 @@ public class GlvdService {
     }
 
     public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion(
+        List<SourcePackageCve> kernelCves = new ArrayList<>();
+        if (packages.contains("linux")) {
+            kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
+                    .stream()
+                    .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                    .toList();
+
+        }
+
+        var cvesExcludingKernel = sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion(
                 wrap(packages), gardenlinuxVersion, determinePageAndSortFeatures2(sortAndPageOptions)
         );
+
+        return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
     }
 
     public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
@@ -122,8 +154,20 @@ public class GlvdService {
         );
     }
 
-    public CveDetails getCveDetails(String cveId) {
-        return cveDetailsRepository.findByCveId(cveId);
+    public CveDetail getCveDetails(String cveId) {
+        // special case handling for kernel cves
+        // the information provided by debian does not apply to Garden Linux because we maintain our own builds of LTS kernels
+        // for this reason, is a cve is looked up, check first if it is a kernel cve and prefer that over what we have
+        var kernelCveDetailsOptional = kernelCveDetailsRepository.findByCveId(cveId);
+
+        var debianCveDetails = cveDetailsRepository.findByCveId(cveId);
+
+        if (kernelCveDetailsOptional.isPresent()) {
+            var kernelCveDetails = kernelCveDetailsOptional.get();
+            return CveDetail.fromKernelCve(kernelCveDetails, new KernelDistroVersions(debianCveDetails.getDistro(), debianCveDetails.getDistroVersion(), debianCveDetails.getSourcePackageName(), debianCveDetails.getSourcePackageVersion()));
+        }
+
+        return CveDetail.fromDebianCve(debianCveDetails);
     }
 
     public List<CveContext> getCveContexts(String cveId) {

@@ -96,6 +96,18 @@ The expected response looks like this:
 
 include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
 
+==== Linux Kernel CVEs
+
+For CVEs that match the linux kernel, the structure of the response is different.
+This is because unlike for other CVEs, we can't take the data from the Debian Security Tracker.
+Instead, we ingest data from the upstream kernel developers for the LTS kernel versions available in Garden Linux.
+
+include::{snippets}/getCveDetailsWithContextsKernel/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveDetailsWithContextsKernel/http-response.adoc[]
+
 === Get Patch Release Notes Information
 
 Get information about fixed security vulnerabilities in a new patch release.
