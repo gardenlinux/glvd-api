@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -113,9 +114,20 @@ public class GlvdService {
     }
 
     public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages, SortAndPageOptions sortAndPageOptions) {
-        return sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion(
+        List<SourcePackageCve> kernelCves = new ArrayList<>();
+        if (packages.contains("linux")) {
+            kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
+                    .stream()
+                    .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                    .toList();
+
+        }
+
+        var cvesExcludingKernel = sourcePackageCveRepository.findBySourcePackageNameInAndGardenlinuxVersion(
                 wrap(packages), gardenlinuxVersion, determinePageAndSortFeatures2(sortAndPageOptions)
         );
+
+        return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
     }
 
     public List<SourcePackage> getPackagesForDistro(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {

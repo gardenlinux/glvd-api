@@ -62,6 +62,32 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shuldReturnKernelCvesForGardenLinuxByPackageNameAndMarkResolvedCveAsNotVulnerable() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForDistro",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/1592.5/packages/linux")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("cveId", hasItems("CVE-2025-21864", "CVE-2024-44953"))
+                // CVE-2024-44953 is actually vulnerable, but marked as resolved via cve_context, thus it must return 'false' here
+                .body("vulnerable", hasItems(true, false));
+    }
+
+    @Test
+    public void shuldReturnKernelCvesForGardenLinuxByPackageName() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForDistro",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/1592.6/packages/linux")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("cveId", hasItems("CVE-2025-21864", "CVE-2024-44953"))
+                // CVE-2024-44953 is vulnerable and not triaged for Garden Linux 1592.6
+                .body("vulnerable", hasItems(true, true));
+    }
+
+    @Test
     public void shouldReturnCvesForListOfPackages() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForPackages",
