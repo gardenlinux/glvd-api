@@ -201,6 +201,12 @@ public class GlvdService {
         var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousPatchVersion());
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
 
+        // We get an empty list if the new version is not yet present in glvd which creates a useless diff
+        // This should not happen in a normal release process because the 'new' version should be ingested into glvd when we get here
+        if (packagesNew.isEmpty()) {
+            return new ReleaseNote(gardenlinuxVersion, List.of());
+        }
+
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 
