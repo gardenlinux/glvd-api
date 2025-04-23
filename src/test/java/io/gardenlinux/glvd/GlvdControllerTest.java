@@ -241,7 +241,7 @@ class GlvdControllerTest {
     @Test
     public void shouldGeneratePatchReleaseNotesInformationWithKernelCveResolved() {
         given(this.spec).accept("application/json")
-                .filter(document("patchReleaseNotes",
+                .filter(document("patchReleaseNotesResolved",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/patchReleaseNotes/1592.7")
@@ -249,6 +249,18 @@ class GlvdControllerTest {
                 .body("version", equalTo("1592.7"))
                 .body("packageList.sourcePackageName", hasItems("linux"))
                 .body("packageList.fixedCves", hasItems(List.of("CVE-2025-21864")));
+    }
+
+    @Test
+    public void shouldGenerateEmptyPatchReleaseNotesForDistWithNoSourcePackages() {
+        given(this.spec).accept("application/json")
+                .filter(document("patchReleaseNotesEmpty",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/patchReleaseNotes/1592.8")
+                .then().statusCode(200)
+                .body("version", equalTo("1592.8"))
+                .body("packageList", empty());
     }
 
 }
