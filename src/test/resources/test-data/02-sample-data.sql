@@ -173,6 +173,8 @@ INSERT INTO public.debsrc (dist_id, gardenlinux_version, last_mod, deb_source, d
 INSERT INTO public.debsrc (dist_id, gardenlinux_version, last_mod, deb_source, deb_version) VALUES (16, '1592.5', '2025-01-30 07:30:53.933119+00', 'jinja2', '3.1.5-1gl0');
 INSERT INTO public.debsrc (dist_id, gardenlinux_version, last_mod, deb_source, deb_version) VALUES (16, '1592.5', '2025-01-30 07:30:53.933119+00', 'python3.12', '3.12.8-5gl0~bp1592');
 INSERT INTO public.debsrc (dist_id, gardenlinux_version, last_mod, deb_source, deb_version) VALUES (16, '1592.5', '2025-01-30 07:30:53.933119+00', 'rsync', '3.3.0+ds1-4gl0~bp1592');
+INSERT INTO public.debsrc (dist_id, gardenlinux_version, last_mod, deb_source, deb_version) VALUES (17, '1592.6', '2025-01-30 07:30:53.933119+00', 'linux', '6.6.78-0gl0~bp1592');
+INSERT INTO public.debsrc (dist_id, gardenlinux_version, last_mod, deb_source, deb_version) VALUES (18, '1592.7', '2025-01-30 07:30:53.933119+00', 'linux', '6.6.83-0gl0~bp1592');
 
 INSERT INTO public.debsec_cve (dist_id, gardenlinux_version, cve_id, last_mod, deb_source, deb_version_fixed, debsec_tag, debsec_note) VALUES (2, '', 'CVE-2024-11053', '2025-01-15 15:04:46.943381+00', 'curl', NULL, 'no-dsa', 'Minor issue');
 INSERT INTO public.debsec_cve (dist_id, gardenlinux_version, cve_id, last_mod, deb_source, deb_version_fixed, debsec_tag, debsec_note) VALUES (2, '', 'CVE-2024-9287', '2025-01-15 15:04:46.943381+00', 'pypy3', '7.3.11+dfsg-2+deb12u3', NULL, NULL);
