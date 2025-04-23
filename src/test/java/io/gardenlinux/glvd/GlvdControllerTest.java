@@ -241,7 +241,7 @@ class GlvdControllerTest {
     @Test
     public void shouldGeneratePatchReleaseNotesInformationWithKernelCveResolved() {
         given(this.spec).accept("application/json")
-                .filter(document("patchReleaseNotes",
+                .filter(document("patchReleaseNotesResolved",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/patchReleaseNotes/1592.7")
@@ -254,7 +254,7 @@ class GlvdControllerTest {
     @Test
     public void shouldGenerateEmptyPatchReleaseNotesForDistWithNoSourcePackages() {
         given(this.spec).accept("application/json")
-                .filter(document("patchReleaseNotes",
+                .filter(document("patchReleaseNotesEmpty",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/patchReleaseNotes/1592.8")
