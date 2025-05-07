@@ -11,8 +11,8 @@
 
 <a th:href="@{https://nvd.nist.gov/vuln/detail/} + ${cveDetails.cveId}">NIST National Vulnerability Database Entry</a>
 
-<blockquote>
-    <p th:text="|Description: ${cveDetails.description}|" />
+<blockquote class="verbatim">
+    <p th:utext="${#strings.replace(cveDetails.description, '\n', '<br/>')}"></p>
 </blockquote>
 
 <p th:text="|Vulnerability Status: ${cveDetails.vulnStatus}|" />

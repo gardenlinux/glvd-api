@@ -16,3 +16,8 @@ td {
 table tr:nth-child(odd) td{
     background-color: #CCCCCC;
 }
+
+.verbatim {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.8em;
+}
