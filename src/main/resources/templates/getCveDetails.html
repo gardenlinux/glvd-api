@@ -23,17 +23,40 @@
 
 <p th:text="|Ingested Date: ${cveDetails.cveIngestedDate}|" />
 
-<p th:text="|Base Score (Version 4): ${cveDetails.baseScoreV40}|" />
-<p th:text="|Vector String (Version 4): ${cveDetails.vectorStringV40}|" />
-
-<p th:text="|Base Score (Version 3.1): ${cveDetails.baseScoreV31}|" />
-<p th:text="|Vector String (Version 3.1): ${cveDetails.vectorStringV31}|" />
-
-<p th:text="|Base Score (Version 3.0): ${cveDetails.baseScoreV30}|" />
-<p th:text="|Vector String (Version 3.0): ${cveDetails.vectorStringV30}|" />
-
-<p th:text="|Base Score (Version 2): ${cveDetails.baseScoreV2}|" />
-<p th:text="|Vector String (Version 2): ${cveDetails.vectorStringV2}|" />
+<div>
+    <h2>CVSS Scores</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Version</th>
+                <th>Base Score</th>
+                <th>Vector String</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:if="${cveDetails.baseScoreV40 != null}">
+                <td>4.0</td>
+                <td th:text="${cveDetails.baseScoreV40}"></td>
+                <td th:text="${cveDetails.vectorStringV40}"></td>
+            </tr>
+            <tr th:if="${cveDetails.baseScoreV31 != null}">
+                <td>3.1</td>
+                <td th:text="${cveDetails.baseScoreV31}"></td>
+                <td th:text="${cveDetails.vectorStringV31}"></td>
+            </tr>
+            <tr th:if="${cveDetails.baseScoreV30 != null}">
+                <td>3.0</td>
+                <td th:text="${cveDetails.baseScoreV30}"></td>
+                <td th:text="${cveDetails.vectorStringV30}"></td>
+            </tr>
+            <tr th:if="${cveDetails.baseScoreV2 != null}">
+                <td>2.0</td>
+                <td th:text="${cveDetails.baseScoreV2}"></td>
+                <td th:text="${cveDetails.vectorStringV2}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <h2 th:if="${cveDetails.kernelLtsVersion != null and !#lists.isEmpty(cveDetails.kernelLtsVersion)}">Affected Linux Kernel Versions</h2>
 
