@@ -11,17 +11,35 @@
 
 <a th:href="@{https://nvd.nist.gov/vuln/detail/} + ${cveDetails.cveId}">NIST National Vulnerability Database Entry</a>
 
+<p>
+    CVE Description
+</p>
+
 <blockquote class="verbatim">
     <p th:utext="${#strings.replace(cveDetails.description, '\n', '<br/>')}"></p>
 </blockquote>
 
-<p th:text="|Vulnerability Status: ${cveDetails.vulnStatus}|" />
-
-<p th:text="|Published Date: ${cveDetails.cvePublishedDate}|" />
-
-<p th:text="|Modified Date: ${cveDetails.cveModifiedDate}|" />
-
-<p th:text="|Ingested Date: ${cveDetails.cveIngestedDate}|" />
+<div>
+    <h2>Metadata</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Vulnerability Status</th>
+                <th>Published Date</th>
+                <th>Modified Date</th>
+                <th>Ingested Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td th:text="${cveDetails.vulnStatus}"></td>
+                <td th:text="${cveDetails.cvePublishedDate}"></td>
+                <td th:text="${cveDetails.cveModifiedDate}"></td>
+                <td th:text="${cveDetails.cveIngestedDate}"></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 <div>
     <h2>CVSS Scores</h2>
@@ -50,7 +68,7 @@
                 <td th:text="${cveDetails.vectorStringV30}"></td>
             </tr>
             <tr th:if="${cveDetails.baseScoreV2 != null}">
-                <td>2.0</td>
+                <td>2</td>
                 <td th:text="${cveDetails.baseScoreV2}"></td>
                 <td th:text="${cveDetails.vectorStringV2}"></td>
             </tr>
