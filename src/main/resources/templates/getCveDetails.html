@@ -41,12 +41,18 @@
     </table>
 </div>
 
-<div>
+<div th:if="${cveDetails.baseScoreV40 == null and cveDetails.baseScoreV31 == null and cveDetails.baseScoreV30 == null and cveDetails.baseScoreV2 == null}">
+    <h2>CVSS Scores</h2>
+    <p>
+        This CVE does not (yet) have any CVSS score.
+    </p>
+</div>
+<div th:if="${not(cveDetails.baseScoreV40 == null and cveDetails.baseScoreV31 == null and cveDetails.baseScoreV30 == null and cveDetails.baseScoreV2 == null)}">
     <h2>CVSS Scores</h2>
     <table>
         <thead>
             <tr>
-                <th>Version</th>
+                <th>CVSS Version</th>
                 <th>Base Score</th>
                 <th>Vector String</th>
             </tr>
