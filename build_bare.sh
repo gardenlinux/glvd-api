@@ -1,7 +1,7 @@
 #!/bin/bash
 
-GLVD_API_IMAGE_REPOSITORY=ghcr.io/gardenlinux/glvd-api
-GLVD_API_IMAGE_TAG=latest
+GLVD_API_IMAGE_REPOSITORY=${1:-ghcr.io/gardenlinux/glvd-api}
+GLVD_API_IMAGE_TAG=${2:-latest}
 
 build () {
     local ARCH="${1}"; shift
