@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.commonmark.node.*;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 
 @Controller
 public class UiController {
@@ -115,10 +118,15 @@ public class UiController {
 
     @GetMapping("/getCveDetails")
     public String getCveDetails(@RequestParam(name = "cveId", required = true) String cveId, Model model) {
+        Parser parser = Parser.builder().build();
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+
         var cveDetails = glvdService.getCveDetails(cveId);
         var cveContexts = glvdService.getCveContexts(cveId);
+        var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
         model.addAttribute("cveDetails", cveDetails);
         model.addAttribute("cveContexts", cveContexts);
+        model.addAttribute("renderedDescriptions", renderedDescriptions);
         return "getCveDetails";
     }
 
