@@ -18,6 +18,16 @@
 
 <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1592.10,onlyVulnerable=false)}">1592.10</a>
 
+<br>
+
+<a th:href="@{/getTriage(gardenlinuxVersion=today)}">triages for today</a>
+
+<a th:href="@{/getTriage(gardenlinuxVersion=1592.8)}">triages for 1592.8</a>
+
+<a th:href="@{/getTriage(gardenlinuxVersion=1592.9)}">triages for 1592.9</a>
+
+<a th:href="@{/getTriage(gardenlinuxVersion=1592.10)}">triages for 1592.10</a>
+
 <div>
     <a th:href="@{/getNvdExclusiveCve}">NVD Exclusive CVEs (need to triage)</a>
 </div>
