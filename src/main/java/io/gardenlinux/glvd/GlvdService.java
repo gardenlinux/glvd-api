@@ -178,6 +178,10 @@ public class GlvdService {
         return cveContextRepository.findByDistId(Integer.valueOf(dist_id)).stream().filter(cveContext -> !cveContext.getContextDescriptor().equalsIgnoreCase("dummy")).toList();
     }
 
+    public List<CveContext> getCveContextsForGardenLinuxVersion(String gardenlinuxVersion) {
+        return getCveContextsForDist(distVersionToId(gardenlinuxVersion));
+    }
+
     public String distVersionToId(String version) {
         return distCpeRepository.getByCpeVersion(version).getId();
     }

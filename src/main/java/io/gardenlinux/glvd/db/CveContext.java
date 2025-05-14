@@ -1,14 +1,17 @@
 package io.gardenlinux.glvd.db;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
+import java.io.Serializable;
 
 @Entity
 @Table(name = "cve_context")
 public class CveContext {
+
     @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
+
     @Column(name = "cve_id", nullable = false)
     private String cveId;
 
@@ -33,7 +36,8 @@ public class CveContext {
     public CveContext() {
     }
 
-    public CveContext(String cveId, Integer distId, String createDate, String contextDescriptor, Float scoreOverride, String description, Boolean isResolved) {
+    public CveContext(Integer id, String cveId, Integer distId, String createDate, String contextDescriptor, Float scoreOverride, String description, Boolean isResolved) {
+        this.id = id;
         this.cveId = cveId;
         this.distId = distId;
         this.createDate = createDate;
@@ -41,6 +45,10 @@ public class CveContext {
         this.scoreOverride = scoreOverride;
         this.description = description;
         this.isResolved = isResolved;
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getCveId() {

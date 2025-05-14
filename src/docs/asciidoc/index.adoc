@@ -117,3 +117,13 @@ include::{snippets}/patchReleaseNotes/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/patchReleaseNotes/http-response.adoc[]
+
+=== Triages for a Garden Linux Release
+
+Get information about triaged security vulnerabilities in a Garden Linux release.
+
+include::{snippets}/triages/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/triages/http-response.adoc[]

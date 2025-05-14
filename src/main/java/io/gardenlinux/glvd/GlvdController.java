@@ -1,9 +1,6 @@
 package io.gardenlinux.glvd;
 
-import io.gardenlinux.glvd.db.CveDetailsWithContext;
-import io.gardenlinux.glvd.db.KernelCve;
-import io.gardenlinux.glvd.db.SourcePackage;
-import io.gardenlinux.glvd.db.SourcePackageCve;
+import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
@@ -143,5 +140,10 @@ public class GlvdController {
     @GetMapping("/kernel/gardenlinux/{gardenlinuxVersion}")
     ResponseEntity<List<KernelCve>> kernelCvesGardenlinux(@PathVariable String gardenlinuxVersion) {
         return ResponseEntity.ok(glvdService.kernelCvesForGardenLinuxVersion(gardenlinuxVersion));
+    }
+
+    @GetMapping("/triage/{gardenlinuxVersion}")
+    ResponseEntity<List<CveContext>> triageDataGardenlinux(@PathVariable String gardenlinuxVersion) {
+        return ResponseEntity.ok(glvdService.getCveContextsForGardenLinuxVersion(gardenlinuxVersion));
     }
 }
