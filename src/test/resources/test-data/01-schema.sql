@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
--- Dumped by pg_dump version 17.4 (Debian 17.4-2)
+-- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -99,11 +99,26 @@ CREATE TABLE public.cve_context (
     context_descriptor text NOT NULL,
     score_override numeric,
     description text NOT NULL,
-    is_resolved boolean DEFAULT true
+    is_resolved boolean DEFAULT true,
+    id integer NOT NULL
 );
 
 
 ALTER TABLE public.cve_context OWNER TO glvd;
+
+--
+-- Name: cve_context_id_seq; Type: SEQUENCE; Schema: public; Owner: glvd
+--
+
+ALTER TABLE public.cve_context ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
+    SEQUENCE NAME public.cve_context_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1
+);
+
 
 --
 -- Name: cve_context_kernel; Type: TABLE; Schema: public; Owner: glvd
@@ -478,7 +493,7 @@ ALTER TABLE ONLY public.cve_context_kernel
 --
 
 ALTER TABLE ONLY public.cve_context
-    ADD CONSTRAINT cve_context_pkey PRIMARY KEY (dist_id, cve_id, create_date, context_descriptor);
+    ADD CONSTRAINT cve_context_pkey PRIMARY KEY (id);
 
 
 --
@@ -626,4 +641,3 @@ ALTER TABLE ONLY public.debsrc
 --
 -- PostgreSQL database dump complete
 --
-
