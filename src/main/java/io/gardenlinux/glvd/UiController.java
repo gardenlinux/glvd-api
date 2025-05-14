@@ -2,19 +2,21 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.SourcePackageCve;
 import jakarta.annotation.Nonnull;
+import org.commonmark.parser.Parser;
+import org.commonmark.renderer.html.HtmlRenderer;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.commonmark.node.*;
-import org.commonmark.parser.Parser;
-import org.commonmark.renderer.html.HtmlRenderer;
 
 @Controller
 public class UiController {
 
     @Nonnull
     private final GlvdService glvdService;
+
+    Parser parser = Parser.builder().build();
+    HtmlRenderer renderer = HtmlRenderer.builder().build();
 
     public UiController(@Nonnull GlvdService glvdService) {
         this.glvdService = glvdService;
@@ -118,9 +120,6 @@ public class UiController {
 
     @GetMapping("/getCveDetails")
     public String getCveDetails(@RequestParam(name = "cveId", required = true) String cveId, Model model) {
-        Parser parser = Parser.builder().build();
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-
         var cveDetails = glvdService.getCveDetails(cveId);
         var cveContexts = glvdService.getCveContexts(cveId);
         var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
@@ -146,6 +145,20 @@ public class UiController {
         model.addAttribute("releaseNotes", releaseNotes);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getPatchReleaseNotes";
+    }
+
+    @GetMapping("/getTriage")
+    public String getTriage(
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
+            Model model
+    ) {
+        var cveContexts = glvdService.getCveContextsForGardenLinuxVersion(gardenlinuxVersion);
+
+        var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
+        model.addAttribute("cveContexts", cveContexts);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
+        model.addAttribute("renderedDescriptions", renderedDescriptions);
+        return "getTriage";
     }
 
 }
