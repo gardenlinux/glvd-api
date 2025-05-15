@@ -231,7 +231,7 @@ class GlvdControllerTest {
                 .body("details.kernelLtsVersion[0]", equalTo("6.6"))
                 .body("details.kernelLtsVersion[1]", equalTo("6.12"))
                 // This CVE is not fixed in any kernel, so all are vulnerable
-                .body("details.isVulnerable", is(List.of(true, true, true, true, true, true, true, true)))
+                .body("details.isVulnerable", is(List.of(true, true, true, true, true, true, true)))
                 // Is explicitly marked as "resolved"
                 .body("contexts.resolved", hasItems(true));
     }
@@ -272,6 +272,16 @@ class GlvdControllerTest {
                 .when().port(this.port).get("/v1/patchReleaseNotes/1592.8")
                 .then().statusCode(200)
                 .body("version", equalTo("1592.8"))
+                .body("packageList", empty());
+    }
+
+    @Test
+    public void reproduceIssue153() {
+        // Reproducer for https://github.com/gardenlinux/glvd/issues/153
+        given(this.spec).accept("application/json")
+                .when().port(this.port).get("/v1/patchReleaseNotes/1443.20")
+                .then().statusCode(200)
+                .body("version", equalTo("1443.20"))
                 .body("packageList", empty());
     }
 

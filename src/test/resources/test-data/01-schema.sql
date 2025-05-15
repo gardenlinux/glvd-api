@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
--- Dumped by pg_dump version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped by pg_dump version 17.5 (Debian 17.5-1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -641,3 +641,4 @@ ALTER TABLE ONLY public.debsrc
 --
 -- PostgreSQL database dump complete
 --
+
