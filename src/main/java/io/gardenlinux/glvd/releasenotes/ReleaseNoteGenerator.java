@@ -39,6 +39,7 @@ public class ReleaseNoteGenerator {
         var cvesNewVersionIgnoreResolved = cvesNewVersion.stream().filter(sourcePackageCve -> !resolvedInNew.contains(sourcePackageCve.getCveId())).toList();
         var cvesNewVersionCveIds = cvesNewVersionIgnoreResolved.stream().map(SourcePackageCve::getCveId).collect(Collectors.joining());
         var diff = cvesOldVersion.stream().filter(sourcePackageCve -> !cvesNewVersionCveIds.contains(sourcePackageCve.getCveId())).toList();
+
         HashMap<String, List<String>> sourcePackageNameToCveListMapping = new HashMap<>();
         for (SourcePackageCve sourcePackageCve : diff) {
             var cveList = sourcePackageNameToCveListMapping.getOrDefault(sourcePackageCve.getSourcePackageName(), new ArrayList<>());
@@ -47,12 +48,24 @@ public class ReleaseNoteGenerator {
         }
         List<ReleaseNotesPackage> releaseNotesPackages = new ArrayList<>();
         sourcePackageNameToCveListMapping.forEach((sourcePackage, cves) ->
-                releaseNotesPackages.add(
-                        new ReleaseNotesPackage(sourcePackage,
-                                getVersionByPackageName(sourcePackagesInOldVersion, sourcePackage),
-                                getVersionByPackageName(sourcePackagesInNewVersion, sourcePackage),
-                                cves)
-                )
+                {
+                    String oldVersion = getVersionByPackageName(sourcePackagesInOldVersion, sourcePackage);
+                    String newVersion = getVersionByPackageName(sourcePackagesInNewVersion, sourcePackage);
+                    if (oldVersion.isEmpty() || newVersion.isEmpty()) {
+                        return;
+                    }
+                    // https://github.com/gardenlinux/glvd/issues/160
+                    // If the old and new version are the same, this is probably a false positive
+                    if (oldVersion.equals(newVersion)) {
+                        return;
+                    }
+                    releaseNotesPackages.add(
+                            new ReleaseNotesPackage(sourcePackage,
+                                    oldVersion,
+                                    newVersion,
+                                    cves)
+                    );
+                }
         );
 
         return new ReleaseNote(gardenLinuxVersion.printVersion(), releaseNotesPackages);
