@@ -204,4 +204,72 @@ class ReleaseNoteGeneratorTest {
         assertEquals(cveOld3.getCveId(), actual.getPackageList().get(2).getFixedCves().getFirst());
     }
 
+    SourcePackageCve rubyCveOld = new SourcePackageCve(
+            "CVE-2023-28755",
+            "ruby3.1",
+            "3.1.2-8.4gl0",
+            gardenLinuxVersion.previousPatchVersion(),
+            true,
+            "",
+            "",
+            "",
+            7.5f,
+            "",
+            7.5f,
+            7.5f,
+            7.5f,
+            7.5f,
+            "",
+            "",
+            "",
+            ""
+    );
+
+    SourcePackageCve rubyCveNew = new SourcePackageCve(
+            "CVE-2023-28755",
+            "ruby3.1",
+            "3.1.2-8.4gl0",
+            gardenLinuxVersion.printVersion(),
+            true,
+            "",
+            "",
+            "",
+            7.5f,
+            "",
+            7.5f,
+            7.5f,
+            7.5f,
+            7.5f,
+            "",
+            "",
+            "",
+            ""
+    );
+
+    @Test
+    public void generateReleaseNotesWithCveListAffectingTheSamePackageVersion() {
+        final List<SourcePackageCve> cvesOldVersion = List.of(rubyCveOld);
+        final List<SourcePackageCve> cvesNewVersion = List.of(rubyCveNew);
+        final List<String> resolvedInNew = List.of();
+        final List<DebSrc> sourcePackagesInOldVersion = List.of(new DebSrc(DIST_ID_OLD, "2023-10-01", "ruby3.1", "3.1.2-8.4gl0"), new DebSrc(DIST_ID_OLD, "2023-10-01", "rubygems", "3.4.20-1"));
+        final List<DebSrc> sourcePackagesInNewVersion = List.of(new DebSrc(DIST_ID_NEW, "2023-10-01", "ruby3.1", "3.1.2-8.4gl0"), new DebSrc(DIST_ID_NEW, "2023-10-01", "rubygems", "3.4.20-1"));
+
+        var actual = new ReleaseNoteGenerator(gardenLinuxVersion, cvesOldVersion, cvesNewVersion, resolvedInNew, sourcePackagesInOldVersion, sourcePackagesInNewVersion).generate();
+
+        assertEquals(0, actual.getPackageList().size());
+    }
+
+    @Test
+    public void generateReleaseNotesWithCveListAffectingTheSamePackageVersionWhenNewCveIsTriaged() {
+        final List<SourcePackageCve> cvesOldVersion = List.of(rubyCveOld);
+        final List<SourcePackageCve> cvesNewVersion = List.of(rubyCveNew);
+        final List<String> resolvedInNew = List.of(rubyCveNew.getCveId());
+        final List<DebSrc> sourcePackagesInOldVersion = List.of(new DebSrc(DIST_ID_OLD, "2023-10-01", "ruby3.1", "3.1.2-8.4gl0"), new DebSrc(DIST_ID_OLD, "2023-10-01", "rubygems", "3.4.20-1"));
+        final List<DebSrc> sourcePackagesInNewVersion = List.of(new DebSrc(DIST_ID_NEW, "2023-10-01", "ruby3.1", "3.1.2-8.4gl0"), new DebSrc(DIST_ID_NEW, "2023-10-01", "rubygems", "3.4.20-1"));
+
+        var actual = new ReleaseNoteGenerator(gardenLinuxVersion, cvesOldVersion, cvesNewVersion, resolvedInNew, sourcePackagesInOldVersion, sourcePackagesInNewVersion).generate();
+
+        assertEquals(0, actual.getPackageList().size());
+    }
+
 }
