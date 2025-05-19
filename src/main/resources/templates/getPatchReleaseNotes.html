@@ -14,22 +14,17 @@
     Use with caution.
 </div>
 
-<table>
-    <thead>
-    <tr>
-        <th>Source Package Name</th>
-        <th>Old Version</th>
-        <th>New Version</th>
-        <th>Fixed CVEs</th>
-    </tr>
-    </thead>
-    <tr th:each="item: ${releaseNotes.packageList}">
-        <td th:text="${item.sourcePackageName}"/>
-        <td th:text="${item.oldVersion}"/>
-        <td th:text="${item.newVersion}"/>
-        <td th:text="${item.fixedCves}"/>
-    </tr>
-</table>
+<div th:each="item : ${releaseNotes.packageList}">
+    <p><strong>Source Package Name:</strong> <span th:text="${item.sourcePackageName}"></span></p>
+    <p><strong>Old Version:</strong> <span th:text="${item.oldVersion}"></span></p>
+    <p><strong>New Version:</strong> <span th:text="${item.newVersion}"></span></p>
+    <p><strong>Fixed CVEs:</strong></p>
+    <ul>
+        <li th:each="cve : ${item.fixedCves}" th:text="${cve}"></li>
+    </ul>
+
+    <hr />
+</div>
 
 </body>
 </html>
