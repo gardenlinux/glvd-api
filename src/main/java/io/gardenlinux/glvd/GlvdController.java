@@ -142,6 +142,16 @@ public class GlvdController {
         return ResponseEntity.ok(glvdService.kernelCvesForGardenLinuxVersion(gardenlinuxVersion));
     }
 
+    @GetMapping("/kernel/fixed/{kernelVersion}")
+    ResponseEntity<List<KernelCve>> kernelCvesFixed(@PathVariable String kernelVersion) {
+        return ResponseEntity.ok(glvdService.getKernelCvesByFixedVersion(kernelVersion));
+    }
+
+    @GetMapping("/kernel/fixed/diff/{oldKernelVersion}/{newKernelVersion}")
+    ResponseEntity<List<KernelCve>> kernelCvesFixed(@PathVariable String oldKernelVersion, @PathVariable String newKernelVersion) {
+        return ResponseEntity.ok(glvdService.getKernelCvesDiffByVersion(oldKernelVersion, newKernelVersion));
+    }
+
     @GetMapping("/triage/{gardenlinuxVersion}")
     ResponseEntity<List<CveContext>> triageDataGardenlinux(@PathVariable String gardenlinuxVersion) {
         return ResponseEntity.ok(glvdService.getCveContextsForGardenLinuxVersion(gardenlinuxVersion));

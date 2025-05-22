@@ -216,4 +216,19 @@ public class GlvdService {
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 
+    public List<KernelCve> getKernelCvesByFixedVersion(String fixedVersion) {
+        return kernelCveRepository.findByFixedVersion(fixedVersion);
+    }
+
+    public List<KernelCve> getKernelCvesDiffByVersion(String oldVersion, String newVersion) {
+        var oldCves = kernelCveRepository.findByFixedVersion(oldVersion);
+        var newCves = kernelCveRepository.findByFixedVersion(newVersion);
+
+        //compute diff between old and new cves
+
+        return new ArrayList<KernelCve>(newCves.stream()
+                .filter(newCve -> oldCves.stream().noneMatch(oldCve -> newCve.getCveId().equals(oldCve.getCveId())))
+                .toList());
+    }
+
 }

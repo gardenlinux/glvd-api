@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface KernelCveRepository extends JpaRepository<KernelCve, String> {
     List<KernelCve> findByGardenlinuxVersion(@Param("gardenlinux_version") String gardenlinuxVersion);
+    List<KernelCve> findByFixedVersion(@Param("fixed_version") String fixedVersion);
+
 }
