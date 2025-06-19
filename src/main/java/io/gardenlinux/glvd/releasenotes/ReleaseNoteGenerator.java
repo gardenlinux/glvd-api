@@ -7,7 +7,6 @@ import io.gardenlinux.glvd.db.SourcePackageCve;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ReleaseNoteGenerator {
     private final GardenLinuxVersion gardenLinuxVersion;
@@ -36,9 +35,7 @@ public class ReleaseNoteGenerator {
     }
 
     public ReleaseNote generate() {
-        var cvesNewVersionIgnoreResolved = cvesNewVersion.stream().filter(sourcePackageCve -> !resolvedInNew.contains(sourcePackageCve.getCveId())).toList();
-        var cvesNewVersionCveIds = cvesNewVersionIgnoreResolved.stream().map(SourcePackageCve::getCveId).collect(Collectors.joining());
-        var diff = cvesOldVersion.stream().filter(sourcePackageCve -> !cvesNewVersionCveIds.contains(sourcePackageCve.getCveId())).toList();
+        var diff = new CveDiffer(cvesOldVersion, cvesNewVersion, resolvedInNew).diff();
 
         HashMap<String, List<String>> sourcePackageNameToCveListMapping = new HashMap<>();
         for (SourcePackageCve sourcePackageCve : diff) {
