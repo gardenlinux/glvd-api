@@ -8,9 +8,9 @@ This repo implements the HTTP API for GLVD.
 ## Local Setup
 
 Required/recommended software:
-- [SAPMachine JDK 21](https://sap.github.io/SapMachine/)
+- [SapMachine JDK 21](https://sap.github.io/SapMachine/)
 - [Podman Desktop/Machine](https://podman.io)
-- [Podman Compose](https://github.com/containers/podman-compose)
+- [Podman Compose](https://github.com/containers/podman-compose) or [Docker Compose v2](https://github.com/docker/compose)
 
 A local setup including the database with sample data can be setup using podman compose.
 
