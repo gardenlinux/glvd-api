@@ -11,6 +11,16 @@ This document describes the HTTP API endpoints of Garden Linux Vulnerability Dat
 
 CAUTION: This document and the API are work in progress and subject to change at any time.
 
+=== Get all known Garden Linux Releases
+
+To query all known Garden Linux releases, you may use this endpoint:
+
+include::{snippets}/getAllGardenLinuxVersions/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getAllGardenLinuxVersions/http-response.adoc[]
+
 === Get a list of CVEs by distro
 
 To query all CVEs for a given distribution by version, you may use this endpoint:

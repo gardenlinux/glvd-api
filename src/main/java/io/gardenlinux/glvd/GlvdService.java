@@ -186,6 +186,16 @@ public class GlvdService {
         return distCpeRepository.getByCpeVersion(version).getId();
     }
 
+    public List<String> allGardenLinuxVersions() {
+        return distCpeRepository.findAll().stream()
+                .filter(distCpe -> distCpe.getCpeProduct().equalsIgnoreCase("gardenlinux"))
+                .map(DistCpe::getCpeVersion)
+                .filter(StringUtils::isNotBlank)
+                .distinct()
+                .sorted()
+                .toList();
+    }
+
     public Iterable<NvdExclusiveCve> getAllNvdExclusiveCve() {
         return nvdExclusiveCveRepository.findAll();
     }

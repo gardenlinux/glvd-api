@@ -120,6 +120,23 @@ public class GlvdController {
         );
     }
 
+    // Internal API, undocumented on purpose
+    // This is needed for the triage implementation
+    // No external consumers should use this endpoint
+    @GetMapping(value = "/distro/{gardenlinuxVersion}/distId", produces = "text/plain")
+    ResponseEntity<String> distIdForDistro(
+            @PathVariable final String gardenlinuxVersion
+    ) {
+        return ResponseEntity.ok(
+                glvdService.distVersionToId(gardenlinuxVersion)
+        );
+    }
+
+    @GetMapping("/gardenlinuxVersions")
+    ResponseEntity<List<String>> getAllDistros() {
+        return ResponseEntity.ok(glvdService.allGardenLinuxVersions());
+    }
+
     @GetMapping("/cveDetails/{cveId}")
     ResponseEntity<CveDetailsWithContext> cveDetails(@PathVariable final String cveId) {
         var cveDetails = glvdService.getCveDetails(cveId);
