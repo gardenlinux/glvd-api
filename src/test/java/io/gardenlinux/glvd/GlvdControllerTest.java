@@ -51,9 +51,6 @@ class GlvdControllerTest {
     @Test
     public void shouldReturnCvesForGardenlinuxShouldNotReturnKernelCveMarkedAsResolved() {
         given(this.spec).accept("application/json")
-                .filter(document("getCveForDistro",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
-                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.5?sortBy=cveId&sortOrder=DESC")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("cveId", hasItems("CVE-2025-0938", "CVE-2025-21864", "CVE-2024-44953"))
@@ -64,9 +61,6 @@ class GlvdControllerTest {
     @Test
     public void shuldReturnKernelCvesForGardenLinuxByPackageNameAndMarkResolvedCveAsNotVulnerable() {
         given(this.spec).accept("application/json")
-                .filter(document("getCveForDistro",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
-                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.5/packages/linux")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("cveId", hasItems("CVE-2025-21864", "CVE-2024-44953"))
@@ -77,9 +71,6 @@ class GlvdControllerTest {
     @Test
     public void shuldReturnKernelCvesForGardenLinuxByPackageName() {
         given(this.spec).accept("application/json")
-                .filter(document("getCveForDistro",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
-                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.6/packages/linux")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("cveId", hasItems("CVE-2025-21864", "CVE-2024-44953"))
@@ -305,6 +296,25 @@ class GlvdControllerTest {
                 .when().port(this.port).get("/v1/triage/1592.8")
                 .then().statusCode(200)
                 .body("", empty());
+    }
+
+    @Test
+    public void shouldResolveGardenLinuxVersionToDistId() {
+        given(this.spec).accept("text/plain")
+                .when().port(this.port).get("/v1/distro/1592.10/distId")
+                .then().statusCode(200)
+                .body(equalTo("24"));
+    }
+
+    @Test
+    public void shouldGetAllGardenLinuxVersions() {
+        given(this.spec).accept("application/json")
+                .filter(document("getAllGardenLinuxVersions",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/gardenlinuxVersions")
+                .then().statusCode(200)
+                .body("$", hasItems("1592.4", "1592.5", "1592.6", "1592.7", "1592.8", "1592.9", "1592.10", "today"));
     }
 
 }
