@@ -1,24 +1,28 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>GLVD: List triages in distro</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link href="style.css" rel="stylesheet" media="screen" />
 </head>
+
 <body>
-<h1 th:text="|Triages for Garden Linux ${gardenlinuxVersion}|"/>
+    <h1 th:text="|Triages for Garden Linux ${gardenlinuxVersion}|" />
 
-<div th:each="context,iterStat : ${cveContexts}">
-    <p><strong>Date:</strong> <span th:text="${context.createDate}"></span></p>
-    <p><strong>Dist ID:</strong> <span th:text="${context.distId}"></span></p>
-    <p><strong>CVE ID:</strong> <span th:text="${context.cveId}"></span></p>
-    <p><strong>Descriptor:</strong> <span th:text="${context.contextDescriptor}"></span></p>
-    <p><strong>Is Resolved?</strong> <span th:text="${context.getResolved}"></span></p>
-    <p><strong>Score Override:</strong> <span th:text="${context.scoreOverride}"></span></p>
-    <p><strong>Description:</strong> <span th:utext="${#strings.replace(renderedDescriptions[__${iterStat.index}__], '\n', '<br/>')}"></span></p>
+    <div th:each="context,iterStat : ${cveContexts}">
+        <p><strong>Date:</strong> <span th:text="${context.createDate}"></span></p>
+        <p><strong>Dist ID:</strong> <span th:text="${context.distId}"></span></p>
+        <p><strong>CVE ID:</strong> <span th:text="${context.cveId}"></span></p>
+        <p><strong>Use-Case:</strong> <span th:text="${context.useCase}"></span></p>
+        <p><strong>Is Resolved?</strong> <span th:text="${context.getResolved}"></span></p>
+        <p><strong>Score Override:</strong> <span th:text="${context.scoreOverride}"></span></p>
+        <p><strong>Description:</strong> <span
+                th:utext="${#strings.replace(renderedDescriptions[__${iterStat.index}__], '\n', '<br/>')}"></span></p>
 
-    <hr />
-</div>
+        <hr />
+        </div>
 
 </body>
+
 </html>
