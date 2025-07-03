@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.4 (Debian 17.4-1.pgdg120+2)
+-- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
 -- Dumped by pg_dump version 17.5 (Debian 17.5-1)
 
 SET statement_timeout = 0;
@@ -96,11 +96,12 @@ CREATE TABLE public.cve_context (
     gardenlinux_version text,
     cve_id text NOT NULL,
     create_date timestamp with time zone DEFAULT now() NOT NULL,
-    context_descriptor text NOT NULL,
+    use_case text NOT NULL,
     score_override numeric,
     description text NOT NULL,
-    is_resolved boolean DEFAULT true,
-    id integer NOT NULL
+    is_resolved boolean DEFAULT FALSE,
+    id integer NOT NULL,
+    triaged boolean DEFAULT FALSE
 );
 
 

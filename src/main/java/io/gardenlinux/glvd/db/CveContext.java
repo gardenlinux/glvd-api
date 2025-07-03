@@ -2,8 +2,6 @@ package io.gardenlinux.glvd.db;
 
 import jakarta.persistence.*;
 
-import java.io.Serializable;
-
 @Entity
 @Table(name = "cve_context")
 public class CveContext {
@@ -21,8 +19,8 @@ public class CveContext {
     @Column(name = "create_date", nullable = false)
     private String createDate;
 
-    @Column(name = "context_descriptor", nullable = false)
-    private String contextDescriptor;
+    @Column(name = "use_case", nullable = false)
+    private String useCase;
 
     @Column(name = "score_override", nullable = true)
     private Float scoreOverride;
@@ -36,12 +34,12 @@ public class CveContext {
     public CveContext() {
     }
 
-    public CveContext(Integer id, String cveId, Integer distId, String createDate, String contextDescriptor, Float scoreOverride, String description, Boolean isResolved) {
+    public CveContext(Integer id, String cveId, Integer distId, String createDate, String useCase, Float scoreOverride, String description, Boolean isResolved) {
         this.id = id;
         this.cveId = cveId;
         this.distId = distId;
         this.createDate = createDate;
-        this.contextDescriptor = contextDescriptor;
+        this.useCase = useCase;
         this.scoreOverride = scoreOverride;
         this.description = description;
         this.isResolved = isResolved;
@@ -63,8 +61,8 @@ public class CveContext {
         return createDate;
     }
 
-    public String getContextDescriptor() {
-        return contextDescriptor;
+    public String getUseCase() {
+        return useCase;
     }
 
     public Float getScoreOverride() {

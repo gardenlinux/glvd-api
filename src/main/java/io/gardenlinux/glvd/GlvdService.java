@@ -175,7 +175,7 @@ public class GlvdService {
     }
 
     public List<CveContext> getCveContextsForDist(String dist_id) {
-        return cveContextRepository.findByDistId(Integer.valueOf(dist_id)).stream().filter(cveContext -> !cveContext.getContextDescriptor().equalsIgnoreCase("dummy")).toList();
+        return cveContextRepository.findByDistId(Integer.valueOf(dist_id)).stream().filter(cveContext -> !cveContext.getUseCase().equalsIgnoreCase("dummy")).toList();
     }
 
     public List<CveContext> getCveContextsForGardenLinuxVersion(String gardenlinuxVersion) {
