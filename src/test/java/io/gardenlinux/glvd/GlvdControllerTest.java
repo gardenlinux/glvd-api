@@ -112,7 +112,7 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void reproduceIssue167() {
+    public void reproduceIssue167WithPut() {
         var packageList = """
                   {
                   "packageNames": [
@@ -128,6 +128,19 @@ class GlvdControllerTest {
                 .contentType("application/json")
                 .body(packageList)
                 .when().port(this.port).put("/v1/cves/1592.4/packages")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("size()", is(1))
+                .body("sourcePackageName", hasItems("util-linux"))
+                .body("cveId", hasItems("CVE-2022-0563"));
+    }
+
+    @Test
+    public void reproduceIssue167WithGet() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForPackages",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/1592.4/packages/util-linux,libselinux")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("size()", is(1))
                 .body("sourcePackageName", hasItems("util-linux"))

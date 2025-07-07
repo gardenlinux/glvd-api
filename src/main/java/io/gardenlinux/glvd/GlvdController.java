@@ -49,7 +49,7 @@ public class GlvdController {
     }
 
     @PutMapping("/cves/{gardenlinuxVersion}/packages")
-    ResponseEntity<List<SourcePackageCve>> getCvePackagesxx(
+    ResponseEntity<List<SourcePackageCve>> getCvePackagesPut(
             @PathVariable final String gardenlinuxVersion,
             @RequestBody final PackageList packages,
             @RequestParam(defaultValue = "cveId") final String sortBy,
