@@ -122,9 +122,6 @@ class GlvdControllerTest {
                 }""";
 
         given(this.spec).accept("application/json")
-                .filter(document("getCveForPackagesPut",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
-                        preprocessResponse(prettyPrint())))
                 .contentType("application/json")
                 .body(packageList)
                 .when().port(this.port).put("/v1/cves/1592.4/packages")
@@ -137,9 +134,6 @@ class GlvdControllerTest {
     @Test
     public void reproduceIssue167WithGet() {
         given(this.spec).accept("application/json")
-                .filter(document("getCveForPackages",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
-                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cves/1592.4/packages/util-linux,libselinux")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("size()", is(1))
