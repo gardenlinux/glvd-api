@@ -113,9 +113,13 @@ public class GlvdService {
         return "{" + input + "}";
     }
 
+    private boolean packageListContainsKernel(String packages) {
+        return packages.equals("linux") || packages.startsWith("linux,") || packages.contains(",linux,") || packages.endsWith(",linux");
+    }
+
     public List<SourcePackageCve> getCveForPackages(String gardenlinuxVersion, String packages, SortAndPageOptions sortAndPageOptions) {
         List<SourcePackageCve> kernelCves = new ArrayList<>();
-        if (packages.contains("linux")) {
+        if (packageListContainsKernel(packages)) {
             kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
                     .stream()
                     .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))

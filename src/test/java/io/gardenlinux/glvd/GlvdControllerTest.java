@@ -112,6 +112,36 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void reproduceIssue167WithPut() {
+        var packageList = """
+                  {
+                  "packageNames": [
+                    "libselinux",
+                    "util-linux"
+                  ]
+                }""";
+
+        given(this.spec).accept("application/json")
+                .contentType("application/json")
+                .body(packageList)
+                .when().port(this.port).put("/v1/cves/1592.4/packages")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("size()", is(1))
+                .body("sourcePackageName", hasItems("util-linux"))
+                .body("cveId", hasItems("CVE-2022-0563"));
+    }
+
+    @Test
+    public void reproduceIssue167WithGet() {
+        given(this.spec).accept("application/json")
+                .when().port(this.port).get("/v1/cves/1592.4/packages/util-linux,libselinux")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("size()", is(1))
+                .body("sourcePackageName", hasItems("util-linux"))
+                .body("cveId", hasItems("CVE-2022-0563"));
+    }
+
+    @Test
     public void shouldGetPackagesForDistro() {
         given(this.spec).accept("application/json")
                 .filter(document("getPackages",
