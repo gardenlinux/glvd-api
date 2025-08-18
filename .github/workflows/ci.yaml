@@ -196,6 +196,7 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       id-token: write
+      pages: write
     needs:
       - build
     if: github.ref == 'refs/heads/main'
