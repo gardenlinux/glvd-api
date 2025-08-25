@@ -209,7 +209,7 @@ jobs:
         with:
           name: build-artifacts
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: 'docs/asciidoc'
       - name: Deploy to GitHub Pages
