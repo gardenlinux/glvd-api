@@ -9,6 +9,17 @@
 
 <h1 th:text="|Details for ${cveDetails.cveId}|" />
 
+<div th:if="${cveDetails.distro == null or #lists.isEmpty(cveDetails.distro)}">
+
+    <h2>Non-Garden Linux/Debian CVE</h2>
+
+    <p>
+    This CVE is not listed in Debian's Security Tracker, and it very likley does not affect any package in Garden Linux.
+    It is shown here for informational purposes.
+    </p>
+</div>
+
+
 <a th:href="@{https://nvd.nist.gov/vuln/detail/} + ${cveDetails.cveId}">NIST National Vulnerability Database Entry</a>
 
 <p>
@@ -126,7 +137,7 @@
 
 </table>
 
-<h2>CVE Context</h2>
+<h2 th:if="${cveContexts != null and !#lists.isEmpty(cveContexts)}">CVE Context</h2>
 
 <div th:each="context,iterStat : ${cveContexts}">
     <p><strong>Date:</strong> <span th:text="${context.createDate}"></span></p>

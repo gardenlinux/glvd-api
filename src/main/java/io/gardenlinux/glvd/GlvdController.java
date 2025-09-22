@@ -1,6 +1,7 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
+import io.gardenlinux.glvd.exceptions.CveNotKnownException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
@@ -139,7 +140,12 @@ public class GlvdController {
 
     @GetMapping("/cveDetails/{cveId}")
     ResponseEntity<CveDetailsWithContext> cveDetails(@PathVariable final String cveId) {
-        var cveDetails = glvdService.getCveDetails(cveId);
+        CveDetail cveDetails = null;
+        try {
+            cveDetails = glvdService.getCveDetails(cveId);
+        } catch (CveNotKnownException e) {
+            return ResponseEntity.notFound().header("Message", e.getMessage()).build();
+        }
         var cveContexts = glvdService.getCveContexts(cveId);
 
         return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
