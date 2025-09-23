@@ -2,6 +2,7 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.CveDetails;
 import io.gardenlinux.glvd.db.KernelCveDetails;
+import io.gardenlinux.glvd.db.NvdCve;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +78,39 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
                 c.getVersionFixed(), c.getBaseScoreV40(), c.getBaseScoreV31(), c.getBaseScoreV30(),
                 c.getBaseScoreV2(), c.getVectorStringV40(), c.getVectorStringV31(),
                 c.getVectorStringV30(), c.getVectorStringV2());
+    }
+
+    static CveDetail fromNvdCve(NvdCve c) {
+        var description = "(no description available)";
+        var d = c.getData();
+        if (d == null) {
+            // this should not happen, but in case we can't parse the json better display the most minimal entry than throwing an error
+            return new CveDetail(c.getCveId(), null, description, null, null, c.getLastMod(),
+                    null, null, null, null, null, null,
+                    null, null, null, null, null, null,
+                    null, null, null, null, null, null);
+        }
+        var descriptions = d.descriptions().stream().filter(theDescription -> theDescription.lang().equals("en")).toList();
+        if (descriptions.size() == 1) {
+            description = descriptions.getFirst().value();
+        }
+
+        List<NvdCve.Data.Metrics.CvssMetricV40> cvssMetricV40s = d.metrics().cvssMetricV40();
+        List<NvdCve.Data.Metrics.CvssMetricV31> cvssMetricV31s = d.metrics().cvssMetricV31();
+        List<NvdCve.Data.Metrics.CvssMetricV30> cvssMetricV30s = d.metrics().cvssMetricV30();
+        List<NvdCve.Data.Metrics.CvssMetricV2> cvssMetricV2s = d.metrics().cvssMetricV2();
+
+        return new CveDetail(c.getCveId(), d.vulnStatus(), description, d.published(), d.lastModified(), c.getLastMod(),
+                null, null, null, null, null, null,
+                null, null, null, null,
+                cvssMetricV40s != null ? cvssMetricV40s.getFirst().cvssData().baseScore() : null,
+                cvssMetricV31s != null ? cvssMetricV31s.getFirst().cvssData().baseScore() : null,
+                cvssMetricV30s != null ? cvssMetricV30s.getFirst().cvssData().baseScore() : null,
+                cvssMetricV2s != null ? cvssMetricV2s.getFirst().cvssData().baseScore() : null,
+                cvssMetricV40s != null ? cvssMetricV40s.getFirst().cvssData().vectorString() : null,
+                cvssMetricV31s != null ? cvssMetricV31s.getFirst().cvssData().vectorString() : null,
+                cvssMetricV30s != null ? cvssMetricV30s.getFirst().cvssData().vectorString() : null,
+                cvssMetricV2s != null ? cvssMetricV2s.getFirst().cvssData().vectorString() : null);
     }
 
     private record KernelDistroInfo(ArrayList<String> distros, ArrayList<String> distroVersions,

@@ -1,6 +1,7 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
+import io.gardenlinux.glvd.exceptions.CveNotKnownException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import io.gardenlinux.glvd.releasenotes.ReleaseNoteGenerator;
 import jakarta.annotation.Nonnull;
@@ -46,9 +47,12 @@ public class GlvdService {
     @Nonnull
     private final KernelCveDetailsRepository kernelCveDetailsRepository;
 
+    @Nonnull
+    private final NvdCveRepository nvdCveRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository, @Nonnull NvdCveRepository nvdCveRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
@@ -58,6 +62,7 @@ public class GlvdService {
         this.debSrcRepository = debSrcRepository;
         this.kernelCveRepository = kernelCveRepository;
         this.kernelCveDetailsRepository = kernelCveDetailsRepository;
+        this.nvdCveRepository = nvdCveRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -165,6 +170,16 @@ public class GlvdService {
         var kernelCveDetailsOptional = kernelCveDetailsRepository.findByCveId(cveId);
 
         var debianCveDetails = cveDetailsRepository.findByCveId(cveId);
+
+        if (debianCveDetails == null) {
+            var nvdCve = nvdCveRepository.findByCveId(cveId);
+            if (nvdCve != null) {
+                return CveDetail.fromNvdCve(nvdCve);
+            } else {
+                throw new CveNotKnownException(cveId + " is not in the GLVD database. " +
+                        "It might either be very new and not yet be available in GLVD, or the ID might be misspelled.");
+            }
+        }
 
         if (kernelCveDetailsOptional.isPresent()) {
             var kernelCveDetails = kernelCveDetailsOptional.get();

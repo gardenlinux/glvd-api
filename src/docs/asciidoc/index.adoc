@@ -118,6 +118,17 @@ The expected response looks like this:
 
 include::{snippets}/getCveDetailsWithContextsKernel/http-response.adoc[]
 
+=== Get CVE Details for Non-Debian CVEs
+
+For CVEs that are not in the Debian Security Tracker, GLVD will only be able to provide very basic information.
+
+include::{snippets}/getCveDetailsNonDebian/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/getCveDetailsNonDebian/http-response.adoc[]
+
+
 === Get Patch Release Notes Information
 
 Get information about fixed security vulnerabilities in a new patch release.

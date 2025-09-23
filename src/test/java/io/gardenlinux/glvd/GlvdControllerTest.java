@@ -7,6 +7,8 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.restdocs.RestDocumentationContextProvider;
@@ -255,6 +257,39 @@ class GlvdControllerTest {
                 .body("details.isVulnerable", is(List.of(true, true, true, true, true, true, true)))
                 // Is explicitly marked as "resolved"
                 .body("contexts.resolved", hasItems(true));
+    }
+
+    @Test
+    public void shouldGetCveDetailsForNonDebianCVE() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsNonDebian",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/CVE-2024-7344")
+                .then().statusCode(200)
+                .body("details.cveId", equalTo("CVE-2024-7344"))
+                .body("details.baseScoreV31", equalTo(8.2f))
+                .body("details.vectorStringV31", equalTo("CVSS:3.1/AV:L/AC:L/PR:H/UI:N/S:C/C:H/I:H/A:H"));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"CVE-2024-7344", "CVE-2025-1419", "CVE-2004-0005", "CVE-2000-0258", "CVE-2000-0502"})
+    public void shouldGetCveDetailsForNonDebianCVEWithVariousCVESamples(String cveId) {
+        given(this.spec).accept("application/json")
+                .when().port(this.port).get("/v1/cveDetails/" + cveId)
+                .then().statusCode(200)
+                .body("details.cveId", equalTo(cveId));
+    }
+
+    @Test
+    public void shouldGetCveDetailsForNonAvailableCveIdGracefully() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsNonDebian",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/INVALID_CVE_ID")
+                .then().statusCode(404)
+                .header("Message", "INVALID_CVE_ID is not in the GLVD database. It might either be very new and not yet be available in GLVD, or the ID might be misspelled.");
     }
 
     @Test

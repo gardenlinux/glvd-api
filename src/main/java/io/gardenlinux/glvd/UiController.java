@@ -1,6 +1,7 @@
 package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.SourcePackageCve;
+import io.gardenlinux.glvd.exceptions.CveNotKnownException;
 import jakarta.annotation.Nonnull;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -120,7 +121,14 @@ public class UiController {
 
     @GetMapping("/getCveDetails")
     public String getCveDetails(@RequestParam(name = "cveId", required = true) String cveId, Model model) {
-        var cveDetails = glvdService.getCveDetails(cveId);
+        CveDetail cveDetails;
+        try {
+            cveDetails = glvdService.getCveDetails(cveId);
+        } catch (CveNotKnownException e) {
+            model.addAttribute("message", e.getMessage());
+            return "errorCveNotKnownException";
+        }
+
         var cveContexts = glvdService.getCveContexts(cveId);
         var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
         model.addAttribute("cveDetails", cveDetails);
