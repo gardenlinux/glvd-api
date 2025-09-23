@@ -276,12 +276,20 @@ class GlvdControllerTest {
     @ValueSource(strings = {"CVE-2024-7344", "CVE-2025-1419", "CVE-2004-0005", "CVE-2000-0258", "CVE-2000-0502"})
     public void shouldGetCveDetailsForNonDebianCVEWithVariousCVESamples(String cveId) {
         given(this.spec).accept("application/json")
-                .filter(document("getCveDetailsNonDebian",
-                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
-                        preprocessResponse(prettyPrint())))
                 .when().port(this.port).get("/v1/cveDetails/" + cveId)
                 .then().statusCode(200)
                 .body("details.cveId", equalTo(cveId));
+    }
+
+    @Test
+    public void shouldGetCveDetailsForNonAvailableCveIdGracefully() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveDetailsNonDebian",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cveDetails/INVALID_CVE_ID")
+                .then().statusCode(404)
+                .header("Message", "INVALID_CVE_ID is not in the GLVD database. It might either be very new and not yet be available in GLVD, or the ID might be misspelled.");
     }
 
     @Test
