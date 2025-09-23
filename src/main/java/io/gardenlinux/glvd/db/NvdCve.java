@@ -45,7 +45,7 @@ public class NvdCve {
             String published,
             String lastModified,
             String vulnStatus,
-            List<String> cveTags,
+            List<CveTag> cveTags,
             List<Description> descriptions,
             Metrics metrics,
             List<Weakness> weaknesses,
@@ -55,6 +55,11 @@ public class NvdCve {
         public record Description(
                 String lang,
                 String value
+        ) {}
+
+        public record CveTag(
+            String sourceIdentifier,
+            List<String> tags
         ) {}
 
         public record Metrics(
