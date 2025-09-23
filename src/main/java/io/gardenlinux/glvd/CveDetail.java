@@ -80,15 +80,17 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
                 c.getVectorStringV30(), c.getVectorStringV2());
     }
 
-    private record KernelDistroInfo(ArrayList<String> distros, ArrayList<String> distroVersions,
-                                    ArrayList<String> sourcePackageNames, ArrayList<String> kernelVersions,
-                                    ArrayList<Boolean> isVulnerable) {
-    }
-
     static CveDetail fromNvdCve(NvdCve c) {
-        var d = c.getData();
-        var descriptions = d.descriptions().stream().filter(description -> description.lang().equals("en")).toList();
         var description = "(no description available)";
+        var d = c.getData();
+        if (d == null) {
+            // this should not happen, but in case we can't parse the json better display the most minimal entry than throwing an error
+            return new CveDetail(c.getCveId(), null, description, null, null, c.getLastMod(),
+                    null, null, null, null, null, null,
+                    null, null, null, null, null, null,
+                    null, null, null, null, null, null);
+        }
+        var descriptions = d.descriptions().stream().filter(theDescription -> theDescription.lang().equals("en")).toList();
         if (descriptions.size() == 1) {
             description = descriptions.getFirst().value();
         }
@@ -109,5 +111,10 @@ public record CveDetail(String cveId, String vulnStatus, String description, Str
                 cvssMetricV31s != null ? cvssMetricV31s.getFirst().cvssData().vectorString() : null,
                 cvssMetricV30s != null ? cvssMetricV30s.getFirst().cvssData().vectorString() : null,
                 cvssMetricV2s != null ? cvssMetricV2s.getFirst().cvssData().vectorString() : null);
+    }
+
+    private record KernelDistroInfo(ArrayList<String> distros, ArrayList<String> distroVersions,
+                                    ArrayList<String> sourcePackageNames, ArrayList<String> kernelVersions,
+                                    ArrayList<Boolean> isVulnerable) {
     }
 }

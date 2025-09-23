@@ -25,7 +25,7 @@ public class NvdCveDataAttributeConverter implements AttributeConverter<NvdCve.D
         try {
             return objectMapper.readValue(dbData, NvdCve.Data.class);
         } catch (JsonProcessingException e) {
-            logger.warn("Cannot convert JSON into CVE Data");
+            logger.warn("Cannot convert JSON into CVE Data {}", dbData);
             return null;
         }
     }
