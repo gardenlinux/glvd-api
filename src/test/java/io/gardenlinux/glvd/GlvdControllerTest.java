@@ -273,7 +273,7 @@ class GlvdControllerTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"CVE-2024-7344", "CVE-2025-1419", "CVE-2004-0005", "CVE-2000-0258", "CVE-2000-0502"})
+    @ValueSource(strings = {"CVE-2024-7344", "CVE-2025-1419", "CVE-2004-0005", "CVE-2000-0258", "CVE-2000-0502", "CVE-2024-53564"})
     public void shouldGetCveDetailsForNonDebianCVEWithVariousCVESamples(String cveId) {
         given(this.spec).accept("application/json")
                 .when().port(this.port).get("/v1/cveDetails/" + cveId)
