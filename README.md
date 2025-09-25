@@ -8,9 +8,9 @@ This repo implements the HTTP API for GLVD.
 ## Local Setup
 
 Required/recommended software:
-- [SapMachine JDK 21](https://sap.github.io/SapMachine/)
+- [SapMachine JDK 25](https://sap.github.io/SapMachine/)
 - [Podman Desktop/Machine](https://podman.io)
-- [Podman Compose](https://github.com/containers/podman-compose) or [Docker Compose v2](https://github.com/docker/compose)
+- [Podman Compose](https://github.com/containers/podman-compose) or [Docker Compose v2 (preferred)](https://github.com/docker/compose)
 
 A local setup including the database with sample data can be setup using podman compose.
 
@@ -43,4 +43,4 @@ Running the tests should be as easy as:
 ./gradlew test --info
 ```
 
-Alternativly, you can run the tests also in the Java IDE of your choice, as long as the db container is running.
+Alternatively, you can run the tests also in the Java IDE of your choice, as long as the db container is running.
