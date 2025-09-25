@@ -1,4 +1,4 @@
-FROM ghcr.io/sap/sapmachine:21-jdk-headless-gl-1592 as build
+FROM ghcr.io/sap/sapmachine:25-jdk-headless-gl-1592 as build
 RUN apt-get update -q && apt-get install -y binutils
 RUN mkdir /usr/src/glvd
 COPY . /usr/src/glvd
@@ -7,7 +7,7 @@ COPY build/libs/glvd-0.0.1-SNAPSHOT.jar glvd-0.0.1-SNAPSHOT.jar
 RUN jar xf glvd-0.0.1-SNAPSHOT.jar
 RUN jdeps --ignore-missing-deps -q  \
     --recursive  \
-    --multi-release 21  \
+    --multi-release 25  \
     --print-module-deps  \
     --class-path 'BOOT-INF/lib/*'  \
     glvd-0.0.1-SNAPSHOT.jar > deps.info
