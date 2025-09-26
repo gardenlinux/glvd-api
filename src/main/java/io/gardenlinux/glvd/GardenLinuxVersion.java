@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd;
 
+// fixme this class needs to be changed to implement three digit version numbers
 public class GardenLinuxVersion {
     private final String version;
     private final int major;
