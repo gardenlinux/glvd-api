@@ -1,0 +1,15 @@
+meta {
+  name: patchReleaseNotes (legacy)
+  type: http
+  seq: 17
+}
+
+get {
+  url: {{schema_hostname_port}}/v1/patchReleaseNotes/1443.20
+  body: none
+  auth: inherit
+}
+
+settings {
+  encodeUrl: true
+}

@@ -293,6 +293,19 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldGenerateReleaseNotesInformationWithThreeDigitVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("releaseNotes",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/releaseNotes/2000.1.0")
+                .then().statusCode(200)
+                .body("version", equalTo("2000.1.0"))
+                .body("packageList.sourcePackageName", hasItems("util-linux"))
+                .body("packageList.fixedCves", hasItems(List.of("CVE-2022-0563")));
+    }
+
+    @Test
     public void shouldGeneratePatchReleaseNotesInformation() {
         given(this.spec).accept("application/json")
                 .filter(document("patchReleaseNotes",

@@ -1,6 +1,6 @@
 package io.gardenlinux.glvd.releasenotes;
 
-import io.gardenlinux.glvd.GardenLinuxVersion;
+import io.gardenlinux.glvd.version.GardenLinuxVersion;
 import io.gardenlinux.glvd.db.DebSrc;
 import io.gardenlinux.glvd.db.SourcePackageCve;
 

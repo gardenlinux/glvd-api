@@ -4,6 +4,8 @@ import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.exceptions.CveNotKnownException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import io.gardenlinux.glvd.releasenotes.ReleaseNoteGenerator;
+import io.gardenlinux.glvd.version.ThreeDigitGardenLinuxVersion;
+import io.gardenlinux.glvd.version.TwoDigitGardenLinuxVersion;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -227,7 +229,7 @@ public class GlvdService {
         if (gardenlinuxVersion.endsWith(".0")) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
         }
-        var v = new GardenLinuxVersion(gardenlinuxVersion);
+        var v = new TwoDigitGardenLinuxVersion(gardenlinuxVersion);
 
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
 
@@ -241,6 +243,28 @@ public class GlvdService {
         var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
         var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
         var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousPatchVersion());
+
+        return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
+    }
+
+    public ReleaseNote releaseNote2(final String gardenlinuxVersion) {
+        if (gardenlinuxVersion.endsWith(".0.0")) {
+            return new ReleaseNote(gardenlinuxVersion, List.of());
+        }
+        var v = new ThreeDigitGardenLinuxVersion(gardenlinuxVersion);
+
+        var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
+
+        // We get an empty list if the new version is not yet present in glvd which creates a useless diff
+        // This should not happen in a normal release process because the 'new' version should be ingested into glvd when we get here
+        if (packagesNew.isEmpty()) {
+            return new ReleaseNote(gardenlinuxVersion, List.of());
+        }
+
+        var cvesOldVersion = getCveForDistribution(v.previousMinorVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
+        var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
+        var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
+        var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousMinorVersion());
 
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }

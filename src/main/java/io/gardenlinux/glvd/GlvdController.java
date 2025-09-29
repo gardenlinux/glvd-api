@@ -156,8 +156,14 @@ public class GlvdController {
     //  - Not used for .0 versions
     //  - No burnt versions
     @GetMapping("/patchReleaseNotes/{gardenlinuxVersion}")
+    @Deprecated(since = "2025-09-29", forRemoval = true)
     ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
         return glvdService.releaseNote(gardenlinuxVersion);
+    }
+
+    @GetMapping("/releaseNotes/{gardenlinuxVersion}")
+    ReleaseNote releaseNotes2(@PathVariable final String gardenlinuxVersion) {
+        return glvdService.releaseNote2(gardenlinuxVersion);
     }
 
     @GetMapping("/kernel/gardenlinux/{gardenlinuxVersion}")

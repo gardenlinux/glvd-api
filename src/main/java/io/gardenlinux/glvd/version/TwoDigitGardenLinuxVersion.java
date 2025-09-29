@@ -1,12 +1,12 @@
-package io.gardenlinux.glvd;
+package io.gardenlinux.glvd.version;
 
-// fixme this class needs to be changed to implement three digit version numbers
-public class GardenLinuxVersion {
+@Deprecated()
+public class TwoDigitGardenLinuxVersion implements GardenLinuxVersion {
     private final String version;
     private final int major;
     private final int patch;
 
-    public GardenLinuxVersion(String version) {
+    public TwoDigitGardenLinuxVersion(String version) {
         this.version = version;
         var components = version.split("\\.");
         if (components.length != 2) {
