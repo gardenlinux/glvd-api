@@ -149,7 +149,7 @@ public class UiController {
             @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             Model model
     ) {
-        var releaseNotes = glvdService.releaseNote(gardenlinuxVersion);
+        var releaseNotes = glvdService.releaseNoteTwoDigitVersion(gardenlinuxVersion);
         model.addAttribute("releaseNotes", releaseNotes);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getPatchReleaseNotes";

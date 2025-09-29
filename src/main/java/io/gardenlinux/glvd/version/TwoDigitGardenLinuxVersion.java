@@ -1,6 +1,6 @@
 package io.gardenlinux.glvd.version;
 
-@Deprecated()
+@Deprecated(since = "2025-09-29")
 public class TwoDigitGardenLinuxVersion implements GardenLinuxVersion {
     private final String version;
     private final int major;

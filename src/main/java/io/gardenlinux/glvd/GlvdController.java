@@ -153,17 +153,19 @@ public class GlvdController {
 
     // https://github.com/gardenlinux/glvd/issues/132
     // Assumptions:
+    //  - Version numbers follow old major.patch versioning schema,
+    //      for new schema, use releaseNotes
     //  - Not used for .0 versions
     //  - No burnt versions
     @GetMapping("/patchReleaseNotes/{gardenlinuxVersion}")
-    @Deprecated(since = "2025-09-29", forRemoval = true)
-    ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
-        return glvdService.releaseNote(gardenlinuxVersion);
+    @Deprecated(since = "2025-09-29")
+    ReleaseNote releaseNotesTwoDigit(@PathVariable final String gardenlinuxVersion) {
+        return glvdService.releaseNoteTwoDigitVersion(gardenlinuxVersion);
     }
 
     @GetMapping("/releaseNotes/{gardenlinuxVersion}")
-    ReleaseNote releaseNotes2(@PathVariable final String gardenlinuxVersion) {
-        return glvdService.releaseNote2(gardenlinuxVersion);
+    ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
+        return glvdService.releaseNote(gardenlinuxVersion);
     }
 
     @GetMapping("/kernel/gardenlinux/{gardenlinuxVersion}")

@@ -225,7 +225,7 @@ public class GlvdService {
         return debSrcRepository.findByDistId(Integer.parseInt(distVersionToId(version)));
     }
 
-    public ReleaseNote releaseNote(final String gardenlinuxVersion) {
+    public ReleaseNote releaseNoteTwoDigitVersion(final String gardenlinuxVersion) {
         if (gardenlinuxVersion.endsWith(".0")) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
         }
@@ -247,7 +247,7 @@ public class GlvdService {
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 
-    public ReleaseNote releaseNote2(final String gardenlinuxVersion) {
+    public ReleaseNote releaseNote(final String gardenlinuxVersion) {
         if (gardenlinuxVersion.endsWith(".0.0")) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
         }
