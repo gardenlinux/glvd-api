@@ -18,7 +18,7 @@ public class ThreeDigitGardenLinuxVersion implements GardenLinuxVersion {
     }
 
     public String previousMinorVersion() {
-        return major + "." + (minor - 1) + "." + patch;
+        return major + "." + (minor - 1) + ".0";
     }
 
     public String printVersion() {

@@ -14,4 +14,11 @@ class ThreeDigitGardenLinuxVersionTest {
         assertEquals("2000.1.0", gardenLinuxVersion.printVersion());
     }
 
+    @Test
+    public void canGetPreviousVersionWithNonZeroPatch() {
+        var gardenLinuxVersion = new ThreeDigitGardenLinuxVersion("2000.1.7");
+        assertEquals("2000.0.0", gardenLinuxVersion.previousMinorVersion());
+        assertEquals("2000.1.7", gardenLinuxVersion.printVersion());
+    }
+
 }
