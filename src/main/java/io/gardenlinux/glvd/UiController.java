@@ -155,6 +155,17 @@ public class UiController {
         return "getPatchReleaseNotes";
     }
 
+    @GetMapping("/getReleaseNotes")
+    public String getReleaseNotes(
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
+            Model model
+    ) {
+        var releaseNotes = glvdService.releaseNote(gardenlinuxVersion);
+        model.addAttribute("releaseNotes", releaseNotes);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
+        return "getReleaseNotes";
+    }
+
     @GetMapping("/getTriage")
     public String getTriage(
             @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
