@@ -1,11 +1,12 @@
-package io.gardenlinux.glvd;
+package io.gardenlinux.glvd.version;
 
-public class GardenLinuxVersion {
+@Deprecated(since = "2025-09-29")
+public class TwoDigitGardenLinuxVersion implements GardenLinuxVersion {
     private final String version;
     private final int major;
     private final int patch;
 
-    public GardenLinuxVersion(String version) {
+    public TwoDigitGardenLinuxVersion(String version) {
         this.version = version;
         var components = version.split("\\.");
         if (components.length != 2) {

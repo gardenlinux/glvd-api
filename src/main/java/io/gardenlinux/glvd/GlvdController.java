@@ -2,6 +2,7 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.exceptions.CveNotKnownException;
+import io.gardenlinux.glvd.exceptions.InvalidGardenLinuxVersionException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
@@ -153,11 +154,23 @@ public class GlvdController {
 
     // https://github.com/gardenlinux/glvd/issues/132
     // Assumptions:
+    //  - Version numbers follow old major.patch versioning schema,
+    //      for new schema, use releaseNotes
     //  - Not used for .0 versions
     //  - No burnt versions
     @GetMapping("/patchReleaseNotes/{gardenlinuxVersion}")
-    ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
-        return glvdService.releaseNote(gardenlinuxVersion);
+    @Deprecated(since = "2025-09-29")
+    ReleaseNote releaseNotesTwoDigit(@PathVariable final String gardenlinuxVersion) {
+        return glvdService.releaseNoteTwoDigitVersion(gardenlinuxVersion);
+    }
+
+    @GetMapping("/releaseNotes/{gardenlinuxVersion}")
+    ResponseEntity<ReleaseNote> releaseNotes(@PathVariable final String gardenlinuxVersion) {
+        try {
+            return ResponseEntity.ok(glvdService.releaseNote(gardenlinuxVersion));
+        } catch (InvalidGardenLinuxVersionException invalidGardenLinuxVersionException) {
+            return ResponseEntity.badRequest().header("Message", invalidGardenLinuxVersionException.getMessage()).build();
+        }
     }
 
     @GetMapping("/kernel/gardenlinux/{gardenlinuxVersion}")

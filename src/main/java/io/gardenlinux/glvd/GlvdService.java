@@ -2,8 +2,11 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.exceptions.CveNotKnownException;
+import io.gardenlinux.glvd.exceptions.InvalidGardenLinuxVersionException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import io.gardenlinux.glvd.releasenotes.ReleaseNoteGenerator;
+import io.gardenlinux.glvd.version.ThreeDigitGardenLinuxVersion;
+import io.gardenlinux.glvd.version.TwoDigitGardenLinuxVersion;
 import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +22,9 @@ import java.util.stream.Stream;
 
 @Service
 public class GlvdService {
+
+    public static final String THREE_DIGIT_VERSION_SCHEMA = "\\d+\\.\\d+\\.\\d+";
+    public static final String TWO_DIGIT_VERSION_SCHEMA = "\\d+\\.\\d+";
 
     @Nonnull
     private final SourcePackageCveRepository sourcePackageCveRepository;
@@ -224,10 +230,21 @@ public class GlvdService {
     }
 
     public ReleaseNote releaseNote(final String gardenlinuxVersion) {
+        if (gardenlinuxVersion.matches(THREE_DIGIT_VERSION_SCHEMA)) {
+            return releaseNoteThreeDigitVersion(gardenlinuxVersion);
+        } else if (gardenlinuxVersion.matches(TWO_DIGIT_VERSION_SCHEMA)) {
+            return releaseNoteTwoDigitVersion(gardenlinuxVersion);
+        } else {
+            throw new InvalidGardenLinuxVersionException("gardenlinuxVersion must be in n.n or n.n.n format, but was: " + gardenlinuxVersion);
+        }
+    }
+
+    // keep this method to provide the old api
+    public ReleaseNote releaseNoteTwoDigitVersion(final String gardenlinuxVersion) {
         if (gardenlinuxVersion.endsWith(".0")) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
         }
-        var v = new GardenLinuxVersion(gardenlinuxVersion);
+        var v = new TwoDigitGardenLinuxVersion(gardenlinuxVersion);
 
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
 
@@ -242,6 +259,22 @@ public class GlvdService {
         var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
         var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousPatchVersion());
 
+        return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
+    }
+
+    private ReleaseNote releaseNoteThreeDigitVersion(final String gardenlinuxVersion) {
+        if (gardenlinuxVersion.endsWith(".0.0")) {
+            return new ReleaseNote(gardenlinuxVersion, List.of());
+        }
+        var v = new ThreeDigitGardenLinuxVersion(gardenlinuxVersion);
+        var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
+        if (packagesNew.isEmpty()) {
+            return new ReleaseNote(gardenlinuxVersion, List.of());
+        }
+        var cvesOldVersion = getCveForDistribution(v.previousMinorVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
+        var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
+        var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
+        var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousMinorVersion());
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 

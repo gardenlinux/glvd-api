@@ -3,6 +3,8 @@ package io.gardenlinux.glvd;
 import io.gardenlinux.glvd.db.DebSrc;
 import io.gardenlinux.glvd.db.SourcePackageCve;
 import io.gardenlinux.glvd.releasenotes.ReleaseNoteGenerator;
+import io.gardenlinux.glvd.version.GardenLinuxVersion;
+import io.gardenlinux.glvd.version.ThreeDigitGardenLinuxVersion;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -11,14 +13,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ReleaseNoteGeneratorTest {
 
-    final GardenLinuxVersion gardenLinuxVersion = new GardenLinuxVersion("1337.9");
+    final ThreeDigitGardenLinuxVersion gardenLinuxVersion = new ThreeDigitGardenLinuxVersion("1337.9.0");
     final int DIST_ID_OLD = 15;
     final int DIST_ID_NEW = 16;
     SourcePackageCve cveOld1 = new SourcePackageCve(
             "CVE-2021-33909",
             "linux",
             "5.10.0-8.3-cloud-amd64",
-            gardenLinuxVersion.previousPatchVersion(),
+            gardenLinuxVersion.previousMinorVersion(),
             true,
             "2021-07-20",
             "2021-08-15",
@@ -38,7 +40,7 @@ class ReleaseNoteGeneratorTest {
             "CVE-2020-28052",
             "openssl",
             "1.1.1k-1",
-            gardenLinuxVersion.previousPatchVersion(),
+            gardenLinuxVersion.previousMinorVersion(),
             true,
             "2020-12-08",
             "2021-01-05",
@@ -58,7 +60,7 @@ class ReleaseNoteGeneratorTest {
             "CVE-2019-1563",
             "libxml2",
             "2.9.4+dfsg1-7",
-            gardenLinuxVersion.previousPatchVersion(),
+            gardenLinuxVersion.previousMinorVersion(),
             true,
             "2019-07-10",
             "2019-08-05",
@@ -78,7 +80,7 @@ class ReleaseNoteGeneratorTest {
             "CVE-2018-18074",
             "curl",
             "7.64.0-4+deb10u1",
-            gardenLinuxVersion.previousPatchVersion(),
+            gardenLinuxVersion.previousMinorVersion(),
             false,
             "2018-10-10",
             "2018-11-15",
@@ -98,7 +100,7 @@ class ReleaseNoteGeneratorTest {
             "CVE-2017-1000367",
             "bash",
             "4.4-5",
-            gardenLinuxVersion.previousPatchVersion(),
+            gardenLinuxVersion.previousMinorVersion(),
             true,
             "2017-07-16",
             "2017-08-15",
@@ -208,7 +210,7 @@ class ReleaseNoteGeneratorTest {
             "CVE-2023-28755",
             "ruby3.1",
             "3.1.2-8.4gl0",
-            gardenLinuxVersion.previousPatchVersion(),
+            gardenLinuxVersion.previousMinorVersion(),
             true,
             "",
             "",

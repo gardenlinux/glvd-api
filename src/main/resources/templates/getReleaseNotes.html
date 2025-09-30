@@ -1,22 +1,22 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>GLVD: Patch release notes</title>
+    <title>GLVD: Release notes</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href="style.css" rel="stylesheet" media="screen" />
 </head>
 <body>
-<h1 th:text="|Patch Release Notes for Garden Linux ${gardenlinuxVersion}|"/>
+<h1 th:text="|Release Notes for Garden Linux ${gardenlinuxVersion}|"/>
 
 <div>
-    This page provides information about fixed vulnerabilities in a Garden Linux patch release.
+    This page provides information about fixed vulnerabilities in a Garden Linux minor release.
     Note that this list might not be accurate and might be incomplete.
     Use with caution.
 </div>
 
 <div>
-    This page is only valid for Garden Linux versions following the two-digit version number convention (up to 1877.x).
-    For later versions, use <b>getReleaseNotes.html</b> instead.
+    This page is only valid for Garden Linux versions following the three-digit version number convention (greater than 1877.x).
+    For earlier versions, use <b>getPatchReleaseNotes.html</b> instead.
 </div>
 
 <div th:each="item : ${releaseNotes.packageList}">

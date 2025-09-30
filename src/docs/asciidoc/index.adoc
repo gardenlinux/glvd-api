@@ -128,8 +128,20 @@ The expected response looks like this:
 
 include::{snippets}/getCveDetailsNonDebian/http-response.adoc[]
 
+=== Get Release Notes Information
 
-=== Get Patch Release Notes Information
+Get information about fixed security vulnerabilities in a new minor release.
+
+This endpoint only accepts three digit version numbers as described in https://github.com/gardenlinux/gardenlinux/blob/main/docs/architecture/decisions/0011-garden-linux-versioning.md[ADR 11 Garden Linux versioning].
+For the older two digit versioning, see 'Get Patch Release Notes Information (Legacy)' below.
+
+include::{snippets}/releaseNotes/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/releaseNotes/http-response.adoc[]
+
+=== Get Patch Release Notes Information (Legacy)
 
 Get information about fixed security vulnerabilities in a new patch release.
 

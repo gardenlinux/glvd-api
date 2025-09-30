@@ -293,6 +293,37 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldGenerateReleaseNotesInformationWithThreeDigitVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("releaseNotes",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/releaseNotes/2000.1.0")
+                .then().statusCode(200)
+                .body("version", equalTo("2000.1.0"))
+                .body("packageList.sourcePackageName", hasItems("util-linux"))
+                .body("packageList.fixedCves", hasItems(List.of("CVE-2022-0563")));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2000.1.0", "1592.5", "1592.7", "1592.8", "1443.20"})
+    public void shouldGeneratePatchReleaseNotesInformationAcceptedVersionNumbers(String version) {
+        given(this.spec).accept("application/json")
+                .when().port(this.port).get("/v1/releaseNotes/" + version)
+                .then().statusCode(200)
+                .body("version", equalTo(version));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2001", "1.2.3.4", "v0.0.1", "1592.11-mycoolfork", "2002-11", "trixie", "today"})
+    public void shouldFailWithProperErrorMessageWhenInvalidVersionSchemaIsSpecified(String version) {
+        given(this.spec).accept("application/json")
+                .when().port(this.port).get("/v1/releaseNotes/" + version)
+                .then().statusCode(400)
+                .header("Message", "gardenlinuxVersion must be in n.n or n.n.n format, but was: " + version);
+    }
+
+    @Test
     public void shouldGeneratePatchReleaseNotesInformation() {
         given(this.spec).accept("application/json")
                 .filter(document("patchReleaseNotes",
