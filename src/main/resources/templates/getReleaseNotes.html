@@ -14,11 +14,6 @@
     Use with caution.
 </div>
 
-<div>
-    This page is only valid for Garden Linux versions following the three-digit version number convention (greater than 1877.x).
-    For earlier versions, use <b>getPatchReleaseNotes.html</b> instead.
-</div>
-
 <div th:each="item : ${releaseNotes.packageList}">
     <p><strong>Source Package Name:</strong> <span th:text="${item.sourcePackageName}"></span></p>
     <p><strong>Old Version:</strong> <span th:text="${item.oldVersion}"></span></p>
