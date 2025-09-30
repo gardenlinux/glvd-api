@@ -2,6 +2,7 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.exceptions.CveNotKnownException;
+import io.gardenlinux.glvd.exceptions.InvalidGardenLinuxVersionException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import io.gardenlinux.glvd.releasenotes.ReleaseNoteGenerator;
 import io.gardenlinux.glvd.version.ThreeDigitGardenLinuxVersion;
@@ -21,6 +22,9 @@ import java.util.stream.Stream;
 
 @Service
 public class GlvdService {
+
+    public static final String THREE_DIGIT_VERSION_SCHEMA = "\\d+\\.\\d+\\.\\d+";
+    public static final String TWO_DIGIT_VERSION_SCHEMA = "\\d+\\.\\d+";
 
     @Nonnull
     private final SourcePackageCveRepository sourcePackageCveRepository;
@@ -225,6 +229,17 @@ public class GlvdService {
         return debSrcRepository.findByDistId(Integer.parseInt(distVersionToId(version)));
     }
 
+    public ReleaseNote releaseNote(final String gardenlinuxVersion) {
+        if (gardenlinuxVersion.matches(THREE_DIGIT_VERSION_SCHEMA)) {
+            return releaseNoteThreeDigitVersion(gardenlinuxVersion);
+        } else if (gardenlinuxVersion.matches(TWO_DIGIT_VERSION_SCHEMA)) {
+            return releaseNoteTwoDigitVersion(gardenlinuxVersion);
+        } else {
+            throw new InvalidGardenLinuxVersionException("gardenlinuxVersion must be in n.n or n.n.n format, but was: " + gardenlinuxVersion);
+        }
+    }
+
+    // keep this method to provide the old api
     public ReleaseNote releaseNoteTwoDigitVersion(final String gardenlinuxVersion) {
         if (gardenlinuxVersion.endsWith(".0")) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
@@ -247,25 +262,19 @@ public class GlvdService {
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 
-    public ReleaseNote releaseNote(final String gardenlinuxVersion) {
+    private ReleaseNote releaseNoteThreeDigitVersion(final String gardenlinuxVersion) {
         if (gardenlinuxVersion.endsWith(".0.0")) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
         }
         var v = new ThreeDigitGardenLinuxVersion(gardenlinuxVersion);
-
         var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
-
-        // We get an empty list if the new version is not yet present in glvd which creates a useless diff
-        // This should not happen in a normal release process because the 'new' version should be ingested into glvd when we get here
         if (packagesNew.isEmpty()) {
             return new ReleaseNote(gardenlinuxVersion, List.of());
         }
-
         var cvesOldVersion = getCveForDistribution(v.previousMinorVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
         var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
         var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
         var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousMinorVersion());
-
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 

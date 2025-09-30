@@ -2,6 +2,7 @@ package io.gardenlinux.glvd;
 
 import io.gardenlinux.glvd.db.*;
 import io.gardenlinux.glvd.exceptions.CveNotKnownException;
+import io.gardenlinux.glvd.exceptions.InvalidGardenLinuxVersionException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import jakarta.annotation.Nonnull;
 import org.springframework.http.MediaType;
@@ -164,8 +165,12 @@ public class GlvdController {
     }
 
     @GetMapping("/releaseNotes/{gardenlinuxVersion}")
-    ReleaseNote releaseNotes(@PathVariable final String gardenlinuxVersion) {
-        return glvdService.releaseNote(gardenlinuxVersion);
+    ResponseEntity<ReleaseNote> releaseNotes(@PathVariable final String gardenlinuxVersion) {
+        try {
+            return ResponseEntity.ok(glvdService.releaseNote(gardenlinuxVersion));
+        } catch (InvalidGardenLinuxVersionException invalidGardenLinuxVersionException) {
+            return ResponseEntity.badRequest().header("Message", invalidGardenLinuxVersionException.getMessage()).build();
+        }
     }
 
     @GetMapping("/kernel/gardenlinux/{gardenlinuxVersion}")
