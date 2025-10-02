@@ -34,6 +34,9 @@ public class SourcePackageCve {
     @Column(name = "cve_last_ingested_date", nullable = false)
     private String cveLastIngestedDate;
 
+    @Column(name = "vuln_status", nullable = false)
+    private String vulnStatus;
+
     @Column(name = "base_score", nullable = true)
     private Float baseScore;
 
@@ -67,7 +70,7 @@ public class SourcePackageCve {
     public SourcePackageCve() {
     }
 
-    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, String vulnStatus, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.sourcePackageName = sourcePackageName;
         this.sourcePackageVersion = sourcePackageVersion;
@@ -76,6 +79,7 @@ public class SourcePackageCve {
         this.cvePublishedDate = cvePublishedDate;
         this.cveLastModifiedDate = cveLastModifiedDate;
         this.cveLastIngestedDate = cveLastIngestedDate;
+        this.vulnStatus = vulnStatus;
         this.baseScore = baseScore;
         this.vectorString = vectorString;
         this.baseScoreV40 = baseScoreV40;
@@ -118,6 +122,10 @@ public class SourcePackageCve {
 
     public String getCveLastIngestedDate() {
         return cveLastIngestedDate;
+    }
+
+    public String getVulnStatus() {
+        return vulnStatus;
     }
 
     public Float getBaseScore() {
