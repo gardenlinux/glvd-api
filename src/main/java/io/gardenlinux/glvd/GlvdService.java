@@ -110,7 +110,7 @@ public class GlvdService {
 
         var kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
                 .stream()
-                .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getVulnStatus(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
                 .toList();
 
         return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
@@ -133,7 +133,7 @@ public class GlvdService {
         if (packageListContainsKernel(packages)) {
             kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
                     .stream()
-                    .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                    .map(kernelCve -> new SourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getVulnStatus(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
                     .toList();
 
         }

@@ -77,6 +77,7 @@
 
         <th>Version</th>
         <th>Is Vulnerable?</th>
+        <th>Vulnerability Status</th>
     </tr>
     </thead>
     <tr th:each="item: ${sourcePackageCves}">
@@ -89,6 +90,7 @@
         <td th:text="${item.sourcePackageName}" />
         <td th:text="${item.sourcePackageVersion}" />
         <td th:text="${item.isVulnerable}" />
+        <td th:text="${item.vulnStatus}" />
     </tr>
 </table>
 
