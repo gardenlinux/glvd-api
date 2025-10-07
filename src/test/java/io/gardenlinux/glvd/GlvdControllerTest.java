@@ -66,9 +66,11 @@ class GlvdControllerTest {
         given(this.spec).accept("application/json")
                 .when().port(this.port).get("/v1/cves/1592.7?sortBy=cveId&sortOrder=DESC")
                 .then().statusCode(HttpStatus.SC_OK)
-                .body("cveId", hasItems("CVE-2025-8197", "CVE-2024-35176", "CVE-2023-28755", "CVE-2024-44953"))
-                .body("vulnerable", hasItems(true, true, true, true))
-                .body("vulnStatus", hasItems("Rejected", "Awaiting Analysis", "Modified", "Modified"));
+                // purposefully does not contain CVE-2025-8197
+                .body("size()", is(3))
+                .body("cveId", hasItems("CVE-2024-35176", "CVE-2023-28755", "CVE-2024-44953"))
+                .body("vulnerable", hasItems(true, true, true))
+                .body("vulnStatus", hasItems("Awaiting Analysis", "Modified", "Modified"));
     }
 
     @Test
