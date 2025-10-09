@@ -57,7 +57,21 @@ class GlvdControllerTest {
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("cveId", hasItems("CVE-2025-0938", "CVE-2025-21864", "CVE-2024-44953"))
                 // CVE-2024-44953 is actually vulnerable, but marked as resolved via cve_context, thus it must return 'false' here
-                .body("vulnerable", hasItems(true, true, false));
+                .body("vulnerable", hasItems(true, true, false))
+                .body("vulnStatus", hasItems("Received", "Analyzed", "Modified"));
+    }
+
+    @Test
+    public void shouldReturnCvesForGardenlinuxWithRejectedCve() {
+        given(this.spec).accept("application/json")
+                .when().port(this.port).get("/v1/cves/1592.7?sortBy=cveId&sortOrder=DESC")
+                .then().statusCode(HttpStatus.SC_OK)
+                // purposefully does not contain CVE-2025-8197 because it is 'rejected'
+                .body("size()", is(3))
+                .body("cveId", hasItems("CVE-2024-35176", "CVE-2023-28755", "CVE-2024-44953"))
+                .body("cveId", not(hasItems("CVE-2025-8197")))
+                .body("vulnerable", hasItems(true, true, true))
+                .body("vulnStatus", hasItems("Awaiting Analysis", "Modified", "Modified"));
     }
 
     @Test
@@ -67,7 +81,8 @@ class GlvdControllerTest {
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("cveId", hasItems("CVE-2025-21864", "CVE-2024-44953"))
                 // CVE-2024-44953 is actually vulnerable, but marked as resolved via cve_context, thus it must return 'false' here
-                .body("vulnerable", hasItems(true, false));
+                .body("vulnerable", hasItems(true, false))
+                .body("vulnStatus", hasItems("Analyzed", "Modified"));
     }
 
     @Test

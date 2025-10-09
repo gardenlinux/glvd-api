@@ -51,7 +51,11 @@ public class UiController {
     ) {
         var sourcePackageCves = glvdService.getCveForDistribution(
                 gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
-        ).stream().filter(SourcePackageCve::isVulnerable).toList();
+        )
+                .stream()
+                .filter(SourcePackageCve::isVulnerable)
+                .filter(sourcePackageCve -> !sourcePackageCve.getVulnStatus().equalsIgnoreCase("Rejected"))
+                .toList();
         var contexts = glvdService.getCveContextsForDist(glvdService.distVersionToId(gardenlinuxVersion));
         model.addAttribute("sourcePackageCves", sourcePackageCves);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
