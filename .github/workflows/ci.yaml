@@ -153,22 +153,17 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: echo "Image pushed to ${{ steps.push-to-ghcr.outputs.digest }}"
 
-      - name: Get OIDC token
-        if: ${{ github.event_name != 'pull_request' }}
-        id: get-token
-        run: |
-          IDTOKEN=$(curl -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=${{ env.OIDC_AUDIENCE }}" | jq -r '.value')
-          echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
-
-      - uses: azure/k8s-set-context@v4
-        if: ${{ github.event_name != 'pull_request' }}
+      - name: Authenticate to cluster
+        id: kube_auth
+        uses: gardener/cc-utils/.github/actions/kubernetes-auth@b7e4d874f30171964c5262a0bc20d644f4bcedba
         with:
-           method: kubeconfig
-           kubeconfig: "${{ secrets.KUBECONFIG }}"
+          server: https://api.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com
+          server-ca-discovery-url: https://discovery.ingress.garden.canary.k8s.ondemand.com/projects/gardnlinux/shoots/8a569063-b0d3-45c4-a653-158e70b1bfd1/cluster-ca
+          audience: ${{ env.OIDC_AUDIENCE }}
 
       - name: Deploy the image
         if: ${{ github.event_name != 'pull_request' }}
-        run: kubectl --namespace default --token "${{ steps.get-token.outputs.idToken }}" set image deploy/glvd glvd-api=ghcr.io/${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
+        run: kubectl --namespace default set image deploy/glvd glvd-api=ghcr.io/${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
 
   dependency-submission:
 
