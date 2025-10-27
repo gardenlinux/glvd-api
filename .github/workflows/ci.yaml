@@ -50,7 +50,7 @@ jobs:
 
     - name: Store reports
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: reports
         path: |
@@ -58,7 +58,7 @@ jobs:
           **/build/test-results/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: build-artifacts
         path: 'build'
