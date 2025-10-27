@@ -163,6 +163,8 @@ jobs:
 
       - name: Deploy the image
         if: ${{ github.event_name != 'pull_request' }}
+        env:
+          KUBECONFIG: kubeconfig.yaml
         run: kubectl --namespace default set image deploy/glvd glvd-api=ghcr.io/${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
 
   dependency-submission:
