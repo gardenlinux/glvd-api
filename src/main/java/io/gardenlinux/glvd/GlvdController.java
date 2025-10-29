@@ -147,7 +147,7 @@ public class GlvdController {
         } catch (CveNotKnownException e) {
             return ResponseEntity.notFound().header("Message", e.getMessage()).build();
         }
-        var cveContexts = glvdService.getCveContexts(cveId);
+        var cveContexts = glvdService.getCveContextsForCveId(cveId);
 
         return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
     }
@@ -181,5 +181,10 @@ public class GlvdController {
     @GetMapping("/triage/{gardenlinuxVersion}")
     ResponseEntity<List<CveContext>> triageDataGardenlinux(@PathVariable String gardenlinuxVersion) {
         return ResponseEntity.ok(glvdService.getCveContextsForGardenLinuxVersion(gardenlinuxVersion));
+    }
+
+    @GetMapping("/triage")
+    ResponseEntity<List<CveContext>> triageDataRecent() {
+        return ResponseEntity.ok(glvdService.getCveContexts());
     }
 }

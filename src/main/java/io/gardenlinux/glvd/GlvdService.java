@@ -203,7 +203,11 @@ public class GlvdService {
         return CveDetail.fromDebianCve(debianCveDetails);
     }
 
-    public List<CveContext> getCveContexts(String cveId) {
+    public List<CveContext> getCveContexts() {
+        return cveContextRepository.findAll();
+    }
+
+    public List<CveContext> getCveContextsForCveId(String cveId) {
         return cveContextRepository.findByCveId(cveId);
     }
 

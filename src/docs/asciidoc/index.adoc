@@ -157,3 +157,13 @@ include::{snippets}/triages/curl-request.adoc[]
 The expected response looks like this:
 
 include::{snippets}/triages/http-response.adoc[]
+
+=== Triages
+
+Get a list of triages regardless of the Garden Linux release:
+
+include::{snippets}/triages/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/triages/http-response.adoc[]

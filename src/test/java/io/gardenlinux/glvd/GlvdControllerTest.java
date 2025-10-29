@@ -86,7 +86,7 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void shuldReturnKernelCvesForGardenLinuxByPackageName() {
+    public void shouldReturnKernelCvesForGardenLinuxByPackageName() {
         given(this.spec).accept("application/json")
                 .when().port(this.port).get("/v1/cves/1592.6/packages/linux")
                 .then().statusCode(HttpStatus.SC_OK)
@@ -385,6 +385,16 @@ class GlvdControllerTest {
                 .then().statusCode(200)
                 .body("version", equalTo("1443.20"))
                 .body("packageList", empty());
+    }
+
+    @Test
+    public void shouldReturnAllTriages() {
+        given(this.spec).accept("application/json")
+                .filter(document("triagesList",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/triage")
+                .then().statusCode(200);
     }
 
     @Test

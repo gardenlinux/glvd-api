@@ -133,7 +133,7 @@ public class UiController {
             return "errorCveNotKnownException";
         }
 
-        var cveContexts = glvdService.getCveContexts(cveId);
+        var cveContexts = glvdService.getCveContextsForCveId(cveId);
         var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
         model.addAttribute("cveDetails", cveDetails);
         model.addAttribute("cveContexts", cveContexts);
@@ -182,6 +182,18 @@ public class UiController {
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("renderedDescriptions", renderedDescriptions);
         return "getTriage";
+    }
+
+    @GetMapping("/getTriageList")
+    public String getTriageList(
+            Model model
+    ) {
+        var cveContexts = glvdService.getCveContexts();
+
+        var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
+        model.addAttribute("cveContexts", cveContexts);
+        model.addAttribute("renderedDescriptions", renderedDescriptions);
+        return "getTriageList";
     }
 
 }
