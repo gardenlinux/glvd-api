@@ -57,9 +57,12 @@ public class GlvdService {
     @Nonnull
     private final NvdCveRepository nvdCveRepository;
 
+    @Nonnull
+    private final TriageRepository triageRepository;
+
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository, @Nonnull NvdCveRepository nvdCveRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository, @Nonnull NvdCveRepository nvdCveRepository, @Nonnull TriageRepository triageRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
         this.cveDetailsRepository = cveDetailsRepository;
@@ -70,6 +73,7 @@ public class GlvdService {
         this.kernelCveRepository = kernelCveRepository;
         this.kernelCveDetailsRepository = kernelCveDetailsRepository;
         this.nvdCveRepository = nvdCveRepository;
+        this.triageRepository = triageRepository;
     }
 
     private Pageable determinePageAndSortFeatures(SortAndPageOptions sortAndPageOptions) {
@@ -288,6 +292,23 @@ public class GlvdService {
         var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
         var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousMinorVersion());
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
+    }
+
+    public List<Triage> getTriagesForGardenLinuxVersion(final String gardenlinuxVersion) {
+        return triageRepository.findByTriageGardenLinuxVersion(gardenlinuxVersion)
+                .stream()
+                // fixme: identify if those actually should be in the result set or not
+                .filter(triage -> !triage.getTriageDescription().startsWith("Automated triage based on changelog"))
+                .filter(triage -> !triage.getTriageDescription().startsWith("automated dummy data"))
+                .toList();
+    }
+
+    public List<Triage> getTriages() {
+        return triageRepository.findAll()
+                .stream()
+                .filter(triage -> !triage.getTriageDescription().startsWith("Automated triage based on changelog"))
+                .filter(triage -> !triage.getTriageDescription().startsWith("automated dummy data"))
+                .toList();
     }
 
 }
