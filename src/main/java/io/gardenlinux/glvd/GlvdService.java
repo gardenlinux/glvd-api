@@ -298,7 +298,6 @@ public class GlvdService {
         return input.stream()
                 .filter(triage -> !triage.getTriageDescription().startsWith("Automated triage based on changelog"))
                 .filter(triage -> !triage.getTriageDescription().startsWith("automated dummy data"))
-                .filter(triage -> !triage.getTriageDescription().startsWith("Unit test for"))
                 .toList();
     }
 

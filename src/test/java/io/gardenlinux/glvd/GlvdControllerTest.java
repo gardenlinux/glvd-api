@@ -403,7 +403,7 @@ class GlvdControllerTest {
                 .filter(document("triages",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/triage/1592.9")
+                .when().port(this.port).get("/v1/triage/gardenlinux/1592.9")
                 .then().statusCode(200)
                 .body("cveId", hasItems("CVE-2005-2541", "CVE-2019-1010022"));
     }
@@ -414,7 +414,7 @@ class GlvdControllerTest {
                 .filter(document("triagesEmpty",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/triage/1592.8")
+                .when().port(this.port).get("/v1/triage/gardenlinux/1592.8")
                 .then().statusCode(200)
                 .body("", empty());
     }
