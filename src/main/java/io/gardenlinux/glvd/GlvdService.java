@@ -294,21 +294,28 @@ public class GlvdService {
         return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
     }
 
-    public List<Triage> getTriagesForGardenLinuxVersion(final String gardenlinuxVersion) {
-        return triageRepository.findByTriageGardenLinuxVersion(gardenlinuxVersion)
-                .stream()
-                // fixme: identify if those actually should be in the result set or not
+    private static List<Triage> filterNonUserRelevantTriages(List<Triage> input) {
+        return input.stream()
                 .filter(triage -> !triage.getTriageDescription().startsWith("Automated triage based on changelog"))
                 .filter(triage -> !triage.getTriageDescription().startsWith("automated dummy data"))
+                .filter(triage -> !triage.getTriageDescription().startsWith("Unit test for"))
                 .toList();
     }
 
+    public List<Triage> getTriagesForGardenLinuxVersion(final String gardenlinuxVersion) {
+        return filterNonUserRelevantTriages(triageRepository.findByTriageGardenLinuxVersion(gardenlinuxVersion));
+    }
+
+    public List<Triage> getTriagesForCveId(final String cveId) {
+        return filterNonUserRelevantTriages(triageRepository.findByCveId(cveId));
+    }
+
+    public List<Triage> getTriagesForSourcePackageName(final String sourcePackageName) {
+        return filterNonUserRelevantTriages(triageRepository.findBySourcePackageName(sourcePackageName));
+    }
+
     public List<Triage> getTriages() {
-        return triageRepository.findAll()
-                .stream()
-                .filter(triage -> !triage.getTriageDescription().startsWith("Automated triage based on changelog"))
-                .filter(triage -> !triage.getTriageDescription().startsWith("automated dummy data"))
-                .toList();
+        return filterNonUserRelevantTriages(triageRepository.findAll());
     }
 
 }

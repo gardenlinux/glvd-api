@@ -178,13 +178,23 @@ public class GlvdController {
         return ResponseEntity.ok(glvdService.kernelCvesForGardenLinuxVersion(gardenlinuxVersion));
     }
 
-    @GetMapping("/triage/{gardenlinuxVersion}")
+    @GetMapping("/triage/gardenlinux/{gardenlinuxVersion}")
     ResponseEntity<List<Triage>> triageDataGardenlinux(@PathVariable String gardenlinuxVersion) {
         return ResponseEntity.ok(glvdService.getTriagesForGardenLinuxVersion(gardenlinuxVersion));
     }
 
+    @GetMapping("/triage/cve/{cveId}")
+    ResponseEntity<List<Triage>> triageDataCve(@PathVariable String cveId) {
+        return ResponseEntity.ok(glvdService.getTriagesForCveId(cveId));
+    }
+
+    @GetMapping("/triage/sourcePackage/{sourcePackage}")
+    ResponseEntity<List<Triage>> triageDataSourcePackage(@PathVariable String sourcePackage) {
+        return ResponseEntity.ok(glvdService.getTriagesForSourcePackageName(sourcePackage));
+    }
+
     @GetMapping("/triage")
-    ResponseEntity<List<Triage>> triageDataRecent() {
+    ResponseEntity<List<Triage>> triageData() {
         return ResponseEntity.ok(glvdService.getTriages());
     }
 }
