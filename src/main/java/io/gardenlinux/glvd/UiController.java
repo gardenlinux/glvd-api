@@ -175,10 +175,10 @@ public class UiController {
             @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
             Model model
     ) {
-        var cveContexts = glvdService.getCveContextsForGardenLinuxVersion(gardenlinuxVersion);
+        var triages = glvdService.getTriagesForGardenLinuxVersion(gardenlinuxVersion);
 
-        var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
-        model.addAttribute("cveContexts", cveContexts);
+        var renderedDescriptions = triages.stream().map(triage -> renderer.render(parser.parse(triage.getTriageDescription()))).toList();
+        model.addAttribute("triages", triages);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         model.addAttribute("renderedDescriptions", renderedDescriptions);
         return "getTriage";
@@ -188,10 +188,10 @@ public class UiController {
     public String getTriageList(
             Model model
     ) {
-        var cveContexts = glvdService.getCveContexts();
+        var triages = glvdService.getTriages();
 
-        var renderedDescriptions = cveContexts.stream().map(cveContext -> renderer.render(parser.parse(cveContext.getDescription()))).toList();
-        model.addAttribute("cveContexts", cveContexts);
+        var renderedDescriptions = triages.stream().map(triage -> renderer.render(parser.parse(triage.getTriageDescription()))).toList();
+        model.addAttribute("triages", triages);
         model.addAttribute("renderedDescriptions", renderedDescriptions);
         return "getTriageList";
     }

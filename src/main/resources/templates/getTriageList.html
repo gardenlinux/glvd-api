@@ -10,18 +10,24 @@
 <body>
     <h1 th:text="|Triages|" />
 
-    <div th:each="context,iterStat : ${cveContexts}">
-        <p><strong>Date:</strong> <span th:text="${context.createDate}"></span></p>
-        <p><strong>Dist ID:</strong> <span th:text="${context.distId}"></span></p>
-        <p><strong>CVE ID:</strong> <span th:text="${context.cveId}"></span></p>
-        <p><strong>Use-Case:</strong> <span th:text="${context.useCase}"></span></p>
-        <p><strong>Is Resolved?</strong> <span th:text="${context.getResolved}"></span></p>
-        <p><strong>Score Override:</strong> <span th:text="${context.scoreOverride}"></span></p>
-        <p><strong>Description:</strong> <span
+    <div th:each="triage,iterStat : ${triages}">
+        <p><strong>Date:</strong> <span th:text="${triage.triageDate}"></span></p>
+        <p><strong>Package:</strong> <span th:text="${triage.sourcePackageName}"></span></p>
+        <p><strong>Package Version:</strong> <span th:text="${triage.sourcePackageVersion}"></span></p>
+        <p><strong>Garden Linux version:</strong> <span th:text="${triage.triageGardenLinuxVersion}"></span></p>
+        <p><strong>CVE ID:</strong> <span th:text="${triage.cveId}"></span></p>
+        <p><strong>NVD Vulnerability Status:</strong> <span th:text="${triage.nvdVulnerabilityStatus}"></span></p>
+        <p><strong>NVD CVE Published Date:</strong> <span th:text="${triage.nvdCvePublishedDate}"></span></p>
+        <p><strong>NVD CVE Last Modified Date:</strong> <span th:text="${triage.nvdCveLastModifiedDate}"></span></p>
+        <p><strong>NVD CVE CVSS Base Score:</strong> <span th:text="${triage.nvdCveCvssBaseScore}"></span></p>
+        <p><strong>NVD CVE Description:</strong> <span
+                th:utext="${#strings.replace(triage.nvdCveDescription, '\n', '<br/>')}"></span></p>
+        <p><strong>Garden Linux Triage Use-Case:</strong> <span th:text="${triage.triageUseCase}"></span></p>
+        <p><strong>Is Resolved via Garden Linux Triage?</strong> <span th:text="${triage.triageMarkedAsResolved}"></span></p>
+        <p><strong>Garden Linux Triage Description:</strong> <span
                 th:utext="${#strings.replace(renderedDescriptions[__${iterStat.index}__], '\n', '<br/>')}"></span></p>
-
         <hr />
-        </div>
+    </div>
 
 </body>
 

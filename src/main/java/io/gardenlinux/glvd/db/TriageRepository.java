@@ -9,4 +9,12 @@ public interface TriageRepository extends JpaRepository<Triage, String> {
     List<Triage> findByTriageGardenLinuxVersion(
             @Param("triage_gardenlinux_version") String triage_gardenlinux_version
     );
+
+    List<Triage> findByCveId(
+            @Param("cve_id") String cve_id
+    );
+
+    List<Triage> findBySourcePackageName(
+            @Param("source_package_name") String source_package_name
+    );
 }
