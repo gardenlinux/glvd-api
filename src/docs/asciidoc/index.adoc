@@ -152,8 +152,38 @@ include::{snippets}/patchReleaseNotes/http-response.adoc[]
 
 Get information about triaged security vulnerabilities in a Garden Linux release.
 
-include::{snippets}/triages/curl-request.adoc[]
+include::{snippets}/triagesGardenlinux/curl-request.adoc[]
 
 The expected response looks like this:
 
-include::{snippets}/triages/http-response.adoc[]
+include::{snippets}/triagesGardenlinux/http-response.adoc[]
+
+=== Triages for a CVE
+
+Get triage information for a specific CVE by its id.
+
+include::{snippets}/triagesCve/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/triagesCve/http-response.adoc[]
+
+=== Triages for a Debian Source Package
+
+Get triage information for all CVEs related to one Debian source package.
+
+include::{snippets}/triagesPackage/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/triagesPackage/http-response.adoc[]
+
+=== Triages
+
+Get a list of triages regardless of the Garden Linux release:
+
+include::{snippets}/triagesList/curl-request.adoc[]
+
+The expected response looks like this:
+
+include::{snippets}/triagesList/http-response.adoc[]

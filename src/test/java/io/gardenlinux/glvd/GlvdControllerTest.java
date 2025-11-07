@@ -86,7 +86,7 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void shuldReturnKernelCvesForGardenLinuxByPackageName() {
+    public void shouldReturnKernelCvesForGardenLinuxByPackageName() {
         given(this.spec).accept("application/json")
                 .when().port(this.port).get("/v1/cves/1592.6/packages/linux")
                 .then().statusCode(HttpStatus.SC_OK)
@@ -388,14 +388,46 @@ class GlvdControllerTest {
     }
 
     @Test
-    public void shouldReportExpectedTriagesForGardenlinuxVersion() {
+    public void shouldReturnAllTriages() {
         given(this.spec).accept("application/json")
-                .filter(document("triages",
+                .filter(document("triagesList",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/triage/1592.9")
+                .when().port(this.port).get("/v1/triage")
+                .then().statusCode(200);
+    }
+
+    @Test
+    public void shouldReportExpectedTriagesForGardenlinuxVersion() {
+        given(this.spec).accept("application/json")
+                .filter(document("triagesGardenlinux",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/triage/gardenlinux/1592.9")
                 .then().statusCode(200)
                 .body("cveId", hasItems("CVE-2005-2541", "CVE-2019-1010022"));
+    }
+
+    @Test
+    public void shouldReportExpectedTriagesForCveId() {
+        given(this.spec).accept("application/json")
+                .filter(document("triagesCve",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/triage/cve/CVE-2019-1010022")
+                .then().statusCode(200)
+                .body("cveId", hasItems("CVE-2019-1010022"));
+    }
+
+    @Test
+    public void shouldReportExpectedTriagesForPackage() {
+        given(this.spec).accept("application/json")
+                .filter(document("triagesPackage",
+                        preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/triage/sourcePackage/glibc")
+                .then().statusCode(200)
+                .body("cveId", hasItems("CVE-2019-1010022"));
     }
 
     @Test
@@ -404,7 +436,7 @@ class GlvdControllerTest {
                 .filter(document("triagesEmpty",
                         preprocessRequest(modifyUris().scheme("https").host("glvd.ingress.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com").removePort()),
                         preprocessResponse(prettyPrint())))
-                .when().port(this.port).get("/v1/triage/1592.8")
+                .when().port(this.port).get("/v1/triage/gardenlinux/1592.8")
                 .then().statusCode(200)
                 .body("", empty());
     }

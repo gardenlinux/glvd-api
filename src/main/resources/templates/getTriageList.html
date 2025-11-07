@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <h1 th:text="|Triages for Garden Linux ${gardenlinuxVersion}|" />
+    <h1 th:text="|Triages|" />
 
     <div th:each="triage,iterStat : ${triages}">
         <p><strong>Date:</strong> <span th:text="${triage.triageDate}"></span></p>

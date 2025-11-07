@@ -1,3 +1,4 @@
 #!/bin/bash
 
-podman compose --file unit-test-db-compose.yaml down --volumes --remove-orphans
+podman stop glvd-postgres-unit-test
+podman rm glvd-postgres-unit-test

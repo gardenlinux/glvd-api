@@ -147,7 +147,7 @@ public class GlvdController {
         } catch (CveNotKnownException e) {
             return ResponseEntity.notFound().header("Message", e.getMessage()).build();
         }
-        var cveContexts = glvdService.getCveContexts(cveId);
+        var cveContexts = glvdService.getCveContextsForCveId(cveId);
 
         return ResponseEntity.ok(new CveDetailsWithContext(cveDetails, cveContexts));
     }
@@ -178,8 +178,23 @@ public class GlvdController {
         return ResponseEntity.ok(glvdService.kernelCvesForGardenLinuxVersion(gardenlinuxVersion));
     }
 
-    @GetMapping("/triage/{gardenlinuxVersion}")
-    ResponseEntity<List<CveContext>> triageDataGardenlinux(@PathVariable String gardenlinuxVersion) {
-        return ResponseEntity.ok(glvdService.getCveContextsForGardenLinuxVersion(gardenlinuxVersion));
+    @GetMapping("/triage/gardenlinux/{gardenlinuxVersion}")
+    ResponseEntity<List<Triage>> triageDataGardenlinux(@PathVariable String gardenlinuxVersion) {
+        return ResponseEntity.ok(glvdService.getTriagesForGardenLinuxVersion(gardenlinuxVersion));
+    }
+
+    @GetMapping("/triage/cve/{cveId}")
+    ResponseEntity<List<Triage>> triageDataCve(@PathVariable String cveId) {
+        return ResponseEntity.ok(glvdService.getTriagesForCveId(cveId));
+    }
+
+    @GetMapping("/triage/sourcePackage/{sourcePackage}")
+    ResponseEntity<List<Triage>> triageDataSourcePackage(@PathVariable String sourcePackage) {
+        return ResponseEntity.ok(glvdService.getTriagesForSourcePackageName(sourcePackage));
+    }
+
+    @GetMapping("/triage")
+    ResponseEntity<List<Triage>> triageData() {
+        return ResponseEntity.ok(glvdService.getTriages());
     }
 }
