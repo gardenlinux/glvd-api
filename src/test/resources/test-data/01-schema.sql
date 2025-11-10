@@ -2,8 +2,10 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 17.5 (Debian 17.5-1.pgdg120+1)
--- Dumped by pg_dump version 17.5 (Debian 17.5-1)
+\restrict lG0iBfPg1dfWZy8R4lcIdVGLnjPRjHAeG3Z6fmRBdTz90AjV9RFsX8vDfKb3FWn
+
+-- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
+-- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS debversion WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION debversion IS 'Debian version number data type';
@@ -96,12 +98,12 @@ CREATE TABLE public.cve_context (
     gardenlinux_version text,
     cve_id text NOT NULL,
     create_date timestamp with time zone DEFAULT now() NOT NULL,
-    use_case text NOT NULL,
+    use_case text CONSTRAINT cve_context_context_descriptor_not_null NOT NULL,
     score_override numeric,
     description text NOT NULL,
-    is_resolved boolean DEFAULT FALSE,
+    is_resolved boolean DEFAULT false,
     id integer NOT NULL,
-    triaged boolean DEFAULT FALSE
+    triaged boolean DEFAULT false
 );
 
 
@@ -213,7 +215,8 @@ CREATE TABLE public.debsec_cve (
     deb_source text NOT NULL,
     deb_version_fixed public.debversion,
     debsec_tag text,
-    debsec_note text
+    debsec_note text,
+    minor_deb_version_fixed text
 );
 
 
@@ -228,7 +231,8 @@ CREATE TABLE public.debsrc (
     gardenlinux_version text,
     last_mod timestamp with time zone DEFAULT now() NOT NULL,
     deb_source text NOT NULL,
-    deb_version public.debversion NOT NULL
+    deb_version public.debversion NOT NULL,
+    minor_deb_version text
 );
 
 
@@ -315,7 +319,6 @@ CREATE VIEW public.kernel_cve AS
     k.fixed_version,
     (nvd.data ->> 'published'::text) AS cve_published_date,
     (nvd.data ->> 'lastModified'::text) AS cve_last_modified_date,
-    (nvd.data ->> 'vulnStatus'::text) AS vuln_status,
     nvd.last_mod AS cve_last_ingested_date,
         CASE
             WHEN (((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
@@ -338,7 +341,8 @@ CREATE VIEW public.kernel_cve AS
     (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v40,
     (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v31,
     (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v30,
-    (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2
+    (((((nvd.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2,
+    (nvd.data ->> 'vulnStatus'::text) AS vuln_status
    FROM (public.kernel_vulns k
      JOIN public.nvd_cve nvd USING (cve_id));
 
@@ -400,7 +404,6 @@ CREATE VIEW public.sourcepackagecve AS
     cve_context.is_resolved,
     (all_cve.data ->> 'published'::text) AS cve_published_date,
     (all_cve.data ->> 'lastModified'::text) AS cve_last_modified_date,
-    (all_cve.data ->> 'vulnStatus'::text) AS vuln_status,
     all_cve.last_mod AS cve_last_ingested_date,
         CASE
             WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
@@ -423,12 +426,13 @@ CREATE VIEW public.sourcepackagecve AS
     (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v40,
     (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v31,
     (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v30,
-    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2
+    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2,
+    (all_cve.data ->> 'vulnStatus'::text) AS vuln_status
    FROM (((public.all_cve
      JOIN public.deb_cve USING (cve_id))
      JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
      FULL JOIN public.cve_context USING (cve_id, dist_id))
-  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true) AND (deb_cve.deb_source <> 'linux'::text));
+  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true));
 
 
 ALTER VIEW public.sourcepackagecve OWNER TO glvd;
@@ -474,6 +478,37 @@ CREATE VIEW public.sourcepackage AS
 
 
 ALTER VIEW public.sourcepackage OWNER TO glvd;
+
+--
+-- Name: triage; Type: VIEW; Schema: public; Owner: glvd
+--
+
+CREATE VIEW public.triage AS
+ SELECT deb_cve.cve_id,
+    deb_cve.deb_source AS source_package_name,
+    deb_cve.deb_version AS source_package_version,
+    cve_context.is_resolved AS triage_marked_as_resolved,
+    cve_context.create_date AS triage_date,
+    cve_context.use_case AS triage_use_case,
+    cve_context.description AS triage_description,
+    cve_context.gardenlinux_version AS triage_gardenlinux_version,
+    (nvd_cve.data -> 'vulnStatus'::text) AS nvd_vulnerability_status,
+    (nvd_cve.data -> 'published'::text) AS nvd_cve_published_date,
+    (nvd_cve.data -> 'lastModified'::text) AS nvd_cve_last_modified_date,
+    (((nvd_cve.data -> 'descriptions'::text) -> 0) -> 'value'::text) AS nvd_cve_description,
+        CASE
+            WHEN (((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            ELSE NULL::numeric
+        END AS nvd_cve_cvss_base_score
+   FROM ((public.deb_cve
+     JOIN public.nvd_cve USING (cve_id))
+     JOIN public.cve_context USING (cve_id, gardenlinux_version));
+
+
+ALTER VIEW public.triage OWNER TO glvd;
 
 --
 -- Name: all_cve all_cve_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
@@ -641,41 +676,9 @@ ALTER TABLE ONLY public.debsrc
     ADD CONSTRAINT debsrc_dist_id_fkey FOREIGN KEY (dist_id) REFERENCES public.dist_cpe(id);
 
 
-
-CREATE OR REPLACE VIEW public.triage AS
-SELECT
-    deb_cve.cve_id,
-    deb_cve.deb_source AS source_package_name,
-    deb_cve.deb_version AS source_package_version,
-    cve_context.is_resolved AS triage_marked_as_resolved,
-    cve_context.create_date AS triage_date,
-    cve_context.use_case AS triage_use_case,
-    cve_context.description AS triage_description,
-    cve_context.gardenlinux_version AS triage_gardenlinux_version,
-    nvd_cve.data -> 'vulnStatus'::text AS nvd_vulnerability_status,
-    nvd_cve.data -> 'published'::text AS nvd_cve_published_date,
-    nvd_cve.data -> 'lastModified'::text AS nvd_cve_last_modified_date,
-    ((nvd_cve.data -> 'descriptions'::text) -> 0) -> 'value'::text AS nvd_cve_description,
-    CASE WHEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric) IS NOT NULL THEN
-        (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric
-    WHEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric) IS NOT NULL THEN
-        (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric
-    WHEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric) IS NOT NULL THEN
-        (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric
-    WHEN ((((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric) IS NOT NULL THEN
-        (((((nvd_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text)::numeric
-    ELSE
-        NULL::numeric
-    END AS nvd_cve_cvss_base_score
-FROM
-    public.deb_cve
-    JOIN public.nvd_cve USING (cve_id)
-    JOIN public.cve_context USING (cve_id, gardenlinux_version);
-
-ALTER TABLE public.triage OWNER TO glvd;
-
-
 --
 -- PostgreSQL database dump complete
 --
+
+\unrestrict lG0iBfPg1dfWZy8R4lcIdVGLnjPRjHAeG3Z6fmRBdTz90AjV9RFsX8vDfKb3FWn
 
