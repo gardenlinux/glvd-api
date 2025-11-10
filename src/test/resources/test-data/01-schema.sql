@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict lG0iBfPg1dfWZy8R4lcIdVGLnjPRjHAeG3Z6fmRBdTz90AjV9RFsX8vDfKb3FWn
+\restrict Un049OhuTEHTPUOKLIca5bspmjJc8ENlAfLee5SyePnk7o3PvRwrPFl8cfZzTJn
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
@@ -432,7 +432,7 @@ CREATE VIEW public.sourcepackagecve AS
      JOIN public.deb_cve USING (cve_id))
      JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
      FULL JOIN public.cve_context USING (cve_id, dist_id))
-  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true));
+  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true) AND (deb_cve.deb_source <> 'linux'::text));
 
 
 ALTER VIEW public.sourcepackagecve OWNER TO glvd;
@@ -680,5 +680,5 @@ ALTER TABLE ONLY public.debsrc
 -- PostgreSQL database dump complete
 --
 
-\unrestrict lG0iBfPg1dfWZy8R4lcIdVGLnjPRjHAeG3Z6fmRBdTz90AjV9RFsX8vDfKb3FWn
+\unrestrict Un049OhuTEHTPUOKLIca5bspmjJc8ENlAfLee5SyePnk7o3PvRwrPFl8cfZzTJn
 
