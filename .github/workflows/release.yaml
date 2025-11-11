@@ -71,6 +71,10 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v5
 
+      - name: Determine Version to Release
+        id: version
+        run: echo "VERSION=$(date --utc +%Y.%m.%d)" >> $GITHUB_ENV
+
       - run: mkdir -p build
       - name: Download built jar
         uses: actions/download-artifact@v6
