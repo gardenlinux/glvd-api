@@ -9,7 +9,7 @@ build () {
     SHA_GLVD=$(podman pull -q --arch="$ARCH" $GLVD_API_IMAGE_REPOSITORY:$GLVD_API_IMAGE_TAG)
     SHA_GL=$(podman pull -q --arch="$ARCH" ghcr.io/gardenlinux/gardenlinux:1592)
 
-    ./unbase_oci --exclude exclude --include include --ldd-dependencies --print-tree podman:"$SHA_GL" podman:"$SHA_GLVD" podman:ghcr.io/gardenlinux/glvd-api:latest-linux${ARCH}_bare
+    ./unbase_oci --exclude exclude --include include --ldd-dependencies --print-tree podman:"$SHA_GL" podman:"$SHA_GLVD" podman:ghcr.io/gardenlinux/glvd-api:${GLVD_API_IMAGE_TAG}-linux${ARCH}_bare
 
 }
 
