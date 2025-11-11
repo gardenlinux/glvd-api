@@ -47,6 +47,9 @@ jobs:
           git tag $VERSION
           git push --tags origin release-version-${VERSION}
 
+      - name: Start container with postgres for testing
+        run: docker compose --file unit-test-db-compose.yaml up --build --wait --detach
+
       - name: Build with Gradle Wrapper
         run: ./gradlew --no-daemon build asciidoctor
 
