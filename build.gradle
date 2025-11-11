@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'io.gardenlinux'
-version = 'dev'
+version = file('version.txt').text.trim()
 
 java {
     sourceCompatibility = '25'
