@@ -75,6 +75,9 @@ jobs:
         id: version
         run: echo "VERSION=$(date --utc +%Y.%m.%d)" >> $GITHUB_ENV
 
+      - name: Set Version for java app
+        run: echo $VERSION > version.txt
+
       - run: mkdir -p build
       - name: Download built jar
         uses: actions/download-artifact@v6
