@@ -68,15 +68,14 @@ jobs:
       IMAGE_NAME_ORG: gardenlinux
       IMAGE_NAME: glvd-api
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v5
-
       - name: Determine Version to Release
         id: version
         run: echo "VERSION=$(date --utc +%Y.%m.%d)" >> $GITHUB_ENV
 
-      - name: Set Version for java app
-        run: echo $VERSION > version.txt
+      - name: Checkout repo
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.VERSION }}
 
       - run: mkdir -p build
       - name: Download built jar
