@@ -1,189 +1,191 @@
-= Garden Linux Vulnerability Database Rest API
-Garden Linux Authors;
+= Garden Linux Vulnerability Database REST API
+Garden Linux Authors
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
 :toc:
 
-== API Endpoints
+== Overview
 
-This document describes the HTTP API endpoints of Garden Linux Vulnerability Database.
+This document describes the HTTP API endpoints of the Garden Linux Vulnerability Database (GLVD).
 
 CAUTION: This document and the API are work in progress and subject to change at any time.
 
-=== Get all known Garden Linux Releases
+== API Endpoints
 
-To query all known Garden Linux releases, you may use this endpoint:
+=== List All Garden Linux Releases
+
+Retrieve all known Garden Linux releases:
 
 include::{snippets}/getAllGardenLinuxVersions/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getAllGardenLinuxVersions/http-response.adoc[]
 
-=== Get a list of CVEs by distro
+=== List CVEs by Distribution
 
-To query all CVEs for a given distribution by version, you may use this endpoint:
+Retrieve all CVEs for a given distribution and version:
 
 include::{snippets}/getCveForDistro/curl-request.adoc[]
 
-TIP: For all the endpoints: The `sortBy` and `sortOrder` query parameters are optional. If omitted, default sorting will be applied.
+TIP: The `sortBy` and `sortOrder` query parameters are optional. If omitted, default sorting is applied.
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getCveForDistro/http-response.adoc[]
 
-=== Get a list of CVEs for packages by distro
+=== List CVEs for Packages by Distribution
 
-This endpoint will give you all the CVE for a list of packages in a specified distro.
-Note that the package names are comma separated (this might be changed later).
-You may or may not need to url-encode the commas.
+Retrieve all CVEs for a list of packages in a specified distribution.
+Package names are comma-separated (URL-encoding may be required).
 
 include::{snippets}/getCveForPackages/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getCveForPackages/http-response.adoc[]
 
-=== Get a list of CVEs for packages by distro via PUT
+=== List CVEs for Packages by Distribution (PUT)
 
-This endpoint will give you all the CVE for a list of packages in a specified distro.
-Package names are provided in the request body in json-encoded form.
+Retrieve all CVEs for a list of packages in a specified distribution.
+Package names are provided in the request body as JSON.
 
 include::{snippets}/getCveForPackagesPut/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getCveForPackagesPut/http-response.adoc[]
 
-=== Get List of Packages
+=== List Packages in a Distribution
 
-Just gives you a list of packages in a given distribution.
+Retrieve a list of packages for a given distribution.
 
 include::{snippets}/getPackages/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getPackages/http-response.adoc[]
 
-=== Get Package With Vulnerabilities
+=== Get Vulnerabilities for a Package
 
-Gives you a list of vulnerabilities for a specific package.
+Retrieve vulnerabilities for a specific package.
 
 include::{snippets}/getPackageWithVulnerabilities/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
 
-=== Get Package With Vulnerabilities by Version
+=== Get Vulnerabilities for a Package by Version
 
-Gives you a list of vulnerabilities for a specific package with the specified version.
+Retrieve vulnerabilities for a specific package and version.
 
 include::{snippets}/getPackageWithVulnerabilitiesByVersion/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getPackageWithVulnerabilitiesByVersion/http-response.adoc[]
 
-=== Get Packages By Vulnerabilities
+=== List Packages Affected by a Vulnerability
 
-Give a list of affected packages by vulnerability
+Retrieve a list of packages affected by a specific vulnerability.
 
 include::{snippets}/getPackagesByVulnerability/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getPackagesByVulnerability/http-response.adoc[]
 
-=== Get CVE Details with Contexts
+=== Get CVE Details with Context
 
-Give information on a CVE by CVE ID
+Retrieve information about a CVE by its ID.
 
 include::{snippets}/getCveDetailsWithContexts/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
 
 ==== Linux Kernel CVEs
 
-For CVEs that match the linux kernel, the structure of the response is different.
-This is because unlike for other CVEs, we can't take the data from the Debian Security Tracker.
-Instead, we ingest data from the upstream kernel developers for the LTS kernel versions available in Garden Linux.
+For CVEs affecting the Linux kernel, the response structure differs.
+Data is sourced from upstream kernel developers for LTS kernel versions in Garden Linux.
+
+NOTE: For the Linux kernel, Garden Linux always builds LTS kernels directly from the upstream source, applying both Debian patches and custom patches as needed. Therefore, CVEs reported by Debian for the kernel do not directly apply. Instead, kernel vulnerability information is sourced from upstream kernel developers, and Debian kernel CVEs are ignored in Garden Linux.
 
 include::{snippets}/getCveDetailsWithContextsKernel/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getCveDetailsWithContextsKernel/http-response.adoc[]
 
 === Get CVE Details for Non-Debian CVEs
 
-For CVEs that are not in the Debian Security Tracker, GLVD will only be able to provide very basic information.
+For CVEs not present in the Debian Security Tracker, only basic information is provided.
 
 include::{snippets}/getCveDetailsNonDebian/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/getCveDetailsNonDebian/http-response.adoc[]
 
-=== Get Release Notes Information
+=== Get Release Notes
 
-Get information about fixed security vulnerabilities in a new minor release.
+Retrieve information about fixed security vulnerabilities in a new minor release.
 
 include::{snippets}/releaseNotes/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/releaseNotes/http-response.adoc[]
 
-=== Get Patch Release Notes Information (Legacy)
+=== Get Patch Release Notes (Legacy)
 
-Get information about fixed security vulnerabilities in a new patch release.
+Retrieve information about fixed security vulnerabilities in a new patch release.
 
 include::{snippets}/patchReleaseNotes/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/patchReleaseNotes/http-response.adoc[]
 
-=== Triages for a Garden Linux Release
+=== List Triages for a Garden Linux Release
 
-Get information about triaged security vulnerabilities in a Garden Linux release.
+Retrieve triaged security vulnerabilities for a Garden Linux release.
 
 include::{snippets}/triagesGardenlinux/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/triagesGardenlinux/http-response.adoc[]
 
-=== Triages for a CVE
+=== Get Triages for a CVE
 
-Get triage information for a specific CVE by its id.
+Retrieve triage information for a specific CVE by its ID.
 
 include::{snippets}/triagesCve/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/triagesCve/http-response.adoc[]
 
-=== Triages for a Debian Source Package
+=== Get Triages for a Debian Source Package
 
-Get triage information for all CVEs related to one Debian source package.
+Retrieve triage information for all CVEs related to a Debian source package.
 
 include::{snippets}/triagesPackage/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/triagesPackage/http-response.adoc[]
 
-=== Triages
+=== List All Triages
 
-Get a list of triages regardless of the Garden Linux release:
+Retrieve a list of triages regardless of the Garden Linux release.
 
 include::{snippets}/triagesList/curl-request.adoc[]
 
-The expected response looks like this:
+Example response:
 
 include::{snippets}/triagesList/http-response.adoc[]
