@@ -157,15 +157,15 @@ jobs:
         id: kube_auth
         uses: gardener/cc-utils/.github/actions/kubernetes-auth@9dc83024923245f56cbe366344c5ae25c10423a9
         with:
-          server: https://api.glvd.gardnlinux.shoot.canary.k8s-hana.ondemand.com
-          server-ca-discovery-url: https://discovery.ingress.garden.canary.k8s.ondemand.com/projects/gardnlinux/shoots/8a569063-b0d3-45c4-a653-158e70b1bfd1/cluster-ca
+          server: https://api.dev.gl-dev.shoot.canary.k8s-hana.ondemand.com
+          server-ca-discovery-url: https://discovery.ingress.garden.canary.k8s.ondemand.com/projects/gl-dev/shoots/6a3efe36-1d56-4e07-83f6-36720207b51b/cluster-ca
           audience: ${{ env.OIDC_AUDIENCE }}
 
       - name: Deploy the image
         if: ${{ github.event_name != 'pull_request' }}
         env:
           KUBECONFIG: kubeconfig.yaml
-        run: kubectl --namespace default set image deploy/glvd glvd-api=ghcr.io/${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
+        run: kubectl --namespace glvd set image deploy/glvd glvd-api=ghcr.io/${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}:latest-linuxamd64_bare@${{ steps.bare.outputs.bare-amd64-digest }}
 
   dependency-submission:
 
