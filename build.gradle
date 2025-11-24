@@ -34,7 +34,7 @@ dependencies {
     implementation 'org.commonmark:commonmark:0.27.0'
     runtimeOnly 'org.postgresql:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.restdocs:spring-restdocs-restassured'
+    testImplementation 'org.springframework.boot:spring-boot-restdocs'
     testImplementation 'io.rest-assured:rest-assured:5.5.6'
     testImplementation 'org.junit.jupiter:junit-jupiter:6.0.1'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
