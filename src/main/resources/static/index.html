@@ -1,26 +1,159 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>GLVD</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            padding: 32px;
+            border-radius: 12px;
+            background: #f8fafc;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+        }
+
+        h1 {
+            color: #1a73e8;
+            margin-top: 0;
+        }
+
+        form {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        form.cve {
+            margin: 20px 0;
+        }
+
+        form.distribution {
+            margin: 12px 0 24px 0;
+        }
+
+        form.triage {
+            margin: 12px 0 24px 0;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+        }
+
+        button {
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #fff;
+        }
+
+        button.cve {
+            background: #1a73e8;
+        }
+
+        button.distribution {
+            background: #0f9d58;
+        }
+
+        button.triage {
+            background: #ff7043;
+        }
+
+        a {
+            color: #1a73e8;
+        }
+    </style>
 </head>
+
 <body>
+    <script>
+        function populateGardenlinuxVersions(selectId) {
+            fetch("/v1/gardenlinuxVersions", {
+                headers: { "Accept": "application/json" }
+            })
+                .then(response => response.json())
+                .then(versions => {
+                    const select = document.getElementById(selectId);
+                    if (!select) return;
+                    select.innerHTML = "";
+                    versions.reverse().forEach(version => {
+                        const option = document.createElement("option");
+                        option.value = version;
+                        option.textContent = version;
+                        select.appendChild(option);
+                    });
+                })
+                .catch(() => {
+                    const select = document.getElementById(selectId);
+                    if (select) {
+                        select.innerHTML = "<option value=''>Error loading versions</option>";
+                    }
+                });
+        }
 
-<div style="max-width: 600px; margin: 60px auto; padding: 32px; border-radius: 12px; background: #f8fafc; box-shadow: 0 2px 12px rgba(0,0,0,0.07); font-family: Arial, sans-serif; color: #222;">
-    <h1 style="color: #1a73e8; margin-top: 0;">Welcome to GLVD</h1>
-    <p>GLVD (Garden Linux Vulnerability Database) is currently under active development.</p>
-    <p>We're working hard to bring you new features and improvements. Some parts of the application may not be fully functional yet.</p>
-    <ul>
-        <li>Stay tuned for updates and new releases.</li>
-        <li>If you have feedback or want to contribute, please visit our <a href="https://github.com/gardenlinux/glvd" target="_blank" style="color: #1a73e8;">GitHub repository</a>.</li>
-    </ul>
-    <p>Thank you for your interest in GLVD!</p>
+        document.addEventListener("DOMContentLoaded", function () {
+            populateGardenlinuxVersions("gardenlinuxVersion");
+            populateGardenlinuxVersions("triageGardenlinuxVersion");
+        });
+    </script>
 
-    <p>
-    Copyright 2025, <a href="https://www.sap.com/">SAP SE</a> and Garden Linux Contributors. <a href="https://www.sap.com/corporate/en/legal/privacy.html">Privacy Statement</a>, <a href="https://www.sap.com/corporate/en/legal/terms-of-use.html">Terms of Use</a>
-    </p>
-</div>
 
+    <div class="container">
+        <h1>Welcome to GLVD</h1>
+        <p>GLVD (Garden Linux Vulnerability Database) is an application for tracking security issues in Garden Linux.
+        </p>
+
+        <form action="/getCveDetails" method="get" class="cve">
+            <label for="cveId" style="min-width: 320px;">Lookup CVE:</label>
+            <input id="cveId" name="cveId" type="text" placeholder="CVE-2025-22872" required />
+            <button type="submit" class="cve">Go</button>
+        </form>
+
+        <form action="/getCveForDistribution" method="get" class="distribution">
+            <label for="gardenlinuxVersion" style="min-width: 320px;">Lookup Garden Linux version:</label>
+            <select id="gardenlinuxVersion" name="gardenlinuxVersion" required>
+            <option value="">Loading...</option>
+            </select>
+            <button type="submit" class="distribution">Go</button>
+        </form>
+
+        <form action="/getTriage" method="get" class="triage">
+            <label for="triageGardenlinuxVersion" style="min-width: 320px;">Lookup Triage for Garden Linux
+            version:</label>
+            <select id="triageGardenlinuxVersion" name="gardenlinuxVersion" required>
+            <option value="">Loading...</option>
+            </select>
+            <button type="submit" class="triage">Go</button>
+        </form>
+
+        <p>If you have feedback or want to contribute, please visit our <a href="https://github.com/gardenlinux/glvd"
+                target="_blank">GitHub
+                repository</a>.</p>
+
+        <p>Found a bug, or have questions on GLVD? <a href="https://github.com/gardenlinux/glvd/issues/new/choose"
+                target="_blank">Open an issue</a>.</p>
+
+        <p>
+            Copyright 2025, <a href="https://www.sap.com/">SAP SE</a> and Garden Linux Contributors. <a
+                href="https://www.sap.com/corporate/en/legal/privacy.html">Privacy Statement</a>, <a
+                href="https://www.sap.com/corporate/en/legal/terms-of-use.html">Terms of Use</a>
+        </p>
+    </div>
 
 </body>
+
 </html>
