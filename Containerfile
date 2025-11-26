@@ -21,7 +21,7 @@ RUN jlink \
     --no-man-pages \
     --output /tinysapmachine
 
-FROM ghcr.io/gardenlinux/gardenlinux:1592
+FROM ghcr.io/gardenlinux/gardenlinux:1592.15
 
 EXPOSE 8080
 
