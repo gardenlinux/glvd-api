@@ -5,10 +5,14 @@ import io.gardenlinux.glvd.exceptions.CveNotKnownException;
 import io.gardenlinux.glvd.exceptions.InvalidGardenLinuxVersionException;
 import io.gardenlinux.glvd.releasenotes.ReleaseNote;
 import jakarta.annotation.Nonnull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 @RestController
@@ -196,5 +200,15 @@ public class GlvdController {
     @GetMapping("/triage")
     ResponseEntity<List<Triage>> triageData() {
         return ResponseEntity.ok(glvdService.getTriages());
+    }
+
+    @GetMapping(path="/version", produces = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> version() {
+        try {
+            var content = Files.readString(Path.of("/version.txt"));
+            return ResponseEntity.ok(content);
+        } catch (IOException e) {
+            return ResponseEntity.ok("dev");
+        }
     }
 }

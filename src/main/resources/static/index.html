@@ -105,6 +105,30 @@
             populateGardenlinuxVersions("distroGardenlinuxVersion");
             populateGardenlinuxVersions("releaseNotesGardenlinuxVersion");
             populateGardenlinuxVersions("triageListGardenlinuxVersion");
+
+            const setVersionInFooter = (ver) => {
+                const el = document.getElementById('appVersion');
+                if (el && ver) el.textContent = ' — version ' + String(ver).trim();
+            };
+
+            fetch('/v1/version', { cache: 'no-store' })
+                .then(response => {
+                    if (!response.ok) {
+                        return 'dev';
+                    };
+                    const ct = response.headers.get('content-type') || '';
+                    if (ct.includes('application/json')) {
+                        return response.json();
+                    };
+                    return response.text();
+                })
+                .then(data => {
+                    if (typeof data === 'string') {
+                        setVersionInFooter(data);
+                    } else {
+                        setVersionInFooter('dev');
+                    }
+                });
         });
     </script>
 
@@ -195,8 +219,10 @@
                 target="_blank">Open an issue</a>.</p>
 
         <p>
-            Copyright 2025, <a href="https://www.sap.com/">SAP SE</a> and Garden Linux Contributors. <a
-                href="https://www.sap.com/corporate/en/legal/privacy.html">Privacy Statement</a>, <a
+            Copyright 2025, <a href="https://www.sap.com/">SAP SE</a> and Garden Linux Contributors.
+            <span id="appVersion"></span>
+            <br />
+            <a href="https://www.sap.com/corporate/en/legal/privacy.html">Privacy Statement</a>, <a
                 href="https://www.sap.com/corporate/en/legal/terms-of-use.html">Terms of Use</a>
         </p>
     </div>
