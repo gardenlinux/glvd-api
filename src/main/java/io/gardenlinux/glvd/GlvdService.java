@@ -11,6 +11,7 @@ import jakarta.annotation.Nonnull;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -313,8 +314,8 @@ public class GlvdService {
         return filterNonUserRelevantTriages(triageRepository.findBySourcePackageName(sourcePackageName));
     }
 
-    public List<Triage> getTriages() {
-        return filterNonUserRelevantTriages(triageRepository.findAll());
+    public Page<Triage> getTriages(SortAndPageOptions sortAndPageOptions) {
+        return filterNonUserRelevantTriages(triageRepository.findAll(determinePageAndSortFeatures(sortAndPageOptions)));
     }
 
 }

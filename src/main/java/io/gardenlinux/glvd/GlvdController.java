@@ -194,7 +194,12 @@ public class GlvdController {
     }
 
     @GetMapping("/triage")
-    ResponseEntity<List<Triage>> triageData() {
-        return ResponseEntity.ok(glvdService.getTriages());
+    ResponseEntity<List<Triage>> triageData(
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize
+    ) {
+        return ResponseEntity.ok(glvdService.getTriages(new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)));
     }
 }

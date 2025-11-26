@@ -1,5 +1,7 @@
 package io.gardenlinux.glvd.db;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -17,4 +19,6 @@ public interface TriageRepository extends JpaRepository<Triage, String> {
     List<Triage> findBySourcePackageName(
             @Param("source_package_name") String source_package_name
     );
+
+    Page<Triage> findAll(Pageable pageable);
 }
