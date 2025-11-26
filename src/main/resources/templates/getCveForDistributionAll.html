@@ -8,34 +8,6 @@
 <body>
 <h1 th:text="|Vulnerabilities list for Garden Linux ${gardenlinuxVersion} (showing resolved issues)|" />
 
-<div>Switch Garden Linux Version: </div>
-
-<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=today,onlyVulnerable=false)}">today</a>
-
-<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1592.13,onlyVulnerable=false)}">1592.13</a>
-
-<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1592.14,onlyVulnerable=false)}">1592.14</a>
-
-<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1877.3,onlyVulnerable=false)}">1877.3</a>
-
-<a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=1877.4,onlyVulnerable=false)}">1877.4</a>
-
-<br>
-
-<a th:href="@{/getTriage(gardenlinuxVersion=today)}">triages for today</a>
-
-<a th:href="@{/getTriage(gardenlinuxVersion=1592.8)}">triages for 1592.8</a>
-
-<a th:href="@{/getTriage(gardenlinuxVersion=1592.9)}">triages for 1592.9</a>
-
-<a th:href="@{/getTriage(gardenlinuxVersion=1592.10)}">triages for 1592.10</a>
-
-<a th:href="@{/getTriage(gardenlinuxVersion=1877.0)}">triages for 1877.0</a>
-
-<div>
-    <a th:href="@{/getNvdExclusiveCve}">NVD Exclusive CVEs (need to triage)</a>
-</div>
-
 <p th:text="|Found ${#lists.size(sourcePackageCves)} potential security issues|"></p>
 
 <a th:href="@{/getCveForDistribution(gardenlinuxVersion=${gardenlinuxVersion},onlyVulnerable=true)}">Show only unresolved potential issues</a>
