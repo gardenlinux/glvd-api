@@ -1,46 +1,85 @@
 # GLVD API
 
-This repo implements the HTTP API for GLVD.
+This repository implements the HTTP API for GLVD using Java Spring Boot.
 
-> [!NOTE]  
-> This is heavily work in progress.
+## Prerequisites
 
-## Local Setup
-
-Required/recommended software:
-- [SapMachine JDK 25](https://sap.github.io/SapMachine/)
+- [SapMachine JDK 25](https://sap.github.io/SapMachine/) (recommended)
 - [Podman Desktop/Machine](https://podman.io)
-- [Podman Compose](https://github.com/containers/podman-compose) or [Docker Compose v2 (preferred)](https://github.com/docker/compose)
+- [Gradle](https://gradle.org/) (included via wrapper, no need to install)
 
-A local setup including the database with sample data can be setup using podman compose.
+## Database Setup
 
-This requires building the jar file first.
+GLVD API requires a PostgreSQL database. The repository provides scripts to manage database containers using Podman:
 
-See `compose-up.sh` for the required steps to bring up a local environment.
+- **For application runtime:**  
+    - Start: `./start-db-for-app.sh`
+    - Stop: `./stop-db-for-app.sh`
+- **For unit tests:**  
+    - Start: `./start-db-for-test.sh`
+    - Stop: `./stop-db-for-test.sh`
 
-After about a minute you should be able to perform an HTTP GET request on http://localhost:8080/readiness and get a response with status code 200.
+Both containers can run simultaneously (they bind to different ports).
+
+## Building the Application
+
+To build the app, ensure the test database is running:
+
+```bash
+./start-db-for-test.sh
+./gradlew build
+```
+
+## Running the Application Locally
+
+1. Start the application database:
+
+```bash
+./start-db-for-app.sh
+```
+
+2. Build and run the Spring Boot app:
+
+```bash
+./gradlew bootRun
+```
+
+3. After startup, check readiness:
+
+```
+curl http://localhost:8080/readiness
+# Should return status code 200
+```
+
+4. Open http://localhost:8080 in your web browser to use the UI
 
 ## Example Requests
 
-Find example requests to play with the API in the `api-examples` folder.
-They are created with [Bruno](https://www.usebruno.com), an open source and easy to use HTTP client.
+Find example API requests in the `api-examples` folder.  
+They are created with [Bruno](https://www.usebruno.com), an open source HTTP client.
 
-## API Docs
+## API Documentation
 
-The API is documented [here](https://gardenlinux.github.io/glvd-api/).
+The API is documented [here](https://gardenlinux.github.io/glvd-api/).  
+Requests and responses are generated from tests using [Spring REST Docs](https://spring.io/projects/spring-restdocs).  
+Note: Adapt the hostname in the docs for your local setup.
 
-Those requests and responses are generated from tests automatically using [Spring REST Docs](https://spring.io/projects/spring-restdocs).
-Note that you will need to adapt the hostname given in those docs.
+## Running Tests
 
-## Running the tests
-
-Since the tests depend on our specific postgres image with a defined set of data, we make use of a container for providing that.
-
-Running the tests should be as easy as:
+Tests require the test database container:
 
 ```bash
 ./start-db-for-test.sh
 ./gradlew test --info
 ```
 
-Alternatively, you can run the tests also in the Java IDE of your choice, as long as the db container is running.
+You can also run tests in your Java IDE if the test DB container is running.
+
+## Stopping Containers
+
+Stop the database containers when done:
+
+```bash
+./stop-db-for-app.sh
+./stop-db-for-test.sh
+```
