@@ -34,6 +34,9 @@ public class GlvdService {
     private final SourcePackageRepository sourcePackageRepository;
 
     @Nonnull
+    private final ImageSourcePackageCveRepository imageSourcePackageCveRepository;
+
+    @Nonnull
     private final CveDetailsRepository cveDetailsRepository;
 
     @Nonnull
@@ -62,9 +65,10 @@ public class GlvdService {
 
     Logger logger = LoggerFactory.getLogger(GlvdService.class);
 
-    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository, @Nonnull NvdCveRepository nvdCveRepository, @Nonnull TriageRepository triageRepository) {
+    public GlvdService(@Nonnull SourcePackageCveRepository sourcePackageCveRepository, @Nonnull SourcePackageRepository sourcePackageRepository, @Nonnull ImageSourcePackageCveRepository imageSourcePackageCveRepository, @Nonnull CveDetailsRepository cveDetailsRepository, @Nonnull CveContextRepository cveContextRepository, @Nonnull DistCpeRepository distCpeRepository, @Nonnull NvdExclusiveCveRepository nvdExclusiveCveRepository, @Nonnull DebSrcRepository debSrcRepository, @Nonnull KernelCveRepository kernelCveRepository, @Nonnull KernelCveDetailsRepository kernelCveDetailsRepository, @Nonnull NvdCveRepository nvdCveRepository, @Nonnull TriageRepository triageRepository) {
         this.sourcePackageCveRepository = sourcePackageCveRepository;
         this.sourcePackageRepository = sourcePackageRepository;
+        this.imageSourcePackageCveRepository = imageSourcePackageCveRepository;
         this.cveDetailsRepository = cveDetailsRepository;
         this.cveContextRepository = cveContextRepository;
         this.distCpeRepository = distCpeRepository;
@@ -108,6 +112,22 @@ public class GlvdService {
         return Pageable.unpaged();
     }
 
+    public List<ImageSourcePackageCve> getCveForImage(String image, String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
+        var cvesExcludingKernel = imageSourcePackageCveRepository.findByGardenlinuxVersionAndGardenlinuxImage(
+                        gardenlinuxVersion, image, determinePageAndSortFeatures(sortAndPageOptions))
+                .stream()
+                .filter(CvesByStatusRejectedxx())
+                .toList();
+
+        var kernelCves = kernelCveRepository.findByGardenlinuxVersion(gardenlinuxVersion)
+                .stream()
+                .map(kernelCve -> new ImageSourcePackageCve(kernelCve.getCveId(), kernelCve.getSourcePackageName(), kernelCve.getSourcePackageVersion(), kernelCve.getGardenlinuxVersion(), "", "", "", kernelCve.isVulnerable(), kernelCve.getCvePublishedDate(), kernelCve.getCveLastModifiedDate(), kernelCve.getCveLastIngestedDate(), kernelCve.getVulnStatus(), kernelCve.getBaseScore(), kernelCve.getVectorString(), kernelCve.getBaseScoreV40(), kernelCve.getBaseScoreV31(), kernelCve.getBaseScoreV30(), kernelCve.getBaseScoreV2(), kernelCve.getVectorStringV40(), kernelCve.getVectorStringV31(), kernelCve.getVectorStringV30(), kernelCve.getVectorStringV2()))
+                .filter(CvesByStatusRejectedxx())
+                .toList();
+
+        return Stream.concat(cvesExcludingKernel.stream(), kernelCves.stream()).toList();
+    }
+
     public List<SourcePackageCve> getCveForDistribution(String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
         var cvesExcludingKernel = sourcePackageCveRepository.findByGardenlinuxVersion(
                         gardenlinuxVersion, determinePageAndSortFeatures(sortAndPageOptions))
@@ -125,6 +145,11 @@ public class GlvdService {
     }
 
     private static Predicate<SourcePackageCve> CvesByStatusRejected() {
+        return cve -> !cve.getVulnStatus().equalsIgnoreCase("Rejected");
+    }
+
+    // fixme
+    private static Predicate<ImageSourcePackageCve> CvesByStatusRejectedxx() {
         return cve -> !cve.getVulnStatus().equalsIgnoreCase("Rejected");
     }
 

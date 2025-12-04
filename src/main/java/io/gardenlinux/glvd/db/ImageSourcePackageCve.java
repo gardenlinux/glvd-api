@@ -1,0 +1,194 @@
+package io.gardenlinux.glvd.db;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "imagesourcepackagecve")
+public class ImageSourcePackageCve {
+
+    @Id
+    @Column(name = "cve_id", nullable = false)
+    private String cveId;
+
+    @Column(name = "source_package_name", nullable = false)
+    private String sourcePackageName;
+
+    @Column(name = "source_package_version", nullable = false)
+    private String sourcePackageVersion;
+
+    @Column(name = "gardenlinux_version", nullable = false)
+    private String gardenlinuxVersion;
+
+    @Column(name = "gardenlinux_image", nullable = false)
+    private String gardenlinuxImage;
+
+    @Column(name = "gardenlinux_image_version", nullable = false)
+    private String gardenlinuxImageVersion;
+
+    @Column(name = "gardenlinux_image_commit_id", nullable = false)
+    private String gardenlinuxImageCommitId;
+
+    @Column(name = "is_vulnerable", nullable = false)
+    private boolean isVulnerable;
+
+    @Column(name = "cve_published_date", nullable = false)
+    private String cvePublishedDate;
+
+    @Column(name = "cve_last_modified_date", nullable = false)
+    private String cveLastModifiedDate;
+
+    @Column(name = "cve_last_ingested_date", nullable = false)
+    private String cveLastIngestedDate;
+
+    @Column(name = "vuln_status", nullable = false)
+    private String vulnStatus;
+
+    @Column(name = "base_score", nullable = true)
+    private Float baseScore;
+
+    @Column(name = "vector_string", nullable = true)
+    private String vectorString;
+
+    @Column(name = "base_score_v40", nullable = true)
+    private Float baseScoreV40;
+
+    @Column(name = "base_score_v31", nullable = true)
+    private Float baseScoreV31;
+
+    @Column(name = "base_score_v30", nullable = true)
+    private Float baseScoreV30;
+
+    @Column(name = "base_score_v2", nullable = true)
+    private Float baseScoreV2;
+
+    @Column(name = "vector_string_v40", nullable = true)
+    private String vectorStringV40;
+
+    @Column(name = "vector_string_v31", nullable = true)
+    private String vectorStringV31;
+
+    @Column(name = "vector_string_v30", nullable = true)
+    private String vectorStringV30;
+
+    @Column(name = "vector_string_v2", nullable = true)
+    private String vectorStringV2;
+
+    public ImageSourcePackageCve() {
+    }
+
+    public ImageSourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, String gardenlinuxImage, String gardenlinuxImageVersion, String gardenlinuxImageCommitId, boolean isVulnerable, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, String vulnStatus, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+        this.cveId = cveId;
+        this.sourcePackageName = sourcePackageName;
+        this.sourcePackageVersion = sourcePackageVersion;
+        this.gardenlinuxVersion = gardenlinuxVersion;
+        this.gardenlinuxImage = gardenlinuxImage;
+        this.gardenlinuxImageVersion = gardenlinuxImageVersion;
+        this.gardenlinuxImageCommitId = gardenlinuxImageCommitId;
+        this.isVulnerable = isVulnerable;
+        this.cvePublishedDate = cvePublishedDate;
+        this.cveLastModifiedDate = cveLastModifiedDate;
+        this.cveLastIngestedDate = cveLastIngestedDate;
+        this.vulnStatus = vulnStatus;
+        this.baseScore = baseScore;
+        this.vectorString = vectorString;
+        this.baseScoreV40 = baseScoreV40;
+        this.baseScoreV31 = baseScoreV31;
+        this.baseScoreV30 = baseScoreV30;
+        this.baseScoreV2 = baseScoreV2;
+        this.vectorStringV40 = vectorStringV40;
+        this.vectorStringV31 = vectorStringV31;
+        this.vectorStringV30 = vectorStringV30;
+        this.vectorStringV2 = vectorStringV2;
+    }
+
+    public String getCveId() {
+        return cveId;
+    }
+
+    public String getSourcePackageName() {
+        return sourcePackageName;
+    }
+
+    public String getSourcePackageVersion() {
+        return sourcePackageVersion;
+    }
+
+    public String getGardenlinuxVersion() {
+        return gardenlinuxVersion;
+    }
+
+    public String getGardenlinuxImage() {
+        return gardenlinuxImage;
+    }
+
+    public String getGardenlinuxImageVersion() {
+        return gardenlinuxImageVersion;
+    }
+
+    public String getGardenlinuxImageCommitId() {
+        return gardenlinuxImageCommitId;
+    }
+
+    public boolean isVulnerable() {
+        return isVulnerable;
+    }
+
+    public String getCvePublishedDate() {
+        return cvePublishedDate;
+    }
+
+    public String getCveLastModifiedDate() {
+        return cveLastModifiedDate;
+    }
+
+    public String getCveLastIngestedDate() {
+        return cveLastIngestedDate;
+    }
+
+    public String getVulnStatus() {
+        return vulnStatus;
+    }
+
+    public Float getBaseScore() {
+        return baseScore;
+    }
+
+    public String getVectorString() {
+        return vectorString;
+    }
+
+    public Float getBaseScoreV40() {
+        return baseScoreV40;
+    }
+
+    public Float getBaseScoreV31() {
+        return baseScoreV31;
+    }
+
+    public Float getBaseScoreV30() {
+        return baseScoreV30;
+    }
+
+    public Float getBaseScoreV2() {
+        return baseScoreV2;
+    }
+
+    public String getVectorStringV40() {
+        return vectorStringV40;
+    }
+
+    public String getVectorStringV31() {
+        return vectorStringV31;
+    }
+
+    public String getVectorStringV30() {
+        return vectorStringV30;
+    }
+
+    public String getVectorStringV2() {
+        return vectorStringV2;
+    }
+}

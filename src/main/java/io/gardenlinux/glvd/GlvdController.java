@@ -35,6 +35,20 @@ public class GlvdController {
         );
     }
 
+    @GetMapping("/cves/{gardenlinuxVersion}/image/{gardenlinuxImage}")
+    ResponseEntity<List<ImageSourcePackageCve>> getCveImage(
+            @PathVariable final String gardenlinuxVersion,
+            @PathVariable final String gardenlinuxImage,
+            @RequestParam(defaultValue = "cveId") final String sortBy,
+            @RequestParam(defaultValue = "ASC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize
+    ) {
+        return ResponseEntity.ok().body(glvdService.getCveForImage(
+                gardenlinuxImage, gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize))
+        );
+    }
+
     @GetMapping("/cves/{gardenlinuxVersion}/packages/{packageList}")
     ResponseEntity<List<SourcePackageCve>> getCvePackages(
             @PathVariable final String gardenlinuxVersion,
