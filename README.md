@@ -32,26 +32,32 @@ To build the app, ensure the test database is running:
 
 ## Running the Application Locally
 
-1. Start the application database:
+1. Get a dump of the Database (this needs the GitHub `gh` cli and `jq`)
+
+```bash
+./download-db-dump.sh
+```
+
+2. Start the application database:
 
 ```bash
 ./start-db-for-app.sh
 ```
 
-2. Build and run the Spring Boot app:
+3. Build and run the Spring Boot app:
 
 ```bash
 ./gradlew bootRun
 ```
 
-3. After startup, check readiness:
+4. After startup, check readiness:
 
 ```
 curl http://localhost:8080/readiness
 # Should return status code 200
 ```
 
-4. Open http://localhost:8080 in your web browser to use the UI
+5. Open http://localhost:8080 in your web browser to use the UI
 
 ## Example Requests
 
