@@ -6,8 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "sourcepackagecve_anyimage")
-public class SourcePackageCve {
+@Table(name = "imagesourcepackagecve")
+public class ImageSourcePackageCve {
 
     @Id
     @Column(name = "cve_id", nullable = false)
@@ -21,6 +21,15 @@ public class SourcePackageCve {
 
     @Column(name = "gardenlinux_version", nullable = false)
     private String gardenlinuxVersion;
+
+    @Column(name = "gardenlinux_image_name", nullable = false)
+    private String gardenlinuxImageName;
+
+    @Column(name = "gardenlinux_image_version", nullable = false)
+    private String gardenlinuxImageVersion;
+
+    @Column(name = "gardenlinux_image_commit_id", nullable = false)
+    private String gardenlinuxImageCommitId;
 
     @Column(name = "is_vulnerable", nullable = false)
     private boolean isVulnerable;
@@ -67,14 +76,17 @@ public class SourcePackageCve {
     @Column(name = "vector_string_v2", nullable = true)
     private String vectorStringV2;
 
-    public SourcePackageCve() {
+    public ImageSourcePackageCve() {
     }
 
-    public SourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, boolean isVulnerable, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, String vulnStatus, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
+    public ImageSourcePackageCve(String cveId, String sourcePackageName, String sourcePackageVersion, String gardenlinuxVersion, String gardenlinuxImageName, String gardenlinuxImageVersion, String gardenlinuxImageCommitId, boolean isVulnerable, String cvePublishedDate, String cveLastModifiedDate, String cveLastIngestedDate, String vulnStatus, Float baseScore, String vectorString, Float baseScoreV40, Float baseScoreV31, Float baseScoreV30, Float baseScoreV2, String vectorStringV40, String vectorStringV31, String vectorStringV30, String vectorStringV2) {
         this.cveId = cveId;
         this.sourcePackageName = sourcePackageName;
         this.sourcePackageVersion = sourcePackageVersion;
         this.gardenlinuxVersion = gardenlinuxVersion;
+        this.gardenlinuxImageName = gardenlinuxImageName;
+        this.gardenlinuxImageVersion = gardenlinuxImageVersion;
+        this.gardenlinuxImageCommitId = gardenlinuxImageCommitId;
         this.isVulnerable = isVulnerable;
         this.cvePublishedDate = cvePublishedDate;
         this.cveLastModifiedDate = cveLastModifiedDate;
@@ -106,6 +118,18 @@ public class SourcePackageCve {
 
     public String getGardenlinuxVersion() {
         return gardenlinuxVersion;
+    }
+
+    public String getGardenlinuxImageName() {
+        return gardenlinuxImageName;
+    }
+
+    public String getGardenlinuxImageVersion() {
+        return gardenlinuxImageVersion;
+    }
+
+    public String getGardenlinuxImageCommitId() {
+        return gardenlinuxImageCommitId;
     }
 
     public boolean isVulnerable() {
