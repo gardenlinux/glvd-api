@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "sourcepackagecve")
+@Table(name = "sourcepackagecve_anyimage")
 public class SourcePackageCve {
 
     @Id
