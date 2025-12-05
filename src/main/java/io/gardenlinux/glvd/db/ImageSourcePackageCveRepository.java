@@ -31,9 +31,9 @@ public interface ImageSourcePackageCveRepository extends JpaRepository<ImageSour
             Pageable pageable
     );
 
-    List<ImageSourcePackageCve> findByGardenlinuxVersionAndGardenlinuxImage(
+    List<ImageSourcePackageCve> findByGardenlinuxVersionAndGardenlinuxImageName(
             @Param("gardenlinux_version") String gardenlinux_version,
-            @Param("gardenlinux_image") String gardenlinux_image,
+            @Param("gardenlinux_image_name") String gardenlinux_image_name,
             Pageable pageable
     );
 

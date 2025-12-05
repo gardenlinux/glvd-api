@@ -113,7 +113,7 @@ public class GlvdService {
     }
 
     public List<ImageSourcePackageCve> getCveForImage(String image, String gardenlinuxVersion, SortAndPageOptions sortAndPageOptions) {
-        var cvesExcludingKernel = imageSourcePackageCveRepository.findByGardenlinuxVersionAndGardenlinuxImage(
+        var cvesExcludingKernel = imageSourcePackageCveRepository.findByGardenlinuxVersionAndGardenlinuxImageName(
                         gardenlinuxVersion, image, determinePageAndSortFeatures(sortAndPageOptions))
                 .stream()
                 .filter(CvesByStatusRejectedxx())
