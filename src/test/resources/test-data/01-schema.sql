@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Un049OhuTEHTPUOKLIca5bspmjJc8ENlAfLee5SyePnk7o3PvRwrPFl8cfZzTJn
+\restrict e1hqKiTcHJTd1GpX99lJgahFrtsFTHeaNGInjKDAVd4oN9PN7hYLnzrd123u5FX
 
 -- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
 -- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
@@ -27,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS debversion WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION debversion IS 'Debian version number data type';
@@ -268,6 +268,109 @@ ALTER TABLE public.dist_cpe ALTER COLUMN id ADD GENERATED ALWAYS AS IDENTITY (
 
 
 --
+-- Name: image_package; Type: TABLE; Schema: public; Owner: glvd
+--
+
+CREATE TABLE public.image_package (
+    image_variant_id bigint NOT NULL,
+    package_name text NOT NULL
+);
+
+
+ALTER TABLE public.image_package OWNER TO glvd;
+
+--
+-- Name: image_variant; Type: TABLE; Schema: public; Owner: glvd
+--
+
+CREATE TABLE public.image_variant (
+    id bigint NOT NULL,
+    namespace text DEFAULT 'gardenlinux'::text NOT NULL,
+    image_name text NOT NULL,
+    image_version text NOT NULL,
+    commit_id text,
+    metadata jsonb DEFAULT '{}'::jsonb,
+    packages text[] DEFAULT '{}'::text[]
+);
+
+
+ALTER TABLE public.image_variant OWNER TO glvd;
+
+--
+-- Name: image_variant_id_seq; Type: SEQUENCE; Schema: public; Owner: glvd
+--
+
+CREATE SEQUENCE public.image_variant_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.image_variant_id_seq OWNER TO glvd;
+
+--
+-- Name: image_variant_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: glvd
+--
+
+ALTER SEQUENCE public.image_variant_id_seq OWNED BY public.image_variant.id;
+
+
+--
+-- Name: imagesourcepackagecve; Type: VIEW; Schema: public; Owner: glvd
+--
+
+CREATE VIEW public.imagesourcepackagecve AS
+ SELECT DISTINCT all_cve.cve_id,
+    deb_cve.deb_source AS source_package_name,
+    deb_cve.deb_version AS source_package_version,
+    dist_cpe.cpe_version AS gardenlinux_version,
+    iv.namespace AS gardenlinux_image_namespace,
+    iv.image_name AS gardenlinux_image_name,
+    iv.image_version AS gardenlinux_image_version,
+    iv.commit_id AS gardenlinux_image_commit_id,
+    ((deb_cve.debsec_vulnerable AND (cve_context.is_resolved IS NOT TRUE)) = true) AS is_vulnerable,
+    deb_cve.debsec_vulnerable,
+    cve_context.is_resolved,
+    (all_cve.data ->> 'published'::text) AS cve_published_date,
+    (all_cve.data ->> 'lastModified'::text) AS cve_last_modified_date,
+    all_cve.last_mod AS cve_last_ingested_date,
+        CASE
+            WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            WHEN (((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric IS NOT NULL) THEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric
+            ELSE NULL::numeric
+        END AS base_score,
+        CASE
+            WHEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            WHEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            WHEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            WHEN ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) IS NOT NULL) THEN (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text)
+            ELSE NULL::text
+        END AS vector_string,
+    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v40,
+    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v31,
+    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v30,
+    ((((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'baseScore'::text))::numeric AS base_score_v2,
+    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV40'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v40,
+    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV31'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v31,
+    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV30'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v30,
+    (((((all_cve.data -> 'metrics'::text) -> 'cvssMetricV2'::text) -> 0) -> 'cvssData'::text) ->> 'vectorString'::text) AS vector_string_v2,
+    (all_cve.data ->> 'vulnStatus'::text) AS vuln_status
+   FROM (((((public.all_cve
+     JOIN public.deb_cve USING (cve_id))
+     JOIN public.dist_cpe ON ((deb_cve.dist_id = dist_cpe.id)))
+     FULL JOIN public.cve_context USING (cve_id, dist_id))
+     JOIN public.image_package ip ON ((ip.package_name = deb_cve.deb_source)))
+     JOIN public.image_variant iv ON ((iv.id = ip.image_variant_id)))
+  WHERE ((dist_cpe.cpe_product = 'gardenlinux'::text) AND (iv.namespace = 'gardenlinux'::text) AND (deb_cve.debsec_vulnerable = true) AND (deb_cve.deb_source <> 'linux'::text) AND (dist_cpe.cpe_version = iv.image_version));
+
+
+ALTER VIEW public.imagesourcepackagecve OWNER TO glvd;
+
+--
 -- Name: kernel_vulns; Type: VIEW; Schema: public; Owner: glvd
 --
 
@@ -480,6 +583,37 @@ CREATE VIEW public.sourcepackage AS
 ALTER VIEW public.sourcepackage OWNER TO glvd;
 
 --
+-- Name: sourcepackagecve_anyimage; Type: VIEW; Schema: public; Owner: glvd
+--
+
+CREATE VIEW public.sourcepackagecve_anyimage AS
+ SELECT DISTINCT cve_id,
+    source_package_name,
+    source_package_version,
+    gardenlinux_version,
+    is_vulnerable,
+    debsec_vulnerable,
+    is_resolved,
+    cve_published_date,
+    cve_last_modified_date,
+    cve_last_ingested_date,
+    base_score,
+    vector_string,
+    base_score_v40,
+    base_score_v31,
+    base_score_v30,
+    base_score_v2,
+    vector_string_v40,
+    vector_string_v31,
+    vector_string_v30,
+    vector_string_v2,
+    vuln_status
+   FROM public.imagesourcepackagecve;
+
+
+ALTER VIEW public.sourcepackagecve_anyimage OWNER TO glvd;
+
+--
 -- Name: triage; Type: VIEW; Schema: public; Owner: glvd
 --
 
@@ -509,6 +643,13 @@ CREATE VIEW public.triage AS
 
 
 ALTER VIEW public.triage OWNER TO glvd;
+
+--
+-- Name: image_variant id; Type: DEFAULT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.image_variant ALTER COLUMN id SET DEFAULT nextval('public.image_variant_id_seq'::regclass);
+
 
 --
 -- Name: all_cve all_cve_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
@@ -567,6 +708,30 @@ ALTER TABLE ONLY public.dist_cpe
 
 
 --
+-- Name: image_package image_package_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.image_package
+    ADD CONSTRAINT image_package_pkey PRIMARY KEY (image_variant_id, package_name);
+
+
+--
+-- Name: image_variant image_variant_namespace_name_version_unique; Type: CONSTRAINT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.image_variant
+    ADD CONSTRAINT image_variant_namespace_name_version_unique UNIQUE (namespace, image_name, image_version);
+
+
+--
+-- Name: image_variant image_variant_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.image_variant
+    ADD CONSTRAINT image_variant_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: migrations migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: glvd
 --
 
@@ -583,10 +748,122 @@ ALTER TABLE ONLY public.nvd_cve
 
 
 --
+-- Name: all_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX all_cve_cve_id_idx ON public.all_cve USING btree (cve_id);
+
+
+--
+-- Name: all_cve_last_mod_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX all_cve_last_mod_idx ON public.all_cve USING btree (last_mod);
+
+
+--
+-- Name: cve_context_is_resolved_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX cve_context_is_resolved_idx ON public.cve_context USING btree (is_resolved);
+
+
+--
+-- Name: deb_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX deb_cve_cve_id_idx ON public.deb_cve USING btree (cve_id);
+
+
+--
+-- Name: deb_cve_deb_source_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX deb_cve_deb_source_idx ON public.deb_cve USING btree (deb_source);
+
+
+--
+-- Name: deb_cve_deb_version_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX deb_cve_deb_version_idx ON public.deb_cve USING btree (deb_version);
+
+
+--
+-- Name: deb_cve_debsec_vulnerable_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX deb_cve_debsec_vulnerable_idx ON public.deb_cve USING btree (debsec_vulnerable);
+
+
+--
 -- Name: deb_cve_search; Type: INDEX; Schema: public; Owner: glvd
 --
 
 CREATE INDEX deb_cve_search ON public.deb_cve USING btree (dist_id, debsec_vulnerable, deb_source, deb_version);
+
+
+--
+-- Name: debsec_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX debsec_cve_cve_id_idx ON public.debsec_cve USING btree (cve_id);
+
+
+--
+-- Name: debsrc_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX debsrc_cve_id_idx ON public.debsrc USING btree (dist_id);
+
+
+--
+-- Name: debsrc_deb_version_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX debsrc_deb_version_idx ON public.debsrc USING btree (deb_version);
+
+
+--
+-- Name: dist_cpe_cpe_product_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX dist_cpe_cpe_product_idx ON public.dist_cpe USING btree (cpe_product);
+
+
+--
+-- Name: idx_image_package_image; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX idx_image_package_image ON public.image_package USING btree (image_variant_id);
+
+
+--
+-- Name: idx_image_package_package; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX idx_image_package_package ON public.image_package USING btree (package_name);
+
+
+--
+-- Name: idx_image_variant_packages_gin; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX idx_image_variant_packages_gin ON public.image_variant USING gin (packages);
+
+
+--
+-- Name: nvd_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX nvd_cve_cve_id_idx ON public.nvd_cve USING btree (cve_id);
+
+
+--
+-- Name: nvd_cve_last_mod_idx; Type: INDEX; Schema: public; Owner: glvd
+--
+
+CREATE INDEX nvd_cve_last_mod_idx ON public.nvd_cve USING btree (last_mod);
 
 
 --
@@ -677,8 +954,15 @@ ALTER TABLE ONLY public.debsrc
 
 
 --
+-- Name: image_package image_package_image_variant_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: glvd
+--
+
+ALTER TABLE ONLY public.image_package
+    ADD CONSTRAINT image_package_image_variant_id_fkey FOREIGN KEY (image_variant_id) REFERENCES public.image_variant(id) ON DELETE CASCADE;
+
+
+--
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Un049OhuTEHTPUOKLIca5bspmjJc8ENlAfLee5SyePnk7o3PvRwrPFl8cfZzTJn
-
+\unrestrict e1hqKiTcHJTd1GpX99lJgahFrtsFTHeaNGInjKDAVd4oN9PN7hYLnzrd123u5FX
