@@ -93,6 +93,7 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             populateGardenlinuxVersions("gardenlinuxVersion");
+            populateGardenlinuxVersions("imageGardenlinuxVersion");
             populateGardenlinuxVersions("triageGardenlinuxVersion");
             populateGardenlinuxVersions("packagesGardenlinuxVersion");
             populateGardenlinuxVersions("distroGardenlinuxVersion");
@@ -135,6 +136,16 @@
 		<td><button type="submit">Go</button>
 		</form>
              </tr>
+        <tr>
+            <td><form action="/getCveForImage" method="get" class="distribution">
+                <label for="gardenlinuxVersion">...an Garden Linux image</label>
+                <td><input id="imageName" name="imageName" type="text" placeholder="gcp-gardener_prod" required />
+                <td><select id="imageGardenlinuxVersion" name="gardenlinuxVersion" required>
+                    <option value="">Loading...</option>
+                </select>
+                <td><button type="submit">Go</button>
+            </form>
+        </tr>
             <tr>
 		<td><form action="/getTriage" method="get" class="triage">
 		    <label for="triageGardenlinuxVersion">...the Triage for a Garden Linux version</label>
