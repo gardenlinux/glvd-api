@@ -56,7 +56,7 @@
         }
 
         th {
-              text-align: left;
+            text-align: left;
         }
     </style>
 </head>
@@ -94,7 +94,6 @@
         document.addEventListener("DOMContentLoaded", function () {
             populateGardenlinuxVersions("gardenlinuxVersion");
             populateGardenlinuxVersions("imageGardenlinuxVersion");
-            populateGardenlinuxVersions("triageGardenlinuxVersion");
             populateGardenlinuxVersions("packagesGardenlinuxVersion");
             populateGardenlinuxVersions("distroGardenlinuxVersion");
             populateGardenlinuxVersions("releaseNotesGardenlinuxVersion");
@@ -116,101 +115,112 @@
         </p>
         <table>
             <tr>
-               <th> Lookup... </th>
+                <th> Lookup... </th>
             </tr>
             <tr>
-                <td><form action="/getCveDetails" method="get" class="cve">
-                <label for="cveId">...a CVE</label>
+                <td>
+                    <form action="/getCveDetails" method="get" class="cve">
+                        <label for="cveId">...a CVE</label>
                 <td><input id="cveId" name="cveId" type="text" placeholder="CVE-2025-22872" required />
                 <td>
                 <td><button type="submit">Go</button>
-                </form>
+                    </form>
             </tr>
             <tr>
-		<td><form action="/getCveForDistribution" method="get" class="distribution">
-		<label for="gardenlinuxVersion">...a Garden Linux version</label>
                 <td>
-		<td><select id="gardenlinuxVersion" name="gardenlinuxVersion" required>
-		<option value="">Loading...</option>
-                   </select>
-		<td><button type="submit">Go</button>
-		</form>
-             </tr>
-        <tr>
-            <td><form action="/getCveForImage" method="get" class="distribution">
-                <label for="gardenlinuxVersion">...an Garden Linux image</label>
-                <td><input id="imageName" name="imageName" type="text" placeholder="gcp-gardener_prod" required />
-                <td><select id="imageGardenlinuxVersion" name="gardenlinuxVersion" required>
-                    <option value="">Loading...</option>
-                </select>
+                    <form action="/getCveForDistribution" method="get" class="distribution">
+                        <label for="gardenlinuxVersion">...a Garden Linux version</label>
+                <td>
+                <td><select id="gardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
                 <td><button type="submit">Go</button>
-            </form>
-        </tr>
-            <tr>
-		<td><form action="/getTriage" method="get" class="triage">
-		    <label for="triageGardenlinuxVersion">...the Triage for a Garden Linux version</label>
-                    <td>
-		    <td><select id="triageGardenlinuxVersion" name="gardenlinuxVersion" required>
-		    <option value="">Loading...</option>
-		    </select>
-		    <td><button type="submit">Go</button>
-		</form>
-             </tr>
-             <tr>
-		<td><form action="/getPackagesByVulnerability" method="get" class="packages">
-		    <label for="packagesCveId">...Packages by CVE and Garden Linux version</label>
-		    <td><input id="packagesCveId" name="cveId" type="text" placeholder="CVE-2004-1308" required />
-		    <td><select id="packagesGardenlinuxVersion" name="gardenlinuxVersion" required>
-		    <option value="">Loading...</option>
-		    </select>
-		    <td><button type="submit">Go</button>
-		</form>
-             </tr>
-             <tr>
-		<td><form action="/getPackagesForDistro" method="get" class="packages-distro">
-		    <label for="distroGardenlinuxVersion">...Packages for a Garden Linux version</label>
-                    <td>
-		    <td><select id="distroGardenlinuxVersion" name="gardenlinuxVersion" required>
-		    <option value="">Loading...</option>
-		    </select>
-		    <td><button type="submit">Go</button>
-		</form>
-	    </tr>
-            <tr>
-		<td><form action="/getReleaseNotes" method="get" class="release-notes">
-		    <label for="releaseNotesGardenlinuxVersion">...the Release Notes for Garden Linux version</label>
-                    <td>
-		    <td><select id="releaseNotesGardenlinuxVersion" name="gardenlinuxVersion" required>
-		    <option value="">Loading...</option>
-		    </select>
-		    <td><button type="submit">Go</button>
-		</form>
+                    </form>
             </tr>
             <tr>
-		<td><form action="/getTriage" method="get" class="triage-list">
-		    <label for="triageListGardenlinuxVersion">...the Triage List for Garden Linux version</label>
-                    <td>
-		    <td><select id="triageListGardenlinuxVersion" name="gardenlinuxVersion" required>
-		    <option value="">Loading...</option>
-		    </select>
-		    <td><button type="submit" class="triage">Go</button>
-		</form>
+                <td>
+                    <form action="/getPackagesByVulnerability" method="get" class="packages">
+                        <label for="packagesCveId">...Packages by CVE and Garden Linux version</label>
+                <td><input id="packagesCveId" name="cveId" type="text" placeholder="CVE-2004-1308" required />
+                <td><select id="packagesGardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
+                <td><button type="submit">Go</button>
+                    </form>
             </tr>
             <tr>
-		<td><form action="/getTriageList" method="get" class="triage-list">
-		    <label for="triageListGardenlinuxVersion">...the full Triage List</label>
-                    <td>
-                    <td>
-                    <td>
-		    <button type="submit" class="triage">Go</button>
-		</form>
+                <td>
+                    <form action="/getPackagesForDistro" method="get" class="packages-distro">
+                        <label for="distroGardenlinuxVersion">...Packages for a Garden Linux version</label>
+                <td>
+                <td><select id="distroGardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
+                <td><button type="submit">Go</button>
+                    </form>
+                    </form>
+            </tr>
+            <tr>
+                <td>
+                    <form action="/getReleaseNotes" method="get" class="release-notes">
+                        <label for="releaseNotesGardenlinuxVersion">...the Release Notes for Garden Linux
+                            version</label>
+                <td>
+                <td><select id="releaseNotesGardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
+                <td><button type="submit">Go</button>
+                    </form>
+            </tr>
+
+            <tr>
+                <td>
+                    <form action="/getCveForImage" method="get" class="distribution">
+                        <label for="gardenlinuxVersion">...a Garden Linux image</label>
+                <td>
+                    <select id="imageName" name="imageName" required>
+                        <option value="">Select image...</option>
+                        <option value="ali-gardener_prod">ali-gardener_prod</option>
+                        <option value="aws-gardener_prod">aws-gardener_prod</option>
+                        <option value="azure-gardener_prod">azure-gardener_prod</option>
+                        <option value="gcp-gardener_prod">gcp-gardener_prod</option>
+                        <option value="openstack-gardener_prod">openstack-gardener_prod</option>
+                    </select>
+                <td>
+                    <select id="imageGardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
+                <td><button type="submit">Go</button>
+                    </form>
+            </tr>
+
+            <tr>
+                <td>
+                    <form action="/getTriage" method="get" class="triage-list">
+                        <label for="triageListGardenlinuxVersion">...the Triage List for Garden Linux version</label>
+                <td>
+                <td><select id="triageListGardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
+                <td><button type="submit" class="triage">Go</button>
+                    </form>
+            </tr>
+            <tr>
+                <td>
+                    <form action="/getTriageList" method="get" class="triage-list">
+                        <label for="triageListGardenlinuxVersion">...the full Triage List</label>
+                <td>
+                <td>
+                <td>
+                    <button type="submit" class="triage">Go</button>
+                    </form>
             </tr>
         </table>
         <div style="font-size: 0.95em; color: #888; margin-top: 4px;">
-        Hint: Loading might take a few seconds.
+            Hint: Loading might take a few seconds.
         </div>
 
-        
+
         <p>If you have feedback or want to contribute, please visit our <a href="https://github.com/gardenlinux/glvd"
                 target="_blank">GitHub
                 repository</a>.</p>
