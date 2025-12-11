@@ -40,6 +40,17 @@ class GlvdControllerTest {
     }
 
     @Test
+    public void shouldReturnCvesForGardenlinuxImage() {
+        given(this.spec).accept("application/json")
+                .filter(document("getCveForImage",
+                        preprocessRequest(modifyUris().scheme("https").host("security.gardenlinux.org").removePort()),
+                        preprocessResponse(prettyPrint())))
+                .when().port(this.port).get("/v1/cves/1592.4/image/azure-gardener_prod")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("sourcePackageName", hasItems("curl", "rsync", "jinja2", "python3.12", "linux"));
+    }
+
+    @Test
     public void shouldReturnCvesForGardenlinux() {
         given(this.spec).accept("application/json")
                 .filter(document("getCveForDistro",
