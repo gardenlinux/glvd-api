@@ -34,6 +34,9 @@ jobs:
       - name: Set Version for java app
         run: echo $VERSION > version.txt
 
+      - name: Set Version index.html
+        run: sed -i "s/dev/$VERSION/g" src/main/resources/static/index.html
+
       - name: Configure git
         run: |
           git config --global user.name "github-actions[bot]"
@@ -42,7 +45,7 @@ jobs:
       - name: Commit version.txt to branch
         run: |
           git checkout -b release-version-${VERSION}
-          git add version.txt
+          git add version.txt src/main/resources/static/index.html
           git commit -m "chore: set version to ${VERSION}"
           git tag $VERSION
           git push --tags origin release-version-${VERSION}
