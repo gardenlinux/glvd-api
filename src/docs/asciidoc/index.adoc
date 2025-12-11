@@ -5,150 +5,17 @@ Garden Linux Authors
 :source-highlighter: highlightjs
 :toc:
 
-== Overview
-
 This document describes the HTTP API endpoints of the Garden Linux Vulnerability Database (GLVD).
 
-CAUTION: This document and the API are work in progress and subject to change at any time.
+Find out more about GLVD at https://security.gardenlinux.org and https://github.com/gardenlinux/glvd.
 
-== API Endpoints
+This document provides real HTTP requests and responses captured from API tests.
+The data shown is based on unit tests and may differ from production data, but the structure of requests and responses remains consistent.
 
-=== List All Garden Linux Releases
+== Triage Data
 
-Retrieve all known Garden Linux releases:
-
-include::{snippets}/getAllGardenLinuxVersions/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getAllGardenLinuxVersions/http-response.adoc[]
-
-=== List CVEs by Distribution
-
-Retrieve all CVEs for a given distribution and version:
-
-include::{snippets}/getCveForDistro/curl-request.adoc[]
-
-TIP: The `sortBy` and `sortOrder` query parameters are optional. If omitted, default sorting is applied.
-
-Example response:
-
-include::{snippets}/getCveForDistro/http-response.adoc[]
-
-=== List CVEs for Packages by Distribution
-
-Retrieve all CVEs for a list of packages in a specified distribution.
-Package names are comma-separated (URL-encoding may be required).
-
-include::{snippets}/getCveForPackages/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getCveForPackages/http-response.adoc[]
-
-=== List CVEs for Packages by Distribution (PUT)
-
-Retrieve all CVEs for a list of packages in a specified distribution.
-Package names are provided in the request body as JSON.
-
-include::{snippets}/getCveForPackagesPut/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getCveForPackagesPut/http-response.adoc[]
-
-=== List Packages in a Distribution
-
-Retrieve a list of packages for a given distribution.
-
-include::{snippets}/getPackages/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getPackages/http-response.adoc[]
-
-=== Get Vulnerabilities for a Package
-
-Retrieve vulnerabilities for a specific package.
-
-include::{snippets}/getPackageWithVulnerabilities/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
-
-=== Get Vulnerabilities for a Package by Version
-
-Retrieve vulnerabilities for a specific package and version.
-
-include::{snippets}/getPackageWithVulnerabilitiesByVersion/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getPackageWithVulnerabilitiesByVersion/http-response.adoc[]
-
-=== List Packages Affected by a Vulnerability
-
-Retrieve a list of packages affected by a specific vulnerability.
-
-include::{snippets}/getPackagesByVulnerability/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getPackagesByVulnerability/http-response.adoc[]
-
-=== Get CVE Details with Context
-
-Retrieve information about a CVE by its ID.
-
-include::{snippets}/getCveDetailsWithContexts/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
-
-==== Linux Kernel CVEs
-
-For CVEs affecting the Linux kernel, the response structure differs.
-Data is sourced from upstream kernel developers for LTS kernel versions in Garden Linux.
-
-NOTE: For the Linux kernel, Garden Linux always builds LTS kernels directly from the upstream source, applying both Debian patches and custom patches as needed. Therefore, CVEs reported by Debian for the kernel do not directly apply. Instead, kernel vulnerability information is sourced from upstream kernel developers, and Debian kernel CVEs are ignored in Garden Linux.
-
-include::{snippets}/getCveDetailsWithContextsKernel/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getCveDetailsWithContextsKernel/http-response.adoc[]
-
-=== Get CVE Details for Non-Debian CVEs
-
-For CVEs not present in the Debian Security Tracker, only basic information is provided.
-
-include::{snippets}/getCveDetailsNonDebian/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/getCveDetailsNonDebian/http-response.adoc[]
-
-=== Get Release Notes
-
-Retrieve information about fixed security vulnerabilities in a new minor release.
-
-include::{snippets}/releaseNotes/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/releaseNotes/http-response.adoc[]
-
-=== Get Patch Release Notes (Legacy)
-
-Retrieve information about fixed security vulnerabilities in a new patch release.
-
-include::{snippets}/patchReleaseNotes/curl-request.adoc[]
-
-Example response:
-
-include::{snippets}/patchReleaseNotes/http-response.adoc[]
+Triage is the process where the Garden Linux security team evaluates security vulnerabilities (CVEs) to determine their impact on Garden Linux releases.
+Getting Triage data is one of the main features of the GLVD API.
 
 === List Triages for a Garden Linux Release
 
@@ -189,3 +56,135 @@ include::{snippets}/triagesList/curl-request.adoc[]
 Example response:
 
 include::{snippets}/triagesList/http-response.adoc[]
+
+== CVE Data
+
+=== List CVEs by Distribution
+
+Retrieve all CVEs for a given distribution and version:
+
+include::{snippets}/getCveForDistro/curl-request.adoc[]
+
+TIP: The `sortBy` and `sortOrder` query parameters are optional. If omitted, default sorting is applied.
+
+Example response:
+
+include::{snippets}/getCveForDistro/http-response.adoc[]
+
+=== List CVEs for Packages by Distribution
+
+Retrieve all CVEs for a list of packages in a specified distribution.
+Package names are comma-separated (URL-encoding may be required).
+
+include::{snippets}/getCveForPackages/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getCveForPackages/http-response.adoc[]
+
+=== List CVEs for Packages by Distribution (PUT)
+
+Retrieve all CVEs for a list of packages in a specified distribution.
+Package names are provided in the request body as JSON.
+
+include::{snippets}/getCveForPackagesPut/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getCveForPackagesPut/http-response.adoc[]
+
+=== Get Vulnerabilities for a Package
+
+Retrieve vulnerabilities for a specific package.
+
+include::{snippets}/getPackageWithVulnerabilities/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getPackageWithVulnerabilities/http-response.adoc[]
+
+=== Get Vulnerabilities for a Package by Version
+
+Retrieve vulnerabilities for a specific package and version.
+
+include::{snippets}/getPackageWithVulnerabilitiesByVersion/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getPackageWithVulnerabilitiesByVersion/http-response.adoc[]
+
+=== List Packages Affected by a Vulnerability
+
+Retrieve a list of packages affected by a specific vulnerability.
+
+include::{snippets}/getPackagesByVulnerability/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getPackagesByVulnerability/http-response.adoc[]
+
+=== Get CVE Details with Triage Data
+
+Retrieve information about a CVE by its ID.
+If triage data is available for this CVE, it is included in the response.
+
+include::{snippets}/getCveDetailsWithContexts/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getCveDetailsWithContexts/http-response.adoc[]
+
+==== Linux Kernel CVEs
+
+For CVEs affecting the Linux kernel, the response structure differs.
+Data is sourced from upstream kernel developers for LTS kernel versions in Garden Linux.
+
+NOTE: For the Linux kernel, Garden Linux always builds LTS kernels directly from the upstream source, applying both Debian patches and custom patches as needed. Therefore, CVEs reported by Debian for the kernel do not directly apply. Instead, kernel vulnerability information is sourced from upstream kernel developers, and Debian kernel CVEs are ignored in Garden Linux.
+
+include::{snippets}/getCveDetailsWithContextsKernel/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getCveDetailsWithContextsKernel/http-response.adoc[]
+
+=== Get CVE Details for Non-Debian CVEs
+
+For CVEs not present in the Debian Security Tracker, only basic information is provided.
+
+include::{snippets}/getCveDetailsNonDebian/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getCveDetailsNonDebian/http-response.adoc[]
+
+== Garden Linux Release Data
+
+=== List All Garden Linux Releases
+
+Retrieve all known Garden Linux releases in GLVD.
+
+include::{snippets}/getAllGardenLinuxVersions/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getAllGardenLinuxVersions/http-response.adoc[]
+
+=== List Packages in a Distribution
+
+Retrieve a list of packages for a given distribution.
+
+include::{snippets}/getPackages/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getPackages/http-response.adoc[]
+
+=== Get Release Notes
+
+Retrieve information about fixed security vulnerabilities in a minor release of Garden Linux.
+
+include::{snippets}/releaseNotes/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/releaseNotes/http-response.adoc[]
