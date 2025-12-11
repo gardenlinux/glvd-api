@@ -139,7 +139,7 @@
                         <option value="openstack-gardener_prod">openstack-gardener_prod</option>
                     </select>
                 <td>
-                    <select id="imageGardenlinuxVersion" name="gardenlinuxVersion" required>
+                    <select id="imageGardenlinuxVersion" name="gardenlinuxVersion" required onchange="this.form.submit()">
                         <option value="">Loading...</option>
                     </select>
                 <td><button type="submit">Go</button>
@@ -150,7 +150,7 @@
                     <form action="/getCveForDistribution" method="get" class="distribution">
                         <label for="gardenlinuxVersion">...CVEs in any Garden Linux image</label>
                 <td>
-                <td><select id="gardenlinuxVersion" name="gardenlinuxVersion" required>
+                <td><select id="gardenlinuxVersion" name="gardenlinuxVersion" required onchange="this.form.submit()">
                         <option value="">Loading...</option>
                     </select>
                 <td><button type="submit">Go</button>
@@ -172,7 +172,7 @@
                     <form action="/getPackagesForDistro" method="get" class="packages-distro">
                         <label for="distroGardenlinuxVersion">...Packages for a Garden Linux version</label>
                 <td>
-                <td><select id="distroGardenlinuxVersion" name="gardenlinuxVersion" required>
+                <td><select id="distroGardenlinuxVersion" name="gardenlinuxVersion" required onchange="this.form.submit()">
                         <option value="">Loading...</option>
                     </select>
                 <td><button type="submit">Go</button>
@@ -185,7 +185,7 @@
                         <label for="releaseNotesGardenlinuxVersion">...the Release Notes for Garden Linux
                             version</label>
                 <td>
-                <td><select id="releaseNotesGardenlinuxVersion" name="gardenlinuxVersion" required>
+                <td><select id="releaseNotesGardenlinuxVersion" name="gardenlinuxVersion" required onchange="this.form.submit()">
                         <option value="">Loading...</option>
                     </select>
                 <td><button type="submit">Go</button>
@@ -196,7 +196,7 @@
                     <form action="/getTriage" method="get" class="triage-list">
                         <label for="triageListGardenlinuxVersion">...the Triage List for Garden Linux version</label>
                 <td>
-                <td><select id="triageListGardenlinuxVersion" name="gardenlinuxVersion" required>
+                <td><select id="triageListGardenlinuxVersion" name="gardenlinuxVersion" required onchange="this.form.submit()">
                         <option value="">Loading...</option>
                     </select>
                 <td><button type="submit" class="triage">Go</button>
