@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GLVD: List vulnerabilities in image</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link href="style.css" rel="stylesheet" media="screen" />
+</head>
+<body>
+<h1 th:text="|Vulnerabilities list for Garden Linux image ${imageName} in version ${gardenlinuxVersion} |" />
+
+<p th:text="|Found ${#lists.size(sourcePackageCves)} potential security issues|"></p>
+
+<table>
+    <thead>
+    <tr>
+        <th>CVE ID
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cveId,sortOrder=ASC,onlyVulnerable=true)}">&uarr;</a>
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cveId,sortOrder=DESC,onlyVulnerable=true)}">&darr;</a>
+        </th>
+
+        <th>CVE Base Score
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=baseScore,sortOrder=ASC,onlyVulnerable=true)}">&uarr;</a>
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=baseScore,sortOrder=DESC,onlyVulnerable=true)}">&darr;</a>
+        </th>
+
+        <th>Vector String</th>
+
+        <th>CVE Published Date
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cvePublishedDate,sortOrder=ASC,onlyVulnerable=true)}">&uarr;</a>
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cvePublishedDate,sortOrder=DESC,onlyVulnerable=true)}">&darr;</a>
+        </th>
+
+        <th>CVE Last Modified Date
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cveLastModifiedDate,sortOrder=ASC,onlyVulnerable=true)}">&uarr;</a>
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cveLastModifiedDate,sortOrder=DESC,onlyVulnerable=true)}">&darr;</a>
+        </th>
+
+        <th>CVE Last Ingested Date
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cveLastIngestedDate,sortOrder=ASC,onlyVulnerable=true)}">&uarr;</a>
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=cveLastIngestedDate,sortOrder=DESC,onlyVulnerable=true)}">&darr;</a>
+        </th>
+
+        <th>Source Package
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=sourcePackageName,sortOrder=ASC,onlyVulnerable=true)}">&uarr;</a>
+            <a th:href="@{/getCveForImage(gardenlinuxVersion=${gardenlinuxVersion},imageName=${imageName},sortBy=sourcePackageName,sortOrder=DESC,onlyVulnerable=true)}">&darr;</a>
+        </th>
+
+        <th>Version</th>
+        <th>Is Vulnerable?</th>
+        <th>Vulnerability Status</th>
+    </tr>
+    </thead>
+    <tr th:each="item: ${sourcePackageCves}">
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="[DETAILS]"></div> </a> <div th:text="${item.cveId}"/> </td>
+        <td th:text="${item.baseScore}" />
+        <td th:text="${item.vectorString}" />
+        <td th:text="${item.cvePublishedDate}" />
+        <td th:text="${item.cveLastModifiedDate}" />
+        <td th:text="${item.cveLastIngestedDate}" />
+        <td th:text="${item.sourcePackageName}" />
+        <td th:text="${item.sourcePackageVersion}" />
+        <td th:text="${item.isVulnerable}" />
+        <td th:text="${item.vulnStatus}" />
+    </tr>
+</table>
+
+<h2 th:text="|CVE Contexts for Garden Linux ${gardenlinuxVersion} |" />
+
+<table>
+    <thead>
+    <tr>
+        <th>CVE ID</th>
+        <th>Create Date</th>
+        <th>Use-Case</th>
+        <th>Description</th>
+        <th>Is Resolved?</th>
+    </tr>
+    </thead>
+    <tr th:each="item: ${cveContexts}">
+        <td><a th:href="@{/getCveDetails(cveId=${item.cveId})}"> <div th:text="[DETAILS]"></div> </a> <div th:text="${item.cveId}"/> </td>
+        <td th:text="${item.createDate}"></td>
+        <td th:text="${item.useCase}"></td>
+        <td th:text="${item.description}"></td>
+        <td th:text="${item.getResolved}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

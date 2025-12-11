@@ -1,5 +1,6 @@
 package io.gardenlinux.glvd;
 
+import io.gardenlinux.glvd.db.ImageSourcePackageCve;
 import io.gardenlinux.glvd.db.SourcePackageCve;
 import io.gardenlinux.glvd.exceptions.CveNotKnownException;
 import jakarta.annotation.Nonnull;
@@ -37,6 +38,33 @@ public class UiController {
         model.addAttribute("packages", packages);
         model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
         return "getPackagesForDistro";
+    }
+
+    @GetMapping("/getCveForImage")
+    public String getCveForImage(
+            @RequestParam(name = "gardenlinuxVersion", required = true) String gardenlinuxVersion,
+            @RequestParam(name = "imageName", required = true) String imageName,
+            @RequestParam(defaultValue = "baseScore") final String sortBy,
+            @RequestParam(defaultValue = "DESC") final String sortOrder,
+            @RequestParam(required = false) final String pageNumber,
+            @RequestParam(required = false) final String pageSize,
+            @RequestParam(required = false, defaultValue = "true") final boolean onlyVulnerable,
+            Model model
+    ) {
+        var sourcePackageCves = glvdService.getCveForImage(
+                        imageName, gardenlinuxVersion, new SortAndPageOptions(sortBy, sortOrder, pageNumber, pageSize)
+                )
+                .stream()
+                .filter(ImageSourcePackageCve::isVulnerable)
+                .filter(sourcePackageCve -> !sourcePackageCve.getVulnStatus().equalsIgnoreCase("Rejected"))
+                .toList();
+        var contexts = glvdService.getCveContextsForDist(glvdService.distVersionToId(gardenlinuxVersion));
+        model.addAttribute("sourcePackageCves", sourcePackageCves);
+        model.addAttribute("gardenlinuxVersion", gardenlinuxVersion);
+        model.addAttribute("imageName", imageName);
+        model.addAttribute("onlyVulnerable", onlyVulnerable);
+        model.addAttribute("cveContexts", contexts);
+        return "getCveForImage";
     }
 
     @GetMapping("/getCveForDistribution")

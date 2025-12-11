@@ -38,4 +38,6 @@ out/
 
 ### Unbase OCI ###
 *.oci
-glvd.sql
+
+# DB Dump for DevDb container image
+/glvd.sql

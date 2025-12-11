@@ -93,13 +93,13 @@
 
         document.addEventListener("DOMContentLoaded", function () {
             populateGardenlinuxVersions("gardenlinuxVersion");
+            populateGardenlinuxVersions("imageGardenlinuxVersion");
             populateGardenlinuxVersions("packagesGardenlinuxVersion");
             populateGardenlinuxVersions("distroGardenlinuxVersion");
             populateGardenlinuxVersions("releaseNotesGardenlinuxVersion");
             populateGardenlinuxVersions("triageListGardenlinuxVersion");
         });
     </script>
-
 
     <div class="container">
         <h1>Welcome to the Garden Linux Vulnerability Database</h1>
@@ -127,8 +127,28 @@
             </tr>
             <tr>
                 <td>
+                    <form action="/getCveForImage" method="get" class="distribution">
+                        <label for="gardenlinuxVersion">...CVEs in an Garden Linux image</label>
+                <td>
+                    <select id="imageName" name="imageName" required>
+                        <option value="">Select image...</option>
+                        <option value="ali-gardener_prod">ali-gardener_prod</option>
+                        <option value="aws-gardener_prod">aws-gardener_prod</option>
+                        <option value="azure-gardener_prod">azure-gardener_prod</option>
+                        <option value="gcp-gardener_prod">gcp-gardener_prod</option>
+                        <option value="openstack-gardener_prod">openstack-gardener_prod</option>
+                    </select>
+                <td>
+                    <select id="imageGardenlinuxVersion" name="gardenlinuxVersion" required>
+                        <option value="">Loading...</option>
+                    </select>
+                <td><button type="submit">Go</button>
+                    </form>
+            </tr>
+            <tr>
+                <td>
                     <form action="/getCveForDistribution" method="get" class="distribution">
-                        <label for="gardenlinuxVersion">...a Garden Linux version</label>
+                        <label for="gardenlinuxVersion">...CVEs in any Garden Linux image</label>
                 <td>
                 <td><select id="gardenlinuxVersion" name="gardenlinuxVersion" required>
                         <option value="">Loading...</option>

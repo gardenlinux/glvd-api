@@ -71,6 +71,25 @@ Example response:
 
 include::{snippets}/getCveForDistro/http-response.adoc[]
 
+=== List CVEs by Image
+
+Retrieve all CVEs for a given Garden Linux image and version.
+This applies a filter for the packages in the specified image.
+
+Supported images are currently:
+
+- `ali-gardener_prod`
+- `aws-gardener_prod`
+- `azure-gardener_prod`
+- `gcp-gardener_prod`
+- `openstack-gardener_prod`
+
+include::{snippets}/getCveForImage/curl-request.adoc[]
+
+Example response:
+
+include::{snippets}/getCveForImage/http-response.adoc[]
+
 === List CVEs for Packages by Distribution
 
 Retrieve all CVEs for a list of packages in a specified distribution.
