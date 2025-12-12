@@ -2,10 +2,10 @@
 -- PostgreSQL database dump
 --
 
-\restrict e1hqKiTcHJTd1GpX99lJgahFrtsFTHeaNGInjKDAVd4oN9PN7hYLnzrd123u5FX
+\restrict ltHAAaDD09X3APY68zF5zSf3DwDla61MXTY4xXcVBpz2RdTc1F3ArAcAoaKr6yv
 
--- Dumped from database version 18.0 (Debian 18.0-1.pgdg13+3)
--- Dumped by pg_dump version 18.0 (Debian 18.0-1.pgdg13+3)
+-- Dumped from database version 18.1 (Debian 18.1-1.pgdg13+2)
+-- Dumped by pg_dump version 18.1 (Debian 18.1-1.pgdg13+2)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS debversion WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION debversion; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION debversion IS 'Debian version number data type';
@@ -748,87 +748,10 @@ ALTER TABLE ONLY public.nvd_cve
 
 
 --
--- Name: all_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX all_cve_cve_id_idx ON public.all_cve USING btree (cve_id);
-
-
---
--- Name: all_cve_last_mod_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX all_cve_last_mod_idx ON public.all_cve USING btree (last_mod);
-
-
---
--- Name: cve_context_is_resolved_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX cve_context_is_resolved_idx ON public.cve_context USING btree (is_resolved);
-
-
---
--- Name: deb_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX deb_cve_cve_id_idx ON public.deb_cve USING btree (cve_id);
-
-
---
--- Name: deb_cve_deb_source_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX deb_cve_deb_source_idx ON public.deb_cve USING btree (deb_source);
-
-
---
--- Name: deb_cve_deb_version_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX deb_cve_deb_version_idx ON public.deb_cve USING btree (deb_version);
-
-
---
--- Name: deb_cve_debsec_vulnerable_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX deb_cve_debsec_vulnerable_idx ON public.deb_cve USING btree (debsec_vulnerable);
-
-
---
 -- Name: deb_cve_search; Type: INDEX; Schema: public; Owner: glvd
 --
 
 CREATE INDEX deb_cve_search ON public.deb_cve USING btree (dist_id, debsec_vulnerable, deb_source, deb_version);
-
-
---
--- Name: debsec_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX debsec_cve_cve_id_idx ON public.debsec_cve USING btree (cve_id);
-
-
---
--- Name: debsrc_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX debsrc_cve_id_idx ON public.debsrc USING btree (dist_id);
-
-
---
--- Name: debsrc_deb_version_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX debsrc_deb_version_idx ON public.debsrc USING btree (deb_version);
-
-
---
--- Name: dist_cpe_cpe_product_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX dist_cpe_cpe_product_idx ON public.dist_cpe USING btree (cpe_product);
 
 
 --
@@ -850,20 +773,6 @@ CREATE INDEX idx_image_package_package ON public.image_package USING btree (pack
 --
 
 CREATE INDEX idx_image_variant_packages_gin ON public.image_variant USING gin (packages);
-
-
---
--- Name: nvd_cve_cve_id_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX nvd_cve_cve_id_idx ON public.nvd_cve USING btree (cve_id);
-
-
---
--- Name: nvd_cve_last_mod_idx; Type: INDEX; Schema: public; Owner: glvd
---
-
-CREATE INDEX nvd_cve_last_mod_idx ON public.nvd_cve USING btree (last_mod);
 
 
 --
@@ -965,4 +874,4 @@ ALTER TABLE ONLY public.image_package
 -- PostgreSQL database dump complete
 --
 
-\unrestrict e1hqKiTcHJTd1GpX99lJgahFrtsFTHeaNGInjKDAVd4oN9PN7hYLnzrd123u5FX
+\unrestrict ltHAAaDD09X3APY68zF5zSf3DwDla61MXTY4xXcVBpz2RdTc1F3ArAcAoaKr6yv
