@@ -30,9 +30,9 @@ jobs:
       contents: read
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
     - name: Set up JDK 25
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e # v5.1.0
       with:
         java-version: '25'
         distribution: 'sapmachine'
@@ -50,7 +50,7 @@ jobs:
 
     - name: Store reports
       if: failure()
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: reports
         path: |
@@ -58,7 +58,7 @@ jobs:
           **/build/test-results/
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
       with:
         name: build-artifacts
         path: 'build'
@@ -77,11 +77,11 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - run: mkdir -p build
       - name: Download built jar
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: build-artifacts
           path: build
@@ -93,7 +93,7 @@ jobs:
 
       - name: Build Image
         id: build_image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@7a95fa7ee0f02d552a32753e7414641a04307056 # v2.13
         with:
           image: ${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}
           tags: ${{ env.IMAGE_TAG }}
@@ -118,7 +118,7 @@ jobs:
       - name: Push To ghcr.io
         id: push-to-ghcr
         if: ${{ github.event_name != 'pull_request' }}
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@5ed88d269cf581ea9ef6dd6806d01562096bee9c # v2.8
         with:
           image: ${{ steps.build_image.outputs.image }}
           tags: ${{ steps.build_image.outputs.tags }}
@@ -127,7 +127,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Log in to ghcr.io
-        uses: redhat-actions/podman-login@v1
+        uses: redhat-actions/podman-login@4934294ad0449894bcd1e9f191899d7292469603 # v1.7
         with:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
@@ -155,7 +155,7 @@ jobs:
 
       - name: Authenticate to cluster
         id: kube_auth
-        uses: gardener/cc-utils/.github/actions/kubernetes-auth@9dc83024923245f56cbe366344c5ae25c10423a9
+        uses: gardener/cc-utils/.github/actions/kubernetes-auth@8ec69f5cd2e1a2cae55709af1d9703a801893dfa # ocm/0.1.0
         with:
           server: https://api.dev.gl-dev.shoot.canary.k8s-hana.ondemand.com
           server-ca-discovery-url: https://discovery.ingress.garden.canary.k8s.ondemand.com/projects/gl-dev/shoots/6a3efe36-1d56-4e07-83f6-36720207b51b/cluster-ca
@@ -174,9 +174,9 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
     - name: Set up JDK 25
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e # v5.1.0
       with:
         java-version: '25'
         distribution: 'sapmachine'
@@ -199,17 +199,17 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - uses: actions/download-artifact@v6
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: build-artifacts
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4.0.0
         with:
           path: 'docs/asciidoc'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
 
