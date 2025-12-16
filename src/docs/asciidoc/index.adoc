@@ -17,6 +17,16 @@ The data shown is based on unit tests and may differ from production data, but t
 Triage is the process where the Garden Linux security team evaluates security vulnerabilities (CVEs) to determine their impact on Garden Linux releases.
 Getting Triage data is one of the main features of the GLVD API.
 
+[TIP]
+.Understanding the 'resolved' Field
+====
+In GLVD, triage data gives extra context about a CVE for a specific Garden Linux release. For example, it can mark a CVE as a false positive or note that a fix is available upstream and will be included in a future release.
+
+The `resolved` (or `triageMarkedAsResolved`) field acts as an override. If set to `true`, it tells GLVD to treat the vulnerability as resolved, regardless of other data. If `false`, it has no effect.
+
+The main field to check is `vulnerable`. Its value depends on several factors, including data from the Debian Security Tracker and the `resolved` field.
+====
+
 === List Triages for a Garden Linux Release
 
 Retrieve triaged security vulnerabilities for a Garden Linux release.
