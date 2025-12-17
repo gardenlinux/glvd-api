@@ -20,11 +20,13 @@ Getting Triage data is one of the main features of the GLVD API.
 [TIP]
 .Understanding the 'resolved' Field
 ====
-In GLVD, triage data gives extra context about a CVE for a specific Garden Linux release. For example, it can mark a CVE as a false positive or note that a fix is available upstream and will be included in a future release.
+In GLVD, triage data gives extra context about a CVE for a specific Garden Linux release. For example, it can mark a CVE as a false positive or note that a fix is available upstream and will be included in a future release. Note that there may be multiple triages over time for the same CVE on the same Garden Linux version, as we go through the lifecycle of responding to the CVE.
 
 The `resolved` (or `triageMarkedAsResolved`) field acts as an override. If set to `true`, it tells GLVD to treat the vulnerability as resolved, regardless of other data. If `false`, it has no effect.
 
-The main field to check is `vulnerable`. Its value depends on several factors, including data from the Debian Security Tracker and the `resolved` field.
+The main field to check is `vulnerable`, which is available in the 'CVE Data' endpoints listed in this document. Its value depends on several factors, including data from the Debian Security Tracker and the `resolved` field.
+
+Triages only exist for CVEs that were reported as 'vulnerable' by our upstream data sources.
 ====
 
 === List Triages for a Garden Linux Release
