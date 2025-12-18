@@ -23,6 +23,12 @@ RUN jlink \
 
 FROM ghcr.io/gardenlinux/gardenlinux:1592.15
 
+ARG GLVD_VERSION=dev
+
+LABEL org.opencontainers.image.source="https://github.com/gardenlinux/glvd-api"
+LABEL org.opencontainers.image.description="Garden Linux Vulnerability Database API"
+LABEL org.opencontainers.image.version=$GLVD_VERSION
+
 EXPOSE 8080
 
 COPY --from=build /tinysapmachine /jre
