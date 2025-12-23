@@ -8,22 +8,37 @@
 <body>
 <h1 th:text="|Release Notes for Garden Linux ${gardenlinuxVersion}|"/>
 
-<div>
-    This page provides information about fixed vulnerabilities in a Garden Linux minor release.
-    Note that this list might not be accurate and might be incomplete.
-    Use with caution.
+<div th:if="${releaseNotes.packageList.empty}">
+    <p>
+        This version of Garden Linux is not yet released.
+        We will provide a release notes page, once it is released.
+        <br/>
+
+        Please <a href="https://github.com/gardenlinux/glvd/issues" target="_blank" style="color: #1a73e8;">open
+        an issue on our GitHub repository</a>,
+        if this page shows up for alrady released versions of Garden Linux.
+    </p>
 </div>
 
-<div th:each="item : ${releaseNotes.packageList}">
-    <p><strong>Source Package Name:</strong> <span th:text="${item.sourcePackageName}"></span></p>
-    <p><strong>Old Version:</strong> <span th:text="${item.oldVersion}"></span></p>
-    <p><strong>New Version:</strong> <span th:text="${item.newVersion}"></span></p>
-    <p><strong>Fixed CVEs:</strong></p>
-    <ul>
-        <li th:each="cve : ${item.fixedCves}" th:text="${cve}"></li>
-    </ul>
 
-    <hr />
+<div th:unless="${releaseNotes.packageList.empty}">
+    <div>
+        This page provides information about fixed vulnerabilities in a Garden Linux minor release.
+        Note that this list might not be accurate and might be incomplete.
+        Use with caution.
+    </div>
+
+    <div th:each="item : ${releaseNotes.packageList}">
+        <p><strong>Source Package Name:</strong> <span th:text="${item.sourcePackageName}"></span></p>
+        <p><strong>Old Version:</strong> <span th:text="${item.oldVersion}"></span></p>
+        <p><strong>New Version:</strong> <span th:text="${item.newVersion}"></span></p>
+        <p><strong>Fixed CVEs:</strong></p>
+        <ul>
+            <li th:each="cve : ${item.fixedCves}" th:text="${cve}"></li>
+        </ul>
+
+        <hr />
+    </div>
 </div>
 
 </body>
