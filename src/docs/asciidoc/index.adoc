@@ -12,6 +12,6 @@ Find out more about GLVD at https://security.gardenlinux.org and https://github.
 This document provides real HTTP requests and responses captured from API tests.
 The data shown is based on unit tests and may differ from production data, but the structure of requests and responses remains consistent.
 
-include::{snippets}/index-example/curl-request.adoc[]
+include::{snippets}/getCveForImage/curl-request.adoc[]
 
 
