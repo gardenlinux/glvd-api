@@ -39,6 +39,9 @@ dependencies {
 
     runtimeOnly 'org.postgresql:postgresql'
 
+    testImplementation("org.jruby:jruby:10.0.2.0")
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-restdocs'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
