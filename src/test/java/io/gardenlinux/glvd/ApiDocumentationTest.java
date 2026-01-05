@@ -34,7 +34,7 @@ class ApiDocumentationTest {
 	@BeforeEach
 	public void setUp(RestDocumentationContextProvider restDocumentation) {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
-				.apply(documentationConfiguration(restDocumentation).snippets().withTemplateFormat(TemplateFormats.markdown())).build();
+				.apply(documentationConfiguration(restDocumentation).snippets()).build();
 	}
 
 
