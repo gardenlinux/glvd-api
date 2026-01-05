@@ -76,6 +76,7 @@ class GlvdControllerTest {
         this.mockMvc.perform(get("/v1/cves/1592.7?sortBy=cveId&sortOrder=DESC"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
+                // purposefully does not contain CVE-2025-8197 because it is 'rejected'
                 .andExpect(jsonPath("$[*].cveId", hasItems("CVE-2024-35176", "CVE-2023-28755", "CVE-2024-44953")))
                 .andExpect(jsonPath("$[*].cveId", not(hasItem("CVE-2025-8197"))))
                 .andExpect(jsonPath("$[*].vulnerable", hasItems(true, true, true)))
@@ -88,6 +89,7 @@ class GlvdControllerTest {
         this.mockMvc.perform(get("/v1/cves/1592.5/packages/linux"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[*].cveId", hasItems("CVE-2025-21864", "CVE-2024-44953")))
+                // CVE-2024-44953 is actually vulnerable, but marked as resolved via cve_context, thus it must return 'false' here
                 .andExpect(jsonPath("$[*].vulnerable", hasItems(true, false)))
                 .andExpect(jsonPath("$[*].vulnStatus", hasItems("Analyzed", "Modified")))
                 .andDo(doc("getKernelCvesForGardenLinuxByPackageName"));
@@ -97,6 +99,7 @@ class GlvdControllerTest {
     void shouldReturnKernelCvesForGardenLinuxByPackageName() throws Exception {
         this.mockMvc.perform(get("/v1/cves/1592.6/packages/linux"))
                 .andExpect(status().isOk())
+                // CVE-2024-44953 is vulnerable and not triaged for Garden Linux 1592.6
                 .andExpect(jsonPath("$[*].cveId", hasItems("CVE-2025-21864", "CVE-2024-44953")))
                 .andExpect(jsonPath("$[*].vulnerable", hasItems(true, true)))
                 .andDo(doc("getKernelCvesForGardenLinuxByPackageName"));
