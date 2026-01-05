@@ -65,7 +65,7 @@ class GlvdControllerTest {
 
     @Test
     void shouldReturnCvesForGardenlinuxShouldNotReturnKernelCveMarkedAsResolved() throws Exception {
-        var foo = this.mockMvc.perform(get("/v1/cves/1592.5?sortBy=cveId&sortOrder=DESC"))
+        this.mockMvc.perform(get("/v1/cves/1592.5?sortBy=cveId&sortOrder=DESC"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[*].cveId", contains("CVE-2025-0938", "CVE-2025-21864", "CVE-2024-44953")))
