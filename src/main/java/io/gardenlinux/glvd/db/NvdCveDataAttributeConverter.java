@@ -1,20 +1,20 @@
 package io.gardenlinux.glvd.db;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 public class NvdCveDataAttributeConverter implements AttributeConverter<NvdCve.Data, String> {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final JsonMapper objectMapper = new JsonMapper();
     Logger logger = LoggerFactory.getLogger(NvdCveDataAttributeConverter.class);
 
     @Override
     public String convertToDatabaseColumn(NvdCve.Data attribute) {
         try {
             return objectMapper.writeValueAsString(attribute);
-        } catch (JsonProcessingException jpe) {
+        } catch (JacksonException jpe) {
             logger.warn("Cannot convert CVE Data into JSON");
             return null;
         }
@@ -24,7 +24,7 @@ public class NvdCveDataAttributeConverter implements AttributeConverter<NvdCve.D
     public NvdCve.Data convertToEntityAttribute(String dbData) {
         try {
             return objectMapper.readValue(dbData, NvdCve.Data.class);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             logger.warn("Cannot convert JSON into CVE Data {}", dbData);
             return null;
         }
