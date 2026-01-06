@@ -68,7 +68,7 @@ class GlvdControllerTest {
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("cveId", hasItems("CVE-2025-0938", "CVE-2025-21864", "CVE-2024-44953"))
                 // CVE-2024-44953 is actually vulnerable, but marked as resolved via cve_context, thus it must return 'false' here
-                .body("vulnerable", hasItems(true, true, false))
+                .body("vulnerable", hasItems(false, true, false))
                 .body("vulnStatus", hasItems("Received", "Analyzed", "Modified"));
     }
 
