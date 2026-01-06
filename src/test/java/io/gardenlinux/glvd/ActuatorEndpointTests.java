@@ -2,13 +2,10 @@ package io.gardenlinux.glvd;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.restdocs.RestDocumentationContextProvider;
-import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -19,7 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ExtendWith(RestDocumentationExtension.class)
 class ActuatorEndpointTests {
 
 	@Autowired
@@ -44,7 +40,8 @@ class ActuatorEndpointTests {
     @ValueSource(strings = {"prometheus", "metrics", "env", "heapdump", "beans", "loggers", "mappings", "shutdown"})
     public void shouldNotReturnSensitiveEndpoints(String endpoint) throws Exception {
         this.mockMvc.perform(get("/actuator/" + endpoint))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andExpect(status().reason("No static resource actuator/" + endpoint + "."));
     }
 
 }
