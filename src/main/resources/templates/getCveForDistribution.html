@@ -12,7 +12,7 @@
 
 <a th:href="@{/getCveForDistributionAll(gardenlinuxVersion=${gardenlinuxVersion},onlyVulnerable=false)}">Show all potential issues</a>
 
-<table>
+<table class="datatable">
     <thead>
     <tr>
         <th>CVE ID
@@ -68,7 +68,7 @@
 
 <h2 th:text="|CVE Contexts for Garden Linux ${gardenlinuxVersion} |" />
 
-<table>
+<table class="datatable">
     <thead>
     <tr>
         <th>CVE ID</th>

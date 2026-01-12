@@ -32,7 +32,7 @@
 
 <div>
     <h2>Metadata</h2>
-    <table>
+    <table class="datatable">
         <thead>
             <tr>
                 <th>Vulnerability Status</th>
@@ -60,7 +60,7 @@
 </div>
 <div th:if="${not(cveDetails.baseScoreV40 == null and cveDetails.baseScoreV31 == null and cveDetails.baseScoreV30 == null and cveDetails.baseScoreV2 == null)}">
     <h2>CVSS Scores</h2>
-    <table>
+    <table class="datatable">
         <thead>
             <tr>
                 <th>CVSS Version</th>

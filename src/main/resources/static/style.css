@@ -1,5 +1,7 @@
-body, html {
-    font-family: Sans-Serif;
+body,
+html {
+    font-family: Arial, sans-serif;
+    color: #222;
 }
 
 table {
@@ -13,11 +15,65 @@ td {
     text-overflow: ellipsis;
 }
 
-table tr:nth-child(odd) td{
+table tr:nth-child(odd) td {
     background-color: #CCCCCC;
 }
+
 
 .verbatim {
     font-family: 'Courier New', Courier, monospace;
     font-size: 0.8em;
+}
+
+.navtable th {
+    text-align: left;
+}
+
+.container {
+    max-width: 700px;
+    margin: 60px auto;
+    padding: 32px;
+    border-radius: 12px;
+    background: #f8fafc;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.07);
+}
+
+h1 {
+    color: #1a73e8;
+    margin-top: 0;
+}
+
+form {
+    gap: 8px;
+    align-items: center;
+}
+
+
+label {
+    font-weight: 600;
+    padding: 8px 10px;
+}
+
+input[type="text"] {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+}
+
+button {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #fff;
+    background: #1a73e8;
+}
+
+a {
+    color: #1a73e8;
+}
+
+th {
+    text-align: left;
 }
