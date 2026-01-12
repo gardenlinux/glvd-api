@@ -53,7 +53,7 @@ To build the app, ensure the test database is running:
 4. After startup, check readiness:
 
 ```
-curl http://localhost:8080/readiness
+curl http://localhost:8080/actuator/health
 # Should return status code 200
 ```
 
