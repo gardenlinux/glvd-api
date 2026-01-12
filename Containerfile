@@ -1,4 +1,4 @@
-FROM ghcr.io/sap/sapmachine:25-jdk-headless-gl-1592 as build
+FROM ghcr.io/sap/sapmachine:25-jdk-headless-gl-1877 as build
 
 ARG GLVD_VERSION=dev
 
@@ -21,7 +21,7 @@ RUN jlink \
     --no-man-pages \
     --output /tinysapmachine
 
-FROM ghcr.io/gardenlinux/gardenlinux:1592.15
+FROM ghcr.io/gardenlinux/gardenlinux:1877
 
 ARG GLVD_VERSION=dev
 
