@@ -21,7 +21,7 @@ RUN jlink \
     --no-man-pages \
     --output /tinysapmachine
 
-FROM ghcr.io/gardenlinux/gardenlinux:1877
+FROM ghcr.io/gardenlinux/gardenlinux:1877.10
 
 ARG GLVD_VERSION=dev
 
