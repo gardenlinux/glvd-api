@@ -89,3 +89,6 @@ Stop the database containers when done:
 ./stop-db-for-app.sh
 ./stop-db-for-test.sh
 ```
+## Funding information
+
+<p align="center"><img alt="Bundesministerium für Wirtschaft und Energie (BMWE)-EU funding logo" src="https://apeirora.eu/assets/img/BMWK-EU.png" width="400"/></p>
