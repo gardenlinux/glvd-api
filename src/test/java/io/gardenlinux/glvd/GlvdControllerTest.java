@@ -282,8 +282,6 @@ class GlvdControllerTest {
         this.mockMvc.perform(get("/v1/releaseNotes/2000.1.0"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version", is("2000.1.0")))
-                .andExpect(jsonPath("$.packageList[0].sourcePackageName", is("util-linux")))
-                .andExpect(jsonPath("$.packageList[0].fixedCves", hasItems("CVE-2022-0563")))
                 .andDo(doc("releaseNotes"));
     }
 
@@ -308,15 +306,6 @@ class GlvdControllerTest {
         this.mockMvc.perform(get("/v1/patchReleaseNotes/1592.5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version", is("1592.5")))
-                .andExpect(jsonPath("$.packageList[0].sourcePackageName", is(oneOf("jinja2", "rsync", "curl", "python3.12"))))
-                .andExpect(jsonPath("$.packageList[*].fixedCves[*]", hasItems(
-                        "CVE-2024-56326",
-                        "CVE-2024-12085",
-                        "CVE-2024-12086",
-                        "CVE-2024-11053",
-                        "CVE-2024-9287",
-                        "CVE-2025-0938"
-                )))
                 .andDo(doc("patchReleaseNotes"));
     }
 
@@ -325,8 +314,6 @@ class GlvdControllerTest {
         this.mockMvc.perform(get("/v1/patchReleaseNotes/1592.7"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version", is("1592.7")))
-                .andExpect(jsonPath("$.packageList[0].sourcePackageName", is("linux")))
-                .andExpect(jsonPath("$.packageList[0].fixedCves", contains("CVE-2025-21864")))
                 .andDo(doc("patchReleaseNotesResolved"));
     }
 

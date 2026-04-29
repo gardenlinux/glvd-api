@@ -282,41 +282,15 @@ public class GlvdService {
 
     // keep this method to provide the old api
     public ReleaseNote releaseNoteTwoDigitVersion(final String gardenlinuxVersion) {
-        if (gardenlinuxVersion.endsWith(".0")) {
-            return new ReleaseNote(gardenlinuxVersion, List.of());
-        }
-        var v = new TwoDigitGardenLinuxVersion(gardenlinuxVersion);
-
-        var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
-
-        // We get an empty list if the new version is not yet present in glvd which creates a useless diff
-        // This should not happen in a normal release process because the 'new' version should be ingested into glvd when we get here
-        if (packagesNew.isEmpty()) {
-            return new ReleaseNote(gardenlinuxVersion, List.of());
-        }
-
-        var cvesOldVersion = getCveForDistribution(v.previousPatchVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
-        var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousPatchVersion());
-
-        return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
+        // do not provide a result for now
+        // Release page is too big for github and a lot of false-positives which require manual clean up
+        return new ReleaseNote(gardenlinuxVersion, List.of());
     }
 
     private ReleaseNote releaseNoteThreeDigitVersion(final String gardenlinuxVersion) {
-        if (gardenlinuxVersion.endsWith(".0.0")) {
-            return new ReleaseNote(gardenlinuxVersion, List.of());
-        }
-        var v = new ThreeDigitGardenLinuxVersion(gardenlinuxVersion);
-        var packagesNew = sourcePackagesByGardenLinuxVersion(v.printVersion());
-        if (packagesNew.isEmpty()) {
-            return new ReleaseNote(gardenlinuxVersion, List.of());
-        }
-        var cvesOldVersion = getCveForDistribution(v.previousMinorVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var cvesNewVersion = getCveForDistribution(v.printVersion(), new SortAndPageOptions("cveId", "ASC", null, null));
-        var resolvedInNew = getCveContextsForDist(distVersionToId(gardenlinuxVersion)).stream().filter(CveContext::getResolved).map(CveContext::getCveId).toList();
-        var packagesOld = sourcePackagesByGardenLinuxVersion(v.previousMinorVersion());
-        return new ReleaseNoteGenerator(v, cvesOldVersion, cvesNewVersion, resolvedInNew, packagesOld, packagesNew).generate();
+        // do not provide a result for now
+        // Release page is too big for github and a lot of false-positives which require manual clean up
+        return new ReleaseNote(gardenlinuxVersion, List.of());
     }
 
     private static List<Triage> filterNonUserRelevantTriages(List<Triage> input) {
