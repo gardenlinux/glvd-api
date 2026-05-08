@@ -178,8 +178,21 @@ public class GlvdController {
         return glvdService.releaseNoteTwoDigitVersion(gardenlinuxVersion);
     }
 
+    // used by the release process to generate the Github release page
     @GetMapping("/releaseNotes/{gardenlinuxVersion}")
     ResponseEntity<ReleaseNote> releaseNotes(@PathVariable final String gardenlinuxVersion) {
+        try {
+            // do not provide a result for now
+            // Release page is too big for github and a lot of false-positives which require manual clean up
+            return ResponseEntity.ok(glvdService.emptyReleaseNote(gardenlinuxVersion));
+        } catch (InvalidGardenLinuxVersionException invalidGardenLinuxVersionException) {
+            return ResponseEntity.badRequest().header("Message", invalidGardenLinuxVersionException.getMessage()).build();
+        }
+    }
+
+    // allows to get the release output manually even though the previous endpoint now returns an empty list all the times
+    @GetMapping("/releaseNotesManual/{gardenlinuxVersion}")
+    ResponseEntity<ReleaseNote> releaseNotesManual(@PathVariable final String gardenlinuxVersion) {
         try {
             return ResponseEntity.ok(glvdService.releaseNote(gardenlinuxVersion));
         } catch (InvalidGardenLinuxVersionException invalidGardenLinuxVersionException) {
