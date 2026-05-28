@@ -17,6 +17,9 @@ public class TwoDigitGardenLinuxVersion implements GardenLinuxVersion {
     }
 
     public String previousPatchVersion() {
+        if(major == 1877 && patch == 19) {
+            return "1877.17";
+        }
         return major + "." + (patch - 1);
     }
 
