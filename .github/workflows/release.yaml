@@ -100,7 +100,7 @@ jobs:
 
       - name: Build Image
         id: build_image
-        uses: redhat-actions/buildah-build@3a51aade9afa17e5c78256bcbe2e1ee08c7b995b # v3.0.2
+        uses: redhat-actions/buildah-build@f7b0856bcc6a022339d53d47768d8f3678c0a112 # v3.1.0+fix-oci-arch
         with:
           image: ${{ env.IMAGE_NAME_ORG }}/${{ env.IMAGE_NAME }}
           tags: ${{ env.VERSION }}
