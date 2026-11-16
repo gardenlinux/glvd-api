@@ -21,7 +21,11 @@ ext {
 }
 
 configurations {
-    asciidoctorExtensions
+    asciidoctorExtensions {
+        resolutionStrategy {
+            force 'org.jruby:jruby-complete:9.4.12.1'
+        }
+    }
 }
 
 asciidoctorj {
