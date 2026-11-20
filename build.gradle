@@ -23,7 +23,7 @@ ext {
 configurations {
     asciidoctorExtensions {
         resolutionStrategy {
-            force 'org.jruby:jruby-complete:9.4.12.1'
+            force 'org.jruby:jruby-complete:10.1.3.0'
         }
     }
 }
